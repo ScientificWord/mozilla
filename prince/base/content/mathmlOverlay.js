@@ -124,6 +124,7 @@ var msiToggleMathText =
   {
     var editorElement = msiGetActiveEditorElement(window);
     var editor = msiGetEditor(editorElement);
+    var mathmlEditor = editor.QueryInterface(Components.interfaces.msiIMathMLEditor);
     var key;
     var selState;
 
@@ -142,17 +143,17 @@ var msiToggleMathText =
 
 
     if (!this.keyIsToggle(key)) {
-      toggleMathText(editor, key);
+      toggleMathText(mathmlEditor, key);
     }
     else {  // key is toggle
       selState = this.currentState();
       switch( selState ) {
         case('m'): 
-        case('M'): toggleMathText(editor, 't');
+        case('M'): toggleMathText(mathmlEditor, 't');
           break;
         case('t'):
         case('-'): 
-        case('T'): toggleMathText(editor, 'm');
+        case('T'): toggleMathText(mathmlEditor, 'm');
       }    
     }
     editorElement.contentWindow.focus();
@@ -577,7 +578,8 @@ function makeMathIfNeeded(editorElement)  // returns true iff it created a new m
   var retVal = true;
   var mathNode;
   var editor = msiGetEditor(editorElement);
-  editor.canonicalizeMathSelection();
+  var mathmlEditor = editor.QueryInterface(Components.interfaces.msiIMathMLEditor);
+  mathmlEditor.canonicalizeMathSelection();
   if (!isInMath(editorElement))
   {
     if (!(editor.selection.isCollapsed))
@@ -589,7 +591,6 @@ function makeMathIfNeeded(editorElement)  // returns true iff it created a new m
       // }
     }
     else {
-      var mathmlEditor = editor.QueryInterface(Components.interfaces.msiIMathMLEditor);
       mathmlEditor.InsertInlineMath();
     }
   }
@@ -3757,7 +3758,7 @@ inserted into an mtext node or an ordinary text node, as appropriate. */
   {
     if (offset > 0) {
       childNodes = node.childNodes;
-      if (childNodes && childNodes[offset - 1].nodeName === 'mtext') {
+      if (childNodes && childNodes.length > 0 && childNodes[offset - 1].nodeName === 'mtext') {
         childNodes[offset - 1].textContent += text;
         if (removeNode) editor.deleteNode(saveNode);
         editor.selection.collapse(childNodes[offset - 1], childNodes[offset - 1].length);
@@ -3768,7 +3769,7 @@ inserted into an mtext node or an ordinary text node, as appropriate. */
     editor.selection.collapse(rover,offset);
 
     mtextNode = editor.document.createElementNS(mmlns, "mtext");
-    editor.insertNode(mtextNode, node, offset);
+    editor.insertNode(mtextNode, rover, offset);
     mtextNode.textContent = text;
     if (removeNode) editor.deleteNode(saveNode);
     editor.selection.collapse(mtextNode.firstChild,text.length);
