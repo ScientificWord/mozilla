@@ -3747,8 +3747,10 @@ inserted into an mtext node or an ordinary text node, as appropriate. */
     if (/* !(newNode.value.firstChild) && */ newNode.value.textContent.length == 0) // can't just check for firstchild, because there 
       // may be an empty mi
     {
-      editor.deleteNode(newNode.value);
-      offset--;
+      if (newNode.value.parentNode.textContent !== '') { // deleting the node in the case where the parent is empty triggers code that may put in an input box
+         editor.deleteNode(newNode.value);
+        offset--;       
+      }
     }
   }
   // can't go any higher. If the reason is that parent is not math, we just insert node.
@@ -3914,12 +3916,12 @@ function mathToText(editor)
       range = editor.selection.getRangeAt(0);
       unicodeText = editor.selection.toString();
       editor.canonicalizeMathRange(range);
-      editor.promoteMathRange(range);
+      // editor.promoteMathRange(range);  --bug 4638
       editor.setSelectionFromRange(range, editor.selection);
       editor.deleteSelection(0);
-      editor.ValidateMathSyntax(mathNode, true, true);
+      editor.ValidateMathSyntax(mathNode, false, false);
       splitMathDeep(editor,  editor.selection.anchorNode, editor.selection.anchorOffset, unicodeText);
-      editor.ValidateMathSyntax(mathNode, true, true);
+      editor.ValidateMathSyntax(mathNode, false, false);
     }
   }
   catch(e) {
