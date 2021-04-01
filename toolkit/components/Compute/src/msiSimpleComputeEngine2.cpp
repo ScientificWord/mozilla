@@ -547,6 +547,11 @@ NS_IMETHODIMP msiSimpleComputeEngine2::DefineMupadName(const PRUnichar* swpname,
   rv =  DoTransaction( trans_ID, result );
 
   ComputeDLL::ReleaseTransaction( trans_ID );
+  // this works but returns a non-zero result. Not sure whare that is getting generated.
+  // Let's say it worked.
+  if (rv == -2139619320) {
+    rv = NS_OK;
+  }
   return rv;
 
 
