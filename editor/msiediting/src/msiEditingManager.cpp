@@ -1175,26 +1175,29 @@ msiEditingManager::InsertSqRoot(nsIEditor * editor,
   NS_ASSERTION(editor && selection, "Null editor, selection or node passed to msiEditingManager::InsertSqRoot");
   
   editor->BeginTransaction();
-  nsCOMPtr<nsIDOMElement> mathmlElement;
+  nsCOMPtr<nsIDOMElement> mathmlElement, startElement;
   nsCOMPtr<nsIDOMElement> radicand;
   nsCOMPtr<nsIDOMNode> mathInput, dontCareNode;
   res = PrepareSelectionForCopying(mathmlEditor, range, getter_AddRefs(content));    
 
   PRUint32 flags(msiIMathMLInsertion::FLAGS_NONE);
-  res = msiUtils::CreateMsqrt(editor, nsnull, PR_FALSE, PR_FALSE, flags, mathmlElement);
+  res = msiUtils::CreateMsqrt(editor, nsnull, bCollapsed, PR_FALSE, flags, mathmlElement);
   nsCOMPtr<nsIDOMNode> radNode;
   res = mathmlElement->GetFirstChild(getter_AddRefs(radNode));
   if (!radNode) radicand = mathmlElement;
     else radicand = do_QueryInterface(radNode);
   res = SetSelectionFromRange(range, selection);
-  res = editor->DeleteSelection(nsIEditor::eNext);
-  // if (mathInput = msiUtils::FindInputBoxInSubtree( mathelement)) {
-  //   mathInput->GetParentNode(getter_AddRefs(parentNode));
-  //   parentNode->RemoveChild(mathInput, getter_AddRefs(dontCareNode));
-  // }
+  // res = editor->DeleteSelection(nsIEditor::eNext);
   selection->GetAnchorNode(getter_AddRefs(startNode));
   selection->GetAnchorOffset(&startOffset);
-  res = htmlEditor->InsertMathNode(mathmlElement, startNode, startOffset, PR_FALSE, nsnull);
+  // startElement = do_QueryInterface(startNode);
+  // if (mathInput = msiUtils::FindInputBoxInSubtree( startElement )) {
+  //     mathInput->GetParentNode(getter_AddRefs(parentNode));
+  //     parentNode->RemoveChild(mathInput, getter_AddRefs(dontCareNode));
+  // }
+  // // res = mathmlEditor->InsertMathNodeAtSelection(mathmlElement);
+
+  res = mathmlEditor->InsertMathNodeAtSelection(mathmlElement);
   
   if (!bCollapsed && inMath)
   {
@@ -1219,7 +1222,7 @@ msiEditingManager::InsertRoot(nsIEditor * editor,
   NS_ASSERTION(editor && selection, "Null editor, selection or node passed to msiEditingManager::InsertRoot");
   nsresult res(NS_OK);
   nsCOMPtr<nsIDOMRange> range;
-  nsCOMPtr<nsIDOMNode> startNode, endNode;
+  nsCOMPtr<nsIDOMNode> startNode, endNode, mathInput, parentNode, dontCareNode;
   PRInt32 startOffset, endOffset;
   PRUint32 newOffset;
   selection->GetRangeAt(0, getter_AddRefs(range));
