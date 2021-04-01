@@ -10460,22 +10460,22 @@ nsHTMLEditRules::AdjustSpecialBreaks(PRBool aSafeToAskFrames)
     {
       if (tagName.EqualsLiteral("mtd"))
       {
-        NS_NAMED_LITERAL_STRING(str,"mi");
-        nsCOMPtr<nsIDOMNodeList> nodeList;
-        PRUint32 count;
-        elt = do_QueryInterface(theNode);
-        elt->GetElementsByTagName(str, getter_AddRefs(nodeList));
-        nodeList->GetLength(&count);
-        if (count == 0) {  // if the mtd, which is considered empty, has any mi's, they must be tempinputs, so don't add more
-          msiUtils::CreateInputbox(mHTMLEditor, PR_FALSE, first, flags, inputNode);
-          mHTMLEditor->InsertNode(inputNode, theNode, 0);
-          if (first) {
-            nsCOMPtr<nsISelection> sel;
-            mHTMLEditor->GetSelection(getter_AddRefs(sel));
-            sel->Collapse(inputNode, 0);
-            first = PR_FALSE;
-          }
-        }
+        // NS_NAMED_LITERAL_STRING(str,"mi");
+        // nsCOMPtr<nsIDOMNodeList> nodeList;
+        // PRUint32 count;
+        // elt = do_QueryInterface(theNode);
+        // elt->GetElementsByTagName(str, getter_AddRefs(nodeList));
+        // nodeList->GetLength(&count);
+        // if (count == 0) {  // if the mtd, which is considered empty, has any mi's, they must be tempinputs, so don't add more
+        //   msiUtils::CreateInputbox(mHTMLEditor, PR_FALSE, first, flags, inputNode);
+        //   mHTMLEditor->InsertNode(inputNode, theNode, 0);
+        //   if (first) {
+        //     nsCOMPtr<nsISelection> sel;
+        //     mHTMLEditor->GetSelection(getter_AddRefs(sel));
+        //     sel->Collapse(inputNode, 0);
+        //     first = PR_FALSE;
+        //   }
+        // }
       }
     }
     else
