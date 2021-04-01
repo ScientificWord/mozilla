@@ -1164,6 +1164,14 @@ void MuAnalyzer::AnalyzeFUNCTION(MNODE * func_node, SEMANTICS_NODE * snode,
         }
       }
       break;
+    case 7:{
+       if (!strcmp(func_name, "RootOf2")) {
+          delete[] func_node->p_chdata;
+          char *tmp = new char[13];
+          strcpy(tmp, "The root of ");
+          func_node->p_chdata = tmp;
+        }
+    }
     case 8:{
         if (!strcmp(func_name, "binomial")) {
           AnalyzeBINOMIAL(func_node, snode, local_nodes_done);
@@ -1177,7 +1185,7 @@ void MuAnalyzer::AnalyzeFUNCTION(MNODE * func_node, SEMANTICS_NODE * snode,
           char *tmp = new char[9];
           strcpy(tmp, "LambertW");
           func_node->p_chdata = tmp;
-        }
+        } 
       }
       break;
     case 9:{
@@ -1795,7 +1803,7 @@ void MuAnalyzer::AnalyzeCONSTANT(MNODE * eng_node,
               snode->variant = SNV_Undecidable;
             }
           } if (!strcmp(c_str,"RD_NINF")) {
-            strcpy(buffer, "-&#x221e;");  // wrong, if not super-ugly
+            strcpy(buffer, "-&#x221e;");  //Negative infinity
           }
         } else if (zln == 9) {
           if (!strcmp(c_str, "undefined"))
