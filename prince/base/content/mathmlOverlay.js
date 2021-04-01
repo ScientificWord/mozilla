@@ -3768,17 +3768,21 @@ inserted into an mtext node or an ordinary text node, as appropriate. */
       }
     }
     
-    editor.selection.collapse(rover,offset);
 
+    editor.selection.collapse(rover,offset);
     mtextNode = editor.document.createElementNS(mmlns, "mtext");
     editor.insertNode(mtextNode, rover, offset);
-    mtextNode.textContent = text;
+    editor.selection.collapse(mtextNode,0);
+    editor.insertText(text);
+
     if (removeNode) editor.deleteNode(saveNode);
     editor.selection.collapse(mtextNode.firstChild,text.length);
   }
   else
   {
     var textNode = editor.document.createTextNode(text);
+    editor.selection.collapse(rover,offset);
+
     editor.insertNode(textNode, rover, offset);
     if (removeNode) editor.deleteNode(saveNode);
     editor.selection.collapse(textNode,text.length);
@@ -3813,6 +3817,7 @@ function nodeToMath(editor, node, startOffset, endOffset, workingRange)
   var tmp;
   var temp;
   var text;
+  var textPart,textComplement;
   var nodeRemaining;
   var nodeOffset;
   var theOffset;
@@ -3836,41 +3841,32 @@ function nodeToMath(editor, node, startOffset, endOffset, workingRange)
   if ((node.nodeType === Node.TEXT_NODE) || (node.nodeName ==='mtext'))
   {
     if (node.nodeName === 'mtext') {
-      // node.normalize();
+      node.normalize();
       node = node.firstChild;
       if (!node) return;
     }
-    parent = node.parentNode;
+    parent = node.parentNode;  
+    // text = '......(startoffset)........(endOffset)......', in three parts
+    // textPart is set to the middle
+    // textComplement is the sum of the first and third parts
     nodeOffset = offsetOfChild(parent, node);
+    text = node.nodeValue;
+    textComplement = text.slice(0,startOffset) + text.slice(endOffset);  // first and third
+    theText = text.slice(startOffset, endOffset);  // second
 
-   
-    // split off the text before startOffset
-    tail = node.splitText(startOffset);
-    // node is now a text node containing text up to startOffset;
-    // tail contains the remainder of the text
-    theOffset = offsetOfChild(parent, tail);
-    // theOffset points to just before node; this is where the math will go
-
-      // take the selected text and insert it as symbols.
-    theText = tail.textContent.slice(0, endOffset - startOffset); 
-   
-//    editor.selection.collapse(workingRange.startContainer, workingRange.startOffset);
     for (i = 0; i < theText.length; i++)
     {
       if (theText[i] != ' ') {
         editor.InsertSymbol(theText[i]);
         workingRange.setEnd(editor.selection.focusNode, editor.selection.focusOffset);
-      }
-        
+      }        
     }
     // now remove the characters written from node as symbols 
-    mid = tail.splitText(endOffset - startOffset);
-    try {
-      editor.deleteNode(tail);
+    node.nodeValue = textComplement;
+    if (parent.nodeName === 'mtext' && parent.textContent === '') {
+      editor.deleteNode(parent);
     }
-    catch (e) {}
   }
-
   else {
     theText = node.textContent;
     for (i = 0; i < theText.length; i++)
