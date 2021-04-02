@@ -613,8 +613,7 @@ nsEditor::RemoveContainer(nsIDOMNode *inNode)
   // Move all children from inNode to its parent.
   inNode->HasChildNodes(&bHasMoreChildren);
   // PRBool inComplexTransaction;
-  // GetInComplexTransaction(&inComplexTransaction);
-  // SetInComplexTransaction(PR_TRUE);
+  // isInComplexTransaction(PR_TRUE, &inComplexTransaction);
 
   while (bHasMoreChildren) {
     nsCOMPtr<nsIDOMNode> child;
@@ -636,7 +635,7 @@ nsEditor::RemoveContainer(nsIDOMNode *inNode)
     inNode->HasChildNodes(&bHasMoreChildren);
 
   }
-  // SetInComplexTransaction(inComplexTransaction);
+  // IsInComplexTransaction(inComplexTransaction, nsnull);
   DeleteNode(inNode);
 }
 
@@ -644,19 +643,21 @@ nsEditor::RemoveContainer(nsIDOMNode *inNode)
 
 /* attribute boolean inComplexTransaction; */
 NS_IMETHODIMP
-nsEditor::GetInComplexTransaction(PRBool *aInComplexTransaction)
+nsEditor::IsInComplexTransaction(PRBool newValue, PRBool *aInComplexTransaction)
 {
-  *aInComplexTransaction = isInComplexTransaction;
+  if (aInComplexTransaction) 
+    *aInComplexTransaction = isInComplexTransaction;
+  isInComplexTransaction = newValue;
   return NS_OK;
 }
 
 NS_IMETHODIMP
-nsEditor::SetInComplexTransaction(PRBool aInComplexTransaction)
+nsEditor::ReadInComplexTransaction(PRBool *aInComplexTransaction)
 {
-  isInComplexTransaction = aInComplexTransaction;
+  if (aInComplexTransaction) 
+    *aInComplexTransaction = isInComplexTransaction;
   return NS_OK;
 }
-
 
 NS_IMETHODIMP
 nsEditor::PostCreate()
@@ -999,8 +1000,6 @@ nsEditor::DeleteSelection(EDirection aAction)
 {
   return DeleteSelectionImpl(aAction);
 }
-
-
 
 NS_IMETHODIMP
 nsEditor::GetSelection(nsISelection **aSelection)

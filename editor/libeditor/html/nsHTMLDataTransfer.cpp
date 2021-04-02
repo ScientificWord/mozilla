@@ -923,12 +923,11 @@ nsHTMLEditor::InsertHTMLWithContext(const nsAString & aInputString,
   if (!cellSelectionMode)
   {
     PRBool inComplexTransaction;
-    GetInComplexTransaction(&inComplexTransaction);
-    SetInComplexTransaction(PR_TRUE);
+    IsInComplexTransaction(PR_TRUE, &inComplexTransaction);
     res = DeleteSelectionAndPrepareToCreateNode(parentNode, offsetOfNewNode);
   //  selection->Collapse(parentNode, offsetOfNewNode);
     NS_ENSURE_SUCCESS(res, res);
-    SetInComplexTransaction(inComplexTransaction);
+    IsInComplexTransaction(inComplexTransaction, nsnull);
 
 
     // pasting does not inherit local inline styles
