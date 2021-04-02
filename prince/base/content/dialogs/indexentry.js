@@ -152,7 +152,8 @@ function startup()
 
     if (node.hasAttribute("enc") ){
        var enc=node.getAttribute("enc");
-       var seepat=/see\{(.*)\}/;
+       var seepattern = GetString('see') + '\\{(.*)\\}';
+       var seepat = new RegExp(seepattern, 'i');
        var result=seepat.exec(enc);
        if (result) {
           xreftext.value = result[1];
