@@ -3896,6 +3896,7 @@ function mathToText(editor)
   var offset;
   var unicodeText;
   var range;
+  var complexTransaction;
 //  msiNavigationUtils.getCommonAncestorForSelection(editor.selection);
   editor.beginTransaction();
   node = editor.selection.anchorNode;
@@ -3909,6 +3910,7 @@ function mathToText(editor)
     }
     else
     {
+      complexTransaction = editor.isInComplexTransaction(true);
       range = editor.selection.getRangeAt(0);
       unicodeText = editor.selection.toString();
       editor.canonicalizeMathRange(range);
@@ -3918,6 +3920,7 @@ function mathToText(editor)
       editor.ValidateMathSyntax(mathNode, false, false);
       splitMathDeep(editor,  editor.selection.anchorNode, editor.selection.anchorOffset, unicodeText);
       editor.ValidateMathSyntax(mathNode, false, false);
+      editor.isInComplexTransaction(complexTransaction);
     }
   }
   catch(e) {
