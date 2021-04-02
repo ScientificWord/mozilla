@@ -237,7 +237,7 @@ function onAccept()
 
   // remove subnodes, if any
   try {
-    while(node.firstChild) {
+    while(node && node.firstChild) {
       node.removeChild(node.firstChild);
     }
   }
