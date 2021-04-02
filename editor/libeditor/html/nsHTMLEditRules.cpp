@@ -3983,8 +3983,8 @@ void   hackSelectionCorrection(nsHTMLEditor * ed,
     if (elt && IsSpecialMath(elt, isEmpty, nodecount, startOffset, deletingInputbox, ed)) {
       if (!HandledScripts(ed, elt, nextSiblingNode, deletingInputbox, startNode, startOffset))
       {
-        ed->GetInComplexTransaction(&isInComplexTransaction);
-        // if (!isInComplexTransaction) {
+        ed->ReadInComplexTransaction(&isInComplexTransaction);
+        if (!isInComplexTransaction) {
           done = PR_TRUE;
 
           //Let's see where the insert point has gone...
@@ -4014,14 +4014,14 @@ void   hackSelectionCorrection(nsHTMLEditor * ed,
             }
             tempnode = nextSiblingNode;
           }
-        // }
+        }
       }
       return;
     }
     node = do_QueryInterface(elt);
     res = ed->IsEmptyNode(node, &isEmpty, PR_TRUE, PR_FALSE, PR_FALSE);
     PRBool isInComplexTransaction = PR_FALSE;
-    ed->GetInComplexTransaction(&isInComplexTransaction);
+    ed->ReadInComplexTransaction(&isInComplexTransaction);
 // Some special handling when node is in math, and the next character in the math is in an <mo>.
 // The cursor isn't really where we'd like it because of problems with cursor display in mo's.
 // if (nsHTMLEditUtils::IsMath(node)) {
@@ -4252,7 +4252,7 @@ nsHTMLEditRules::DidDeleteSelection(nsISelection *aSelection,
   }
 
   // See if we're in math
-  mHTMLEditor->GetInComplexTransaction(&isInComplexTransaction);
+  mHTMLEditor->ReadInComplexTransaction(&isInComplexTransaction);
   nsCOMPtr<nsIDOMNode> parentNode;
   nsCOMPtr<nsIDOMElement> parentElement;
   nsCOMPtr<nsIDOMNode> node;

@@ -79,10 +79,8 @@ interface nsIEditor  : nsISupports
   const short eToBeginningOfLine = 5;
   const short eToEndOfLine = 6;
 
+
   readonly attribute nsISelection selection;
-  attribute boolean inComplexTransaction;
-
-
 
   /**
    * Init is to tell the implementation of nsIEditor to begin its services
@@ -148,6 +146,10 @@ interface nsIEditor  : nsISupports
    * the selection controller for the current presentation, refcounted.
    */
   readonly attribute nsISelectionController selectionController;
+
+  boolean isInComplexTransaction(in boolean isComplex);
+  boolean readInComplexTransaction();
+
 
 
   /* ------------ Selected content removal -------------- */

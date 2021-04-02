@@ -72,7 +72,7 @@ msiEditor::msiEditor()
     m_filter = new msiContentFilter(this);
   }
   AddInsertionListener(m_filter);
-  SetInComplexTransaction(PR_FALSE);
+  IsInComplexTransaction(PR_FALSE, nsnull);
   m_msiEditingMan = do_CreateInstance(MSI_EDITING_MANAGER_CONTRACTID, &res);
   if (!m_rangeUtils)
     m_rangeUtils = do_GetService("@mozilla.org/content/range-utils;1");
@@ -911,11 +911,10 @@ msiEditor::InsertFence(const nsAString & open, const nsAString & close, const ns
             InsertDocFragment(content,mathmlNode,1,&newOffset);
           }
 //          res = m_msiEditingMan->SetSelectionFromRange(range, selection);   
-          GetInComplexTransaction(&saveInComplexTransaction);
-          SetInComplexTransaction(PR_FALSE);
+          IsInComplexTransaction(PR_FALSE, &saveInComplexTransaction);
 
           res = InsertMathNodeAtSelection(mathmlElement);
-          SetInComplexTransaction(saveInComplexTransaction);
+          IsInComplexTransaction(saveInComplexTransaction, nsnull);
           if (bCollapsed) { // it is the temp input part of the fence.
             mathmlElement->GetFirstChild(getter_AddRefs(child)); //left fence or empty space
             childElem = do_QueryInterface(child);
@@ -1275,7 +1274,7 @@ msiEditor::HandleKeyPress(nsIDOMKeyEvent * aKeyEvent)
   if (! aKeyEvent)
     return NS_ERROR_NULL_POINTER;
   nsresult res(NS_OK);
-  SetInComplexTransaction(PR_FALSE);
+  IsInComplexTransaction(PR_FALSE, nsnull);
 
   if (!(mFlags & eEditorPlaintextMask)) // copied from nsHTMLEditor -- I don't know if this is an issue
   {
@@ -3631,8 +3630,7 @@ msiEditor::CheckForAutoSubstitute(PRBool inmath)
   GetNextCharacter(originalNode, originalOffset, getter_AddRefs(node), offset, inmath, ch, lookupResult);
   if (node)  // there was success somewhere
   {
-    GetInComplexTransaction(&complexTxn);
-    SetInComplexTransaction(PR_TRUE);
+    IsInComplexTransaction(PR_TRUE, &complexTxn);
     if (lookupResult == msiIAutosub::STATE_SPECIAL)
     {
       ctx = msiIAutosub::CONTEXT_TEXTONLY;
@@ -3666,7 +3664,7 @@ msiEditor::CheckForAutoSubstitute(PRBool inmath)
         }
       }
     }
-    SetInComplexTransaction(complexTxn);
+    IsInComplexTransaction(complexTxn, nsnull);
   }
   return res;
 }
