@@ -4286,7 +4286,9 @@ nsHTMLEditRules::DidDeleteSelection(nsISelection *aSelection,
           currNode->GetFirstChild(getter_AddRefs(firstChild));
           if (firstChild) {
             firstChildElement = do_QueryInterface(firstChild);
-            res = firstChildElement->HasAttribute(NS_LITERAL_STRING("fence"), &hasAttribute);
+            if (firstChildElement) {
+              res = firstChildElement->HasAttribute(NS_LITERAL_STRING("fence"), &hasAttribute);
+            }
           }
           res = currNode->GetParentNode(getter_AddRefs(parentNode));
           parentNode->GetLocalName(parentName);
