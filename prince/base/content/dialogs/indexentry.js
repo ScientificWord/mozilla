@@ -152,7 +152,7 @@ function startup()
 
     if (node.hasAttribute("enc") ){
        var enc=node.getAttribute("enc");
-       var seepattern = GetString('see') + '\\{(.*)\\}';
+       var seepattern = 'see\\{(.*)\\}';
        var seepat = new RegExp(seepattern, 'i');
        var result=seepat.exec(enc);
        if (result) {
