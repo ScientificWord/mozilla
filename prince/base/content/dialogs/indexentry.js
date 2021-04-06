@@ -285,7 +285,7 @@ function onAccept()
   var loc = locator.selectedIndex; // 0 = page num, 1 = xref
   var fmt = format.selectedIndex;
   if (loc === 1) {
-     enc =  GetString('see')+ '{' + xreftext.value + '}';
+     enc =  'see{' + xreftext.value + '}';
   } else {
      if (fmt === 0)
        enc = "";
