@@ -554,8 +554,7 @@ var msiReviseMathnameCmd =
   getCommandStateParams: function(aCommand, aParams, aRefCon) {},
   doCommandParams: function(aCommand, aParams, aRefCon)
   {
-    var ed
-    itorElement = msiGetActiveEditorElement(window);
+    var editorElement = msiGetActiveEditorElement(window);
     var theMathname = msiGetReviseObjectFromCommandParams(aParams);
 
     var mathNameData = new Object();
