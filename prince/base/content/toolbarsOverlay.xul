@@ -103,6 +103,8 @@
             observes="cmd_MSIinsertBibliographyCmd"/>
       <toolbarbutton id="citationButton" tooltiptext="&citationButton.tooltip;" label="&citationButton.label;" observes="cmd_citation"/>
 #endif
+      <toolbarbutton id="gotomarkerButton" tooltiptext="&gotomarkerButton.tooltip;" label="&gotomarkerButton.label;" observes="cmd_gotoMarker"/>
+      <toolbarbutton id="gotoparagraphButton" tooltiptext="&gotoparagraphButton.tooltip;" label="&gotoparagraphButton.label;" observes="cmd_gotoparagraph"/>
       <toolbarbutton id="hspaceButton" tooltiptext="&hspaceButton.tooltip;" label="&hspaceButton.label;" observes="cmd_insertHorizontalSpaces" />
       <toolbarbutton id="vspaceButton" tooltiptext="&vspaceButton.tooltip;"  label="&vspaceButton.label;" observes="cmd_insertVerticalSpaces" />
       <toolbarbutton id="gifsAnimatedButton" type="checkbox" autoCheck="true" label="&gifsAnimatedButton.label;"  oncommand="setAnimation();" tooltiptext="&gifsAnimatedButton.tooltip;"/>
