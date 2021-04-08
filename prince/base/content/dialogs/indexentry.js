@@ -218,6 +218,23 @@ function stop()
 }
 
 
+function doEscapes(s) {
+  var q = '"';
+  var ret = s.replace(/!/g, q+'!');
+  ret = ret.replace(/@/g, q+'@');
+  ret = ret.replace(/\|/g, q+'|');
+  return ret.replace(/\"/g, q+'\"');
+}
+
+function undoEscapes(s) {
+  var q = '"';
+  var ret = s.replace(/\"!/g, '!');
+  ret = ret.replace(/\"@/g, '@');
+  ret = ret.replace(/\"\|/g, '|');
+  return ret.replace(/\"\"/g, '\"');
+}
+
+
 function onAccept()
 {
   var priSpecNode;
@@ -225,16 +242,19 @@ function onAccept()
   var terSpecNode;
   var srcNode;
   var hasPriSpec = '';
+  var v;
 
   // activeEditor.beginTransaction();
   if (!node) return 0;
-  var v = primary.value;
+  v = primary.value;
+  // node.setAttribute("pridisp", v);
+  v = doEscapes(primary.value);
   node.setAttribute("pri", v);
-  v = secondary.value;
+  v = doEscapes(secondary.value);
   node.setAttribute("sec", v);
-  v = tertiary.value;
+  v = doEscapes(tertiary.value);
   node.setAttribute("ter", v);
-  node.setAttribute
+  // node.setAttribute
 
   // remove subnodes, if any
   try {
@@ -363,7 +383,7 @@ function msiIndexEditorChangeObserver(editorElement)
               checkboxID = "prispec";
               editorFlag = 1;    
               if (node.hasAttribute("pri")) {
-                primary.value = node.getAttribute("pri");
+                primary.value = undoEscapes(node.getAttribute("pri"));
                 prispec.disabled = primary.value.length == 0;
                 specnode = node.getElementsByTagName("prispec")[0];
                 if (specnode && specnode.textContent.length >0)
@@ -387,7 +407,7 @@ function msiIndexEditorChangeObserver(editorElement)
               checkboxID = "secspec";
               editorFlag = 2;
               if (node.hasAttribute("sec")) {
-                secondary.value = node.getAttribute("sec");
+                secondary.value = undoEscapes(node.getAttribute("sec"));
                 secspec.disabled = secondary.value.length == 0;
                 specnode = node.getElementsByTagName("secspec")[0];
                 if (specnode && specnode.textContent.length >0)
@@ -410,7 +430,7 @@ function msiIndexEditorChangeObserver(editorElement)
               checkboxID = "terspec";
               editorFlag = 4;
               if (node.hasAttribute("ter")) {
-                tertiary.value = node.getAttribute("ter");
+                tertiary.value = undoEscapes(node.getAttribute("ter"));
                 terspec.disabled = tertiary.value.length == 0;
                 specnode = node.getElementsByTagName("terspec")[0];
                 if (specnode && specnode.textContent.length >0)
