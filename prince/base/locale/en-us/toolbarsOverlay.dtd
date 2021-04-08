@@ -155,6 +155,12 @@
 <!ENTITY packagesButton.tooltip "Options and packages" >
 <!ENTITY packagesButton.label "Options and packages" >
 
+<!ENTITY gotomarkerButton.tooltip "Go to marker" >
+<!ENTITY gotomarkerButton.label "Go to marker" >
+
+<!ENTITY gotoparagraphButton.tooltip "Go to paragraph" >
+<!ENTITY gotoparagraphButton.label "Go to paragraph" >
+
 <!ENTITY citationButton.tooltip "Citation" >
 <!ENTITY citationButton.label "Citation" >
 

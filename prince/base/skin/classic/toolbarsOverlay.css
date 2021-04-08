@@ -1081,6 +1081,70 @@ toolbox[iconsize="small"] #markerButton[disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/type_marker-disabled-sm.png");
 }
 
+#gotomarkerButton {
+  list-style-image: url("chrome://prince/skin/icons/gotomarker.png");
+}
+
+toolbox[iconsize="small"] #gotomarkerButton {
+  list-style-image: url("chrome://prince/skin/icons/gotomarker-sm.png");
+}
+
+#gotomarkerButton:hover {
+  list-style-image: url("chrome://prince/skin/icons/gotomarker-hover.png");
+}
+
+toolbox[iconsize="small"] #gotomarkerButton:hover {
+  list-style-image: url("chrome://prince/skin/icons/gotomarker-hover-sm.png");
+}
+
+#gotomarkerButton:hover:active {
+  list-style-image: url("chrome://prince/skin/icons/gotomarker-active.png");
+}
+
+toolbox[iconsize="small"] #gotomarkerButton:hover:active {
+  list-style-image: url("chrome://prince/skin/icons/gotomarker-active-sm.png");
+}
+
+#gotomarkerButton[disabled="true"] {
+  list-style-image: url("chrome://prince/skin/icons/gotomarker-disabled.png");
+}
+
+toolbox[iconsize="small"] #gotomarkerButton[disabled="true"] {
+  list-style-image: url("chrome://prince/skin/icons/gotomarker-disabled-sm.png");
+}
+
+#gotoparagraphButton {
+  list-style-image: url("chrome://prince/skin/icons/gotoparagraph.png");
+}
+
+toolbox[iconsize="small"] #gotoparagraphButton {
+  list-style-image: url("chrome://prince/skin/icons/gotoparagraph-sm.png");
+}
+
+#gotoparagraphButton:hover {
+  list-style-image: url("chrome://prince/skin/icons/gotoparagraph-hover.png");
+}
+
+toolbox[iconsize="small"] #gotoparagraphButton:hover {
+  list-style-image: url("chrome://prince/skin/icons/gotoparagraph-hover-sm.png");
+}
+
+#gotoparagraphButton:hover:active {
+  list-style-image: url("chrome://prince/skin/icons/gotoparagraph-active.png");
+}
+
+toolbox[iconsize="small"] #gotoparagraphButton:hover:active {
+  list-style-image: url("chrome://prince/skin/icons/gotoparagraph-active-sm.png");
+}
+
+#gotoparagraphButton[disabled="true"] {
+  list-style-image: url("chrome://prince/skin/icons/gotoparagraph-disabled.png");
+}
+
+toolbox[iconsize="small"] #gotoparagraphButton[disabled="true"] {
+  list-style-image: url("chrome://prince/skin/icons/gotoparagraph-disabled-sm.png");
+}
+
 #htlinkButton {
   list-style-image: url("chrome://prince/skin/icons/htlink.png");
 }
