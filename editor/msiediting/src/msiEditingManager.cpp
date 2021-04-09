@@ -1107,7 +1107,7 @@ msiEditingManager::InsertBinomial(nsIEditor * editor,
   nsCOMPtr<nsIDOMRange> range;
   selection->GetRangeAt(0, getter_AddRefs(range));
   nsCOMPtr<msiIMathMLEditor> mathmlEditor(do_QueryInterface(editor));
-  nsCOMPtr<nsIDOMNode> mathnode;
+  nsCOMPtr<nsIDOMNode> mathnode, targetNode, numerator;
   // editor->BeginTransaction();
   res = mathmlEditor->RangeInMath(range, getter_AddRefs(mathnode));
   PRBool inMath = (nsnull != mathnode);
@@ -1122,21 +1122,25 @@ msiEditingManager::InsertBinomial(nsIEditor * editor,
     nsCOMPtr<nsIDOMElement> mathmlElement;
     PRUint32 flags(msiIMathMLInsertion::FLAGS_NONE);
     res = msiUtils::CreateBinomial(editor, nsnull, nsnull, (bCollapsed ||!inMath), PR_TRUE, flags, opening, closing, lineThickness, attrFlags, mathmlElement);
-    nsCOMPtr<nsIDOMNode> top, rover;
-    res = mathmlElement->GetFirstChild(getter_AddRefs(top));  // fence character
-    res = top->GetNextSibling(getter_AddRefs(rover)); // mfrac
-    res = rover->GetFirstChild(getter_AddRefs(top));
-
+    // mathmlNode is mrow
+    res = mathmlElement->GetFirstChild(getter_AddRefs(targetNode)); // mo left delimiter
+    res = targetNode->GetNextSibling(getter_AddRefs(targetNode));  // mfrac
+    res = targetNode->GetFirstChild(getter_AddRefs(numerator));  // numerator
 
     if (NS_SUCCEEDED(res) && mathmlElement) {
       res = SetSelectionFromRange(range, selection);
-      res = htmlEditor->InsertElementAtSelection(mathmlElement, PR_TRUE);
+      res = mathmlEditor->InsertMathNodeAtSelection(mathmlElement);
       if (!bCollapsed && inMath)
       {
-        mathmlEditor->InsertDocFragment(content, top, 0, &newOffset);
+        mathmlEditor->InsertDocFragment(content, numerator, 0, &newOffset);
+        selection->Collapse(numerator, newOffset);
       }
-      selection->Collapse(top, newOffset);
-      htmlEditor->ValidateMathSyntax(mathnode, PR_FALSE, PR_FALSE); // will convert things like msub and msup to mrow if otherwise they would generate an invalid markup.
+      else {
+        numerator->GetFirstChild(getter_AddRefs(targetNode));
+        if (!targetNode) targetNode = numerator;
+        selection->Collapse(targetNode,0);        
+      }
+      // htmlEditor->ValidateMathSyntax(mathnode, PR_FALSE, PR_FALSE); // will convert things like msub and msup to mrow if otherwise they would generate an invalid markup.
     }
     // editor->EndTransaction();
   }
