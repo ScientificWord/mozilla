@@ -220,10 +220,10 @@ function stop()
 
 function doEscapes(s) {
   var q = '"';
-  var ret = s.replace(/!/g, q+'!');
-  ret = ret.replace(/@/g, q+'@');
+  var ret = s.replace(/\"/g, q+'\"');
   ret = ret.replace(/\|/g, q+'|');
-  return ret.replace(/\"/g, q+'\"');
+  ret = ret.replace(/@/g, q+'@');
+  return ret.replace(/!/g, q+'!');
 }
 
 function undoEscapes(s) {
