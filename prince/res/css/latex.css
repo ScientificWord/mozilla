@@ -310,10 +310,11 @@ vspace[type=customSpace] {
   border-left: thin solid green;
 }
 
-/* msirule {
-  -moz-binding: url("chrome://prince/content/bindings/latex.xml#msirule");
+msirule, span.msirule {
   display: inline-block;
-} */
+  overflow: hidden;
+}
+
 /* ordinary breaks -- emulate behavior of <br/>*/
 msibr[type=lineBreak]:before {
   content: "\a";
