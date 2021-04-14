@@ -552,6 +552,7 @@ nsMathMLTokenFrame::IsInvisibleOp()
   nsString strContents;
   nsresult res;
   res = node->GetFirstChild((nsIDOMNode **)&node);
+  if (!node) return PR_TRUE;
   cd = do_QueryInterface(node);
   if (cd) res = cd->GetData(strContents);
   else return PR_TRUE;
