@@ -5024,8 +5024,8 @@ nsIFrame::PeekOffset(nsPeekOffsetStruct* aPos)
     return NS_ERROR_NULL_POINTER;
   nsresult result = NS_ERROR_FAILURE;
 
-  if (mState & NS_FRAME_IS_DIRTY)
-    return NS_ERROR_UNEXPECTED;
+  // if (mState & NS_FRAME_IS_DIRTY)
+  //   return NS_ERROR_UNEXPECTED;
   PRInt32 offset;
   PRBool fBailing = PR_FALSE;
   PRBool math = PR_FALSE;
