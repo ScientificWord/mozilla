@@ -4955,11 +4955,11 @@ PRBool SplitIsAtNodeEnd( nsIDOMNode * aNode, PRInt32 offset ) {
       childNodes->GetLength(&count);
       if (offset >= count) return PR_TRUE;
       // we still might be at the end if the last nodes are empty text nodes.
-      for (i = offset + 1; i < count; i++) {
+      for (i = offset; i < count; i++) {
         childNodes->Item(i, getter_AddRefs(child));
         if (child) {
           textContent = do_QueryInterface(child);
-          if (! (textContent && textContent->TextIsOnlyWhitespace()))
+          if (textContent && !(textContent->TextIsOnlyWhitespace()))
             return PR_FALSE;
         }
       }
