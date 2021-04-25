@@ -560,7 +560,7 @@ PRBool TrimDocFragment( nsIDOMNode * fragmentAsNode) {
   // children (such as msub, msup and mfrac) which require 2 children) actually have that many in the
   // fragment. If not, we replace the offending tag with an mrow.
 
-  res = z( fragmentAsNode); */
+*/
 
 PRUint32 MathChildCount( nsIDOMElement * aElement) {
   nsCOMPtr<nsIDOMNodeList> children;

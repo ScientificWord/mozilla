@@ -206,8 +206,9 @@ msiMContainer::InsertNodes(nsIEditor * editor,
       }  
       if (NS_SUCCEEDED(res))
       {
-        msiUtils::MarkCaretPosition(editor, m_mathmlNode, insertPos, flags, PR_FALSE, PR_FALSE);
-        msiUtils::doSetCaretPosition(editor, selection, m_mathmlNode);
+        // msiUtils::MarkCaretPosition(editor, m_mathmlNode, insertPos, flags, PR_FALSE, PR_FALSE);
+        // msiUtils::doSetCaretPosition(editor, selection, m_mathmlNode);
+        selection->Collapse(m_mathmlNode, insertPos);
       }
     }  
   }    
