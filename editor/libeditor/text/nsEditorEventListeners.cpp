@@ -189,6 +189,9 @@ nsTextEditorKeyListener::KeyPress(nsIDOMEvent* aKeyEvent)
   // If the client pass cancelled the event, defaultPrevented will be true
   // below.
 
+  nsresult rv;
+
+
   nsCOMPtr<nsIDOMNSUIEvent> nsUIEvent = do_QueryInterface(aKeyEvent);
   if(nsUIEvent) 
   {
@@ -242,7 +245,6 @@ nsTextEditorKeyListener::KeyPress(nsIDOMEvent* aKeyEvent)
   if (0 != keyCode)
   {
     PRBool isAnyModifierKeyButShift;
-    nsresult rv;
     rv = keyEvent->GetAltKey(&isAnyModifierKeyButShift);
     if (NS_FAILED(rv)) return rv;
     
@@ -303,7 +305,7 @@ nsTextEditorKeyListener::KeyPress(nsIDOMEvent* aKeyEvent)
           return NS_OK;
 
         // else we insert the tab straight through
-        textEditor->HandleKeyPress(keyEvent);
+        rv = textEditor->HandleKeyPress(keyEvent);
         // let HandleKeyPress consume the event
         return NS_OK; 
 
