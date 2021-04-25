@@ -144,6 +144,7 @@ void DumpNode(nsIDOMNode *aNode, PRInt32 indent, bool recurse, nsAString& output
   nsString oneIndent = NS_LITERAL_STRING("  ");
   nsString newline = NS_LITERAL_STRING("\n");
   nsString indentString = newline;
+
   for (i=0; i<indent; i++) {
     indentString.Append(oneIndent);
   }
@@ -222,19 +223,36 @@ void DumpRange( nsIDOMRange * range, PRInt32 indent, nsAString& output) {
 #ifdef DEBUG
   nsCOMPtr<nsIDOMNode> anchorNode, focusNode;
   PRInt32 anchorOffset, focusOffset;
+  PRBool collapsed;
+  PRBool sameNode;
   nsString endline = NS_LITERAL_STRING("\n");
+  nsString anchorStr = NS_LITERAL_STRING("\nANCHOR: offset=");
+  nsString focusStr = NS_LITERAL_STRING("\nFOCUS: offset=");
+  nsString collapsedStr = NS_LITERAL_STRING("\nANCHOR=FOCUS: offset=");
   range->GetStartContainer(getter_AddRefs(anchorNode));
   range->GetStartOffset(&anchorOffset);
   range->GetEndContainer(getter_AddRefs(focusNode));
   range->GetEndOffset(&focusOffset);
-  output.Append(NS_LITERAL_STRING("\nANCHOR: offset="));
-  AppendInt(output, anchorOffset);
-  DumpNode(anchorNode, indent, PR_TRUE, output);
-  output += NS_LITERAL_STRING("\nFOCUS: offset=");
-  AppendInt(output, focusOffset);
+  sameNode = (anchorNode == focusNode);
+  range->GetCollapsed(&collapsed);
+  if (collapsed) {
+   output.Append(collapsedStr);
+   AppendInt(output, focusOffset);
+  }
+  else if (sameNode) {
+   output.Append(anchorStr);
+   AppendInt(output, anchorOffset);
+   output.Append(focusStr);
+   AppendInt(output, focusOffset);
+  }
+  else {
+   output.Append(anchorStr);
+   AppendInt(output, anchorOffset);
+   DumpNode(anchorNode, indent, PR_TRUE, output);
+   output += focusStr;
+   AppendInt(output, focusOffset);
+  }
   DumpNode(focusNode, indent, PR_TRUE, output);
-  // output += NS_LITERAL_STRING("\n");
-//  printf(PromiseFlatCString(output).get());
 #endif //Debug
 }
 
@@ -277,7 +295,8 @@ void DumpDocumentNode( nsIDOMNode * pNode)
 {
 //  DumpDocumentNodeImpl(pNode, 0);
 }
-#endif
+#endif //DEBUG_Barry
+
 // Defined in nsEditorRegistration.cpp
 extern nsIParserService *sParserService;
 
