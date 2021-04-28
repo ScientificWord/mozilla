@@ -3801,7 +3801,7 @@ function mathNodeToText(editor, node)
   editor.endTransaction();
 }
 
-function nodeToMath(editor, node, startOffset, endOffset, workingRange)
+function nodeToMath(editor, node, startOffset, endOffset, workingRange, starting)
 // workingRange is used to keep track of what the new selection will be. The start is initialized
 // to the start of editor.selection at the beginning of the process. As each math node is
 // inserted, the end of workingRange is updated.
@@ -3857,6 +3857,12 @@ function nodeToMath(editor, node, startOffset, endOffset, workingRange)
     {
       if (theText[i] != ' ') {
         editor.InsertSymbol(theText[i]);
+        if (starting.value) {
+          // set the start of workingRange
+          workingRange.setStart(editor.selection.focusNode, editor.selection.focusOffset - 1);
+          starting.value = false;
+          // InsertSymbol leaves the collapsed selection just after the new node
+        }
         workingRange.setEnd(editor.selection.focusNode, editor.selection.focusOffset);
       }        
     }
@@ -3937,6 +3943,7 @@ function textToMath(editor)
   var endNode;
   var endOffset;
   var workingRange;
+  var starting = {value: true};
   workingRange = editor.selection.getRangeAt(0).cloneRange();
   // msiNavigationUtils.getCommonAncestorForSelection(editor.selection);  ???
   editor.beginTransaction();
@@ -3957,13 +3964,13 @@ function textToMath(editor)
       parent = range.startContainer;
       // alert(dumpNodeMarkingSelJS(editor, parent, 0));
       theOffset = range.startOffset;
-      workingRange.setStart(range.startContainer, range.startOffset);
+      
       while (enumerator.hasMoreElements())
       {
         node = enumerator.getNext();
         if (node.textContent.length > 0 ) {
           if (msiNavigationUtils.getParentOfType(node, 'mtext') || (!msiNavigationUtils.isMathNode(node) && !msiNavigationUtils.isMathNode(node.parentNode))) {
-            nodeToMath(editor,node, node===range.startContainer?range.startOffset:0, node===range.endContainer?range.endOffset:node.textContent.length, workingRange);
+            nodeToMath(editor,node, node===range.startContainer?range.startOffset:0, node===range.endContainer?range.endOffset:node.textContent.length, workingRange, starting);
             dummy=3; // stepping stone for the debugger
           }
           else  
