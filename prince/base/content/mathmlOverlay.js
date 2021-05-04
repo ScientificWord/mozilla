@@ -3709,10 +3709,11 @@ inserted into an mtext node or an ordinary text node, as appropriate. */
   var tempOffset;
   var newParent;
   var insertNodeParent, insertNodeOffset;
+  var tempInputNode;
   var removeNode = offset < 0;
   var childNodes;
   if (node.nodeType === Node.TEXT_NODE) {
-    // we assume all text nodes have a single character; math names don't but they are unsplittable
+    // we assume all text nodes have a single character; math names don't but they are not splittable
     rover = node.parentNode;
     if (offset > 0)  offset = 1;  
     tempOffset = offsetOfChild(rover, node);
@@ -3725,7 +3726,12 @@ inserted into an mtext node or an ordinary text node, as appropriate. */
   }
   else
   {
-    rover = node;
+    // We have to account for temp input nodes, which disappear whenever anything in inserted into them
+    if (rover && rover.hasAttribute('tempinput')) {
+      tempInputNode = rover;
+      rover = rover.parentNode;
+      offset = offsetOfChild(rover, tempInputNode);
+    }
   }
   // insertNodeParent = parent;
   // insertNodeOffset = offset;
@@ -3775,7 +3781,8 @@ inserted into an mtext node or an ordinary text node, as appropriate. */
     editor.insertText(text);
 
     if (removeNode) editor.deleteNode(saveNode);
-    editor.selection.collapse(mtextNode.firstChild,text.length);
+    if (mtextNode.firstChild) editor.selection.collapse(mtextNode.firstChild,text.length);
+    // there might not be a child if text is empty.
   }
   else
   {
@@ -3786,6 +3793,8 @@ inserted into an mtext node or an ordinary text node, as appropriate. */
     if (removeNode) editor.deleteNode(saveNode);
     editor.selection.collapse(textNode,text.length);
    }
+   if (tempInputNode)
+      editor.deleteNode(tempInputNode);
 //  window.focus();
 }
 
