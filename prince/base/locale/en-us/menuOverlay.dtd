@@ -724,7 +724,7 @@
 <!ENTITY gomenuMarker.label "To marker...">
 <!ENTITY gomenuMarker.accesskey "M">
 <!ENTITY gomenuParagraph.label "To paragraph...">
-<!ENTITY gomenuParagraph.accesskey "r">
+<!ENTITY gomenuParagraph.accesskey "p">
 <!ENTITY gomenuViewHistory.label "View history...">
 <!ENTITY gomenuViewHistory.accesskey "H">
 <!ENTITY gomenuHistoryBack.label "History back">
