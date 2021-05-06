@@ -152,6 +152,8 @@ en-US.jar:
   locale/helpfiles/graphicscd/btnBinomial.jpg    (graphicscd/btnBinomial.jpg)
   locale/helpfiles/graphicscd/btnBold.jpg        (graphicscd/btnBold.jpg)
   locale/helpfiles/graphicscd/btnCitation.jpg    (graphicscd/btnCitation.jpg)
+  locale/helpfiles/graphicscd/btnDirectPreview.jpg     (graphicscd/btnDirectPreview.jpg)
+  locale/helpfiles/graphicscd/btnDirectPrint.jpg     (graphicscd/btnDirectPrint.jpg)
   locale/helpfiles/graphicscd/btnDisplay.jpg     (graphicscd/btnDisplay.jpg)
   locale/helpfiles/graphicscd/btnFraction.jpg    (graphicscd/btnFraction.jpg)
   locale/helpfiles/graphicscd/btnHLink.jpg       (graphicscd/btnHLink.jpg)
