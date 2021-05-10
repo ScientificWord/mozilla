@@ -87,6 +87,12 @@ def mframe(debugger, command, result, dict):
     if len(newcommand) > 0:
         debugger.HandleCommand("expression nsString $name; (" + newcommand + "->mContent->mNodeInfo.mRawPtr->mInner.mName->ToString($name), $name)")
 
+def mframecontent(debugger, command, result, dict):
+    """Displays the tag name of the frame contents"""
+    newcommand = modcommand(debugger, command, result, dict)
+    if len(newcommand) > 0:
+        debugger.HandleCommand("expression nsString $name; (" + newcommand + "->mContent->GetText(), $name)")
+
 def mnodetree(debugger, command, result, dict):
    """Displays name and attributes for a node and all its descendents"""
    newcommand = modcommand(debugger, command, result, dict)
@@ -122,5 +128,6 @@ def init(debugger):
     debugger.HandleCommand("command script add -f lldbutils.content.mnext mnext")
     debugger.HandleCommand("command script add -f lldbutils.content.mprev mprev")
     debugger.HandleCommand('command script add -f lldbutils.content.mframe mframe')
+    debugger.HandleCommand('command script add -f lldbutils.content.mframecontent mframecontent')
 
 
