@@ -212,6 +212,84 @@ void DumpNode(nsIDOMNode *aNode, PRInt32 indent, bool recurse, nsAString& output
 #endif
 }
 
+void DumpFrame(nsIFrame *aFrame, PRInt32 indent, bool recurse, nsAString& output)
+{
+#ifdef DEBUG
+  PRInt32 i;
+  nsAutoString tag;
+  nsAutoString nodeName;
+  nsAutoString tagWithAttributes;
+  nsString oneIndent = NS_LITERAL_STRING("  ");
+  nsString newline = NS_LITERAL_STRING("\n");
+  nsString indentString = newline;
+
+  for (i=0; i<indent; i++) {
+    indentString.Append(oneIndent);
+  }
+  output.Append(indentString);
+
+  if (aFrame == 0){
+    printf("!NULL\n");
+    output = NS_LITERAL_STRING("!NULL!");
+    return;
+  }
+
+  PRUint16 nodeType = 0;
+  aNode->GetNodeType(&nodeType);
+
+  nsCOMPtr<nsIDOMElement> element = do_QueryInterface(aNode);
+  nsCOMPtr<nsIDOMDocumentFragment> docfrag = do_QueryInterface(aNode);
+
+  if ((nodeType == 1 /* element */) && element)
+  {
+    element->GetTagName(tag);
+    nsEditor::DumpTagName(element, tagWithAttributes);
+    // output.Append(indentString);
+    output.Append(NS_LITERAL_STRING("<") + tagWithAttributes);
+    output.Append(NS_LITERAL_STRING(">"));
+  }
+  else if ((nodeType == 11 /* Document fragment */) && docfrag)
+  {
+    tag = NS_LITERAL_STRING("document fragment");
+    // output.Append(indentString);
+    output.Append(NS_LITERAL_STRING("<document fragment>"));//, ((nsIDOMDocumentFragment*)docfrag)-28));
+  }
+  else if ((nodeType == 3 /* text */ )) {
+    aNode->GetNodeName(nodeName);
+    if (nodeName.EqualsLiteral("#text"))
+    {
+      nsCOMPtr<nsIDOMCharacterData> textNode = do_QueryInterface(aNode);
+      nsAutoString str;
+      textNode->GetData(str);
+      // output.Append(indentString);
+      output.Append(NS_LITERAL_STRING("<#text '") + str + NS_LITERAL_STRING("'>"));
+    }
+  }
+
+  if (recurse){
+     nsCOMPtr<nsIDOMNodeList> childList;
+     aNode->GetChildNodes(getter_AddRefs(childList));
+     if (!childList) return; // NS_ERROR_NULL_POINTER;
+     PRUint32 numChildren;
+     childList->GetLength(&numChildren);
+     nsCOMPtr<nsIDOMNode> child, tmp;
+     aNode->GetFirstChild(getter_AddRefs(child));
+     for (i=0; i<numChildren; i++)
+     {
+       DumpNode(child, indent+1, true, output);
+       child->GetNextSibling(getter_AddRefs(tmp));
+       child = tmp;
+     }
+  }
+  if (nodeType != 3 ) {
+    output.Append(indentString);
+    output.Append(NS_LITERAL_STRING("</") + tag + NS_LITERAL_STRING(">"));
+  }
+  if (indent == 0) 
+    output.Append(newline);
+#endif
+}
+
 void AppendInt(nsAString &str, PRInt32 val)
 {
   char buf[32];
