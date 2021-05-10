@@ -247,7 +247,7 @@ nsresult
 nsMathMLmsubFrame::EnterFromRight(nsIFrame *leavingFrame, nsIFrame** aOutFrame, PRInt32* aOutOffset, PRInt32 count,
     PRBool* fBailingOut, PRInt32 *_retval)
 {
-  printf("msup EnterFromRight, count = %d\n", count);
+  printf("msub EnterFromRight, count = %d\n", count);
   *_retval = 0;
   count = 0;
 
