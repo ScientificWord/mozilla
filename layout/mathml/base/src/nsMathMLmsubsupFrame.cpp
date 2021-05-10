@@ -390,7 +390,7 @@ nsresult
 nsMathMLmsubsupFrame::EnterFromRight(nsIFrame *leavingFrame, nsIFrame** aOutFrame, PRInt32* aOutOffset, PRInt32 count,
     PRBool* fBailingOut, PRInt32 *_retval)
 {
-  printf("msup EnterFromRight, count = %d\n", count);
+  printf("msubsup EnterFromRight, count = %d\n", count);
   count = 0; // cursor coming in from the right changes vertical position, decrements count.
   *_retval = 0;
 
