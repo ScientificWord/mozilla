@@ -534,7 +534,7 @@ nsresult
 nsMathMLmunderoverFrame::EnterFromRight(nsIFrame *leavingFrame, nsIFrame** aOutFrame, PRInt32* aOutOffset, PRInt32 count,
     PRBool* fBailingOut, PRInt32 *_retval)
 {
-  printf("msup EnterFromRight, count = %d\n", count);
+  printf("munderover EnterFromRight, count = %d\n", count);
   if (count > 0)
   {
     nsIFrame * pFrame = GetFirstChild(nsnull); // the base
