@@ -323,13 +323,6 @@
                 label="&helpmenuWebsite.label;"
                 oncommand="openBrowser('http://www.mackichan.com');"/>
       <menuseparator/>
-      <menuitem id="helpmenuActivate"
-                label="&helpmenuActivate.label;"
-                observes="cmd_activate"
-                oncommand="openDialog('chrome://prince/content/activateDialog.xul', 'activate', 'chrome,close,titlebar,modal,resizable');"/>
-      <menuitem id="helpmenuLicense"
-                label="&helpmenuLicense.label;"
-                oncommand="openDialog('chrome://prince/content/licenseDialog.xul', 'license', 'chrome,close,titlebar,modal,resizable');"/>
       <menuseparator id="aboutSeparator"/>
       <menuitem label="&aboutCmd.label;"
                 id="aboutName"
