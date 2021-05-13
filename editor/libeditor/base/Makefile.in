@@ -78,7 +78,6 @@ INTERNAL_HDR_DIR = ../internal	\
 
 CPPSRCS		=                           \
 		nsEditor.cpp                \
-		msiAppUtils.cpp 			\
 		nsEditorCommands.cpp        \
 		nsEditorController.cpp      \
 		nsEditorUtils.cpp           \

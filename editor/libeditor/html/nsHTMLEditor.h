@@ -75,7 +75,6 @@
 #include "nsPoint.h"
 // New XML tag stuff
 #include "msiTagListManager.h"
-#include "msiAppUtils.h"
 #include "msiIKeyMap.h"
 #include "nsTArray.h"
 
@@ -847,7 +846,6 @@ protected:
   nsCOMPtr<nsIDOMNode> mCachedNode;
   //TagListManager
   nsCOMPtr<msiITagListManager> mtagListManager;
-  nsCOMPtr<msiIAppUtils> mAppUtils;
   
   nsCOMPtr<nsIDOMElement> mfocusedPlot;
   //KeyMaps

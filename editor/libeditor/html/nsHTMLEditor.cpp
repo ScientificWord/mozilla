@@ -140,7 +140,6 @@
 #include "nsIWidget.h"
 #include "nsIParserService.h"
 #include "msiTagListManager.h"
-#include "msiAppUtils.h"
 #include "msiIKeyMap.h"
 #include "msiIScriptRunner.h"
 #include "nsIEventStateManager.h"
@@ -193,7 +192,6 @@ nsHTMLEditor::nsHTMLEditor()
 , mHaveNewPlots(PR_FALSE)
 {
   mHTMLCSSUtils = nsnull;
-  mAppUtils = new msiAppUtils;
   nsCOMPtr<msiTagListManager> manager;
   manager = new msiTagListManager;
   manager->SetEditor(this);
@@ -7036,13 +7034,6 @@ nsHTMLEditor::SetTagListManager( msiITagListManager * pTagListMan)
   mtagListManager = nsCOMPtr<msiITagListManager>(pTagListMan);
   return NS_OK;
 }
-
-nsresult
-nsHTMLEditor::GetMAppUtils( msiIAppUtils ** _retval) {
-  NS_ADDREF(*_retval = mAppUtils);
-  return NS_OK;
-}
-
 
 nsresult
 nsHTMLEditor::AddTagInfo( const nsAString & strPath )
