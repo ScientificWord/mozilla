@@ -3984,7 +3984,7 @@ void   hackSelectionCorrection(nsHTMLEditor * ed,
       if (!HandledScripts(ed, elt, nextSiblingNode, deletingInputbox, startNode, startOffset))
       {
         ed->ReadInComplexTransaction(&isInComplexTransaction);
-        if (!isInComplexTransaction) {
+        // if (!isInComplexTransaction) {
           done = PR_TRUE;
 
           //Let's see where the insert point has gone...
@@ -4014,7 +4014,7 @@ void   hackSelectionCorrection(nsHTMLEditor * ed,
             }
             tempnode = nextSiblingNode;
           }
-        }
+        // }
       }
       return;
     }
