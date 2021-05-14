@@ -3928,12 +3928,12 @@ function mathToText(editor)
       range = editor.selection.getRangeAt(0);
       unicodeText = editor.selection.toString();
       editor.canonicalizeMathRange(range);
-      // editor.promoteMathRange(range);  --bug 4638
+      // editor.promoteMathRange(range);  // --bug 4638
       editor.setSelectionFromRange(range, editor.selection);
-      // editor.deleteSelection(0);
-     //  editor.ValidateMathSyntax(mathNode, false, false);
+      editor.deleteSelection(0);
+      editor.ValidateMathSyntax(mathNode, false, false);
       splitMathDeep(editor,  editor.selection.anchorNode, editor.selection.anchorOffset, unicodeText)//
-      // editor.ValidateMathSyntax(mathNode, false, false);
+      editor.ValidateMathSyntax(mathNode, false, false);
       editor.isInComplexTransaction(complexTransaction);
     }
   }
