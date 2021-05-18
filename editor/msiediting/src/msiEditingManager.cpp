@@ -1062,7 +1062,7 @@ msiEditingManager::InsertFraction(nsIEditor * editor,
     res = PrepareSelectionForCopying(mathmlEditor, range, getter_AddRefs(content));    
     nsCOMPtr<nsIDOMElement> mathmlElement;
     PRUint32 flags(msiIMathMLInsertion::FLAGS_NONE);
-    res = msiUtils::CreateMfrac(editor, nsnull, nsnull, (bCollapsed ||!inMath), PR_TRUE, flags, lineThickness, attrFlags, mathmlElement);
+    res = msiUtils::CreateMfrac(editor, nsnull, nsnull, (bCollapsed ||!inMath), PR_FALSE, flags, lineThickness, attrFlags, mathmlElement);
     res = mathmlElement->GetFirstChild(getter_AddRefs(numerator));
 
     
@@ -1121,7 +1121,7 @@ msiEditingManager::InsertBinomial(nsIEditor * editor,
     PrepareSelectionForCopying(mathmlEditor, range, getter_AddRefs(content));
     nsCOMPtr<nsIDOMElement> mathmlElement;
     PRUint32 flags(msiIMathMLInsertion::FLAGS_NONE);
-    res = msiUtils::CreateBinomial(editor, nsnull, nsnull, (bCollapsed ||!inMath), PR_TRUE, flags, opening, closing, lineThickness, attrFlags, mathmlElement);
+    res = msiUtils::CreateBinomial(editor, nsnull, nsnull, (bCollapsed ||!inMath), PR_FALSE, flags, opening, closing, lineThickness, attrFlags, mathmlElement);
     // mathmlNode is mrow
     res = mathmlElement->GetFirstChild(getter_AddRefs(targetNode)); // mo left delimiter
     res = targetNode->GetNextSibling(getter_AddRefs(targetNode));  // mfrac
