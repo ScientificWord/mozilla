@@ -3629,7 +3629,8 @@ msiEditor::CheckForAutoSubstitute(PRBool inmath)
   PRUint32 originalOffset = offset;
   GetNextCharacter(originalNode, originalOffset, getter_AddRefs(node), offset, inmath, ch, lookupResult);
   if (node)  // there was success somewhere
-  {
+  { 
+    BeginTransaction();
     IsInComplexTransaction(PR_TRUE, &complexTxn);
     if (lookupResult == msiIAutosub::STATE_SPECIAL)
     {
@@ -3665,6 +3666,7 @@ msiEditor::CheckForAutoSubstitute(PRBool inmath)
       }
     }
     IsInComplexTransaction(complexTxn, nsnull);
+    EndTransaction();
   }
   return res;
 }
