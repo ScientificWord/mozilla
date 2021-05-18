@@ -10116,7 +10116,7 @@ var msiInsertTableCommand =
   isCommandEnabled: function(aCommand, dummy)
   {
     return msiIsDocumentEditable() && msiIsEditingRenderedHTML();
-  },
+  }, 
 
   getCommandStateParams: function(aCommand, aParams, aRefCon) {},
   doCommandParams: function(aCommand, aParams, aRefCon) {},
@@ -10126,7 +10126,13 @@ var msiInsertTableCommand =
     try
     {
       var editorElement = msiGetActiveEditorElement();
-      msiEditorInsertTable(editorElement, aCommand, this);
+      var editor = msiGetEditor(editorElement);
+      if (msiNavigationUtils.isMathNode(editor.selection.focusNode)) {
+        msiGoDoCommand("cmd_MSIMatrixCmd");
+      } 
+      else {
+        msiEditorInsertTable(editorElement, aCommand, this);
+      }
     }
     catch (e) {
       finalThrow(cmdFailString('inserttable'), e.message);
