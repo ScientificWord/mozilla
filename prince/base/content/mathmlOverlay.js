@@ -3739,7 +3739,7 @@ inserted into an mtext node or an ordinary text node, as appropriate. */
   while (!(msiNavigationUtils.isUnsplittableMath(rover)) && 
            !(msiNavigationUtils.hasFixedNumberOfChildren(rover.parentNode)) && 
            (!(rover.hasAttribute && rover.hasAttribute('msimathname'))) && 
-           (msiNavigationUtils.isMathNode(rover) || 
+           (msiNavigationUtils.isMathNode(rover) || // %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
             rover.nodeType === Node.TEXT_NODE))
   {
     editor.splitNode(rover, offset, newNode);  // when this is done, rover is on the right and newNode.value is on the left.
