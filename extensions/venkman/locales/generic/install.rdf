@@ -36,7 +36,7 @@
       <Description>
         <em:id>ScientificWorkPlace@mackichan.com</em:id>
         <em:minVersion>6.0.0</em:minVersion>
-        <em:maxVersion>6.*</em:maxVersion>
+        <em:maxVersion>6.1.*</em:maxVersion>
       </Description>
     </em:targetApplication>
 
