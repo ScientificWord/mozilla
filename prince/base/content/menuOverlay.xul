@@ -322,7 +322,6 @@
       <menuitem id="helpmenuWebsite"
                 label="&helpmenuWebsite.label;"
                 oncommand="openBrowser('http://www.mackichan.com');"/>
-      <menuseparator/>
       <menuseparator id="aboutSeparator"/>
       <menuitem label="&aboutCmd.label;"
                 id="aboutName"
