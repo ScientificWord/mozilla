@@ -3598,7 +3598,9 @@ void FindCursorNodeAndOffset(nsIEditor* editor, nsIDOMNode* mathnode, PRInt32& c
   nsCOMPtr<nsIDOMNode>& theNode, PRInt32& theOffset,
   nsAString& chars, nsCOMArray<nsIDOMNode> array)
 {
+#ifdef debug_barry
      printf("\nFindNodeAndOffset of char %d in node\n", charCount);
+#endif
      nsresult rv;
      nsAutoString txt;
      nsAutoString dupChars(chars);
@@ -9821,7 +9823,9 @@ nsHTMLEditRules::RemoveStructure(nsIDOMNode *node, const nsAString& notThisTag)
 nsresult
 nsHTMLEditRules::RemoveStructureAboveSelection(nsISelection *selection)
 {
+#ifdef debug_barry
   printf("RemoveStructureAboveSelection\n");
+#endif
   nsAutoTxnsConserveSelection dontSpazMySelection(mHTMLEditor);
 
   nsCOMPtr<nsIDOMRange> domRange;

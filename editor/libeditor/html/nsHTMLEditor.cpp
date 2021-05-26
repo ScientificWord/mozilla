@@ -2053,7 +2053,9 @@ nsHTMLEditor::RebuildDocumentFromSource(const nsAString& aSourceString, nsAStrin
   parser = do_CreateInstance(kDOMParserCID, &res);
   if (res) return res;
   PRUnichar * src = ToNewUnicode(aSourceString);
+#ifdef debug_barry  
   printf("Doc string is: %S\n", src);
+#endif
   res = parser->ParseFromString(src,"text/xml", getter_AddRefs(domdoc));
   NS_Free(src);
   if (res) return res;

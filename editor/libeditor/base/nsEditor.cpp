@@ -151,7 +151,9 @@ void DumpNode(nsIDOMNode *aNode, PRInt32 indent, bool recurse, nsAString& output
   output.Append(indentString);
 
   if (aNode == 0){
+  #ifdef debug_barry
     printf("!NULL\n");
+  #endif
     output = NS_LITERAL_STRING("!NULL!");
     return;
   }

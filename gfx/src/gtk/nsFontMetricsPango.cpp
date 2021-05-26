@@ -561,10 +561,13 @@ nsFontMetricsPango::GetTextDimensions(const PRUnichar* aString,
 
     // Get the logical extents
     PangoLayoutLine *line;
+#ifdef debug_barry        
     if (pango_layout_get_line_count(layout) != 1) {
         printf("Warning: more than one line!\n");
+
     }
-    line = pango_layout_get_line(layout, 0);
+#endif 
+     line = pango_layout_get_line(layout, 0);
 
     PangoRectangle rect;
     pango_layout_line_get_extents(line, NULL, &rect);
@@ -708,9 +711,11 @@ nsFontMetricsPango::DrawString(const char *aString, PRUint32 aLength,
     aContext->GetTranMatrix()->TransformCoord(&x, &y);
 
     PangoLayoutLine *line;
+#ifdef debug_barry    
     if (pango_layout_get_line_count(layout) != 1) {
         printf("Warning: more than one line!\n");
     }
+#endif    
     line = pango_layout_get_line(layout, 0);
 
     aContext->UpdateGC();
@@ -769,9 +774,11 @@ nsFontMetricsPango::DrawString(const PRUnichar* aString, PRUint32 aLength,
     aContext->GetTranMatrix()->TransformCoord(&x, &y);
 
     PangoLayoutLine *line;
+#ifdef debug_barry    
     if (pango_layout_get_line_count(layout) != 1) {
         printf("Warning: more than one line!\n");
     }
+#endif    
     line = pango_layout_get_line(layout, 0);
 
     if (aSpacing && *aSpacing) {
@@ -838,9 +845,11 @@ nsFontMetricsPango::GetBoundingMetrics(const PRUnichar *aString,
 
     // Get the logical extents
     PangoLayoutLine *line;
+#ifdef debug_barry    
     if (pango_layout_get_line_count(layout) != 1) {
         printf("Warning: more than one line!\n");
     }
+#endif    
     line = pango_layout_get_line(layout, 0);
 
     // Get the ink extents
@@ -1111,9 +1120,11 @@ nsFontMetricsPango::GetRangeWidth(const char *aText,
     FixupSpaceWidths(layout, aText);
 
     PangoLayoutLine *line;
+#ifdef debug_barry    
     if (pango_layout_get_line_count(layout) != 1) {
         printf("Warning: more than one line!\n");
     }
+#endif    
     line = pango_layout_get_line(layout, 0);
 
     pango_layout_line_get_x_ranges(line, aStart, aEnd, &ranges, &n_ranges);

@@ -16,6 +16,7 @@
 void
 DumpNode(nsIDOMNode *aNode, PRInt32 indent, bool recurse /* = false */)
 {
+#ifdef debug_barry
   PRInt32 i;
   for (i=0; i<indent; i++)
     printf("  ");
@@ -67,6 +68,7 @@ DumpNode(nsIDOMNode *aNode, PRInt32 indent, bool recurse /* = false */)
     cstr.ReplaceChar('\n', ' ');
     printf("<textnode> %s     %x\n", cstr.get(), aNode);
   }
+#endif
 }
 
 
