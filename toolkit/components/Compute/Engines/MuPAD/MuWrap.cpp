@@ -292,7 +292,9 @@ SEMANTICS_NODE *MuPADWrapper::iProcessRequest(MathServiceRequest * msr,
               }
 #endif
 
+#ifdef debug_barry
               printf("plotOK is true\n");
+#endif
               plotfile = do_CreateInstance("@mozilla.org/file/local;1", &rv);
 //              for (int i =0; i<100000;i++);
               if (zeng_output && *zeng_output)
