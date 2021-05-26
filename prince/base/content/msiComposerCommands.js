@@ -11354,10 +11354,12 @@ var msiShowTeXErrorsCommand =
             }
           }
         }
-        openDialog("chrome://prince/content/texErrorsDialog.xul",
+
+        var resurl = "data://text/plain;charset=UTF-8," + encodeURIComponent(message);
+        openDialog("chrome://global/content/viewSource.xul",
                "_blank",
-               "all",
-               message);
+               "all,dialog=no",
+               resurl, null, null);
       }
     }
     catch (e) {
@@ -11426,7 +11428,7 @@ var msiShowTeXFileCommand =
           }
           else
           {
-            openDialog("chrome://prince/content/viewTeXSource.xul",
+            openDialog("chrome://global/content/viewSource.xul",
                          "_blank",
                          "status,dependent,minimizable,resizable,scrollbars=1,dialog=1,close=1,",
                          resurl, 'charset=UTF-8', null);
