@@ -1133,7 +1133,9 @@ nsHTMLEditor::InsertHTMLWithContext(const nsAString & aInputString,
         curNode->GetFirstChild(getter_AddRefs(child));
         while (child)
         {
+#ifdef debug_barry          
           printf("Inserting nodes\n");
+#endif          
           res = InsertNodeAtPoint(child, (nsIDOMNode **)address_of(parentNode), &offsetOfNewNode, PR_TRUE);
           if (NS_SUCCEEDED(res))
           {
