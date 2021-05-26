@@ -222,7 +222,9 @@ nsresult
 nsMathMLmsubFrame::EnterFromLeft(nsIFrame *leavingFrame, nsIFrame** aOutFrame, PRInt32* aOutOffset, PRInt32 count, PRBool* fBailing,
     PRInt32 *_retval)
 {
+#ifdef debug_barry
   printf("msup EnterFromLeft, count = %d\n", count);
+#endif
   nsIFrame * pFrame = GetFirstChild(nsnull);
   nsCOMPtr<nsIMathMLCursorMover> pMCM;
   if (pFrame)
@@ -236,10 +238,12 @@ nsMathMLmsubFrame::EnterFromLeft(nsIFrame *leavingFrame, nsIFrame** aOutFrame, P
       return NS_OK;
     }
   }
+#ifdef debug_barry  
   else
   {
     printf("Found msup frame with no children\n");
   }
+#endif  
   return NS_OK;
 }
 
@@ -247,7 +251,9 @@ nsresult
 nsMathMLmsubFrame::EnterFromRight(nsIFrame *leavingFrame, nsIFrame** aOutFrame, PRInt32* aOutOffset, PRInt32 count,
     PRBool* fBailingOut, PRInt32 *_retval)
 {
+#ifdef debug_barry  
   printf("msub EnterFromRight, count = %d\n", count);
+#endif  
   *_retval = 0;
   count = 0;
 
@@ -265,12 +271,14 @@ nsMathMLmsubFrame::EnterFromRight(nsIFrame *leavingFrame, nsIFrame** aOutFrame, 
       return NS_OK;
     }
   }
+#ifdef debug_barry  
   else
   {
     printf("Found msub frame with no superscript\n");
     *_retval = 0;
     return NS_OK;
   }
+#endif  
   *_retval = 0;
   return NS_OK;
 }
@@ -280,7 +288,9 @@ nsresult
 nsMathMLmsubFrame::MoveOutToRight(nsIFrame * leavingFrame, nsIFrame** aOutFrame, PRInt32* aOutOffset, PRInt32 count,
     PRBool* fBailingOut, PRInt32 *_retval)
 {
+#ifdef debug_barry  
   printf("msup MoveOutToRight, count = %d\n", count);
+#endif  
   // if the cursor is leaving either of its children, the cursor goes past the end of the fraction if count > 0
   nsIFrame * pChild = GetFirstChild(nsnull);
   nsIFrame * pParent;
@@ -302,7 +312,9 @@ nsMathMLmsubFrame::MoveOutToRight(nsIFrame * leavingFrame, nsIFrame** aOutFrame,
     pChild = pChild->GetNextSibling();
     pMCM = GetMathCursorMover(pChild);
     if (pMCM) pMCM->EnterFromLeft(this, aOutFrame, aOutOffset, count, fBailingOut, _retval);
+#ifdef debug_barry    
     else printf("msub MoveOutToRight: no subscript\n");
+#endif    
    *_retval = 0;
   }
   return NS_OK;
@@ -312,7 +324,9 @@ nsresult
 nsMathMLmsubFrame::MoveOutToLeft(nsIFrame * leavingFrame, nsIFrame** aOutFrame, PRInt32* aOutOffset, PRInt32 count,
     PRBool* fBailingOut, PRInt32 *_retval)
 {
+#ifdef debug_barry
   printf("msub MoveOutToLeft, count = %d\n", count);
+#endif
   nsIFrame * pChild = GetFirstChild(nsnull); // the base
   nsCOMPtr<nsIMathMLCursorMover> pMCM;
   if (leavingFrame == nsnull || leavingFrame == pChild)

@@ -499,7 +499,9 @@ bool MuPADEngine::Exec(TCIString & cmd)
     }
     eng_errorstr += cmd;
     const MUP_Char *p = static_cast<const MUP_Char*>(eng_errorstr);
+#ifdef debug_barry    
     printf("\n\n  jcs MuPADEngine error(%s)\n", p);
+#endif
 
   } else {
     if (m_client->Warning()) {

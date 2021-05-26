@@ -195,13 +195,11 @@ nsresult msiScriptCoalesce::CoalesceLeft(nsIEditor * editor, nsIDOMNode * node, 
 nsresult msiScriptCoalesce::CoalesceRight(nsIEditor* editor, nsIDOMNode* node, nsIArray** coalesced)
 {
   //ljh m_offset == m_maxOffset
+#ifdef debug_barry
    printf("\njcs -- msiScriptCoalesce::CoalesceRight\n");
-
    printf("\nm_mathmlNode\n");
-   // DumpNode(m_mathmlNode, 0, true);
-
    printf("\nnode:\n");
-   // DumpNode(node, 0, true);
+#endif
 
   nsresult res(NS_ERROR_FAILURE);
   nsCOMPtr<nsIDOMNode> currSup, currSub, inSup, inSub, newSup, newSub, base, inBase;
