@@ -1339,7 +1339,9 @@ bool Tree2StdMML::MMLDelimitersMatch(GROUP_INFO& gi)
       } else if (l_char == 'I') { // invisible
 
       } else {
+#ifdef debug_barry        
         printf("MMLDelimitersMatch() botch: %s vs. %s\n", opener, closer);
+#endif      
         TCI_ASSERT(0);
       }
     }

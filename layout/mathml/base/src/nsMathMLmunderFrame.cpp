@@ -367,7 +367,9 @@ nsresult
 nsMathMLmunderFrame::EnterFromLeft(nsIFrame *leavingFrame, nsIFrame** aOutFrame, PRInt32* aOutOffset, PRInt32 count, PRBool* fBailing,
     PRInt32 *_retval)
 {
+#ifdef debug_barry
   printf("munder EnterFromLeft, count = %d\n", count);
+#endif  
   nsIFrame * pFrame = GetFirstChild(nsnull);
   nsCOMPtr<nsIMathMLCursorMover> pMCM;
   if (pFrame)
@@ -381,10 +383,12 @@ nsMathMLmunderFrame::EnterFromLeft(nsIFrame *leavingFrame, nsIFrame** aOutFrame,
       return NS_OK;
     }
   }
+#ifdef debug_barry  
   else 
   {
     printf("Found mmunder frame with no children\n");
   }
+#endif  
   return NS_OK;  
 }
 
@@ -392,7 +396,9 @@ nsresult
 nsMathMLmunderFrame::EnterFromRight(nsIFrame *leavingFrame, nsIFrame** aOutFrame, PRInt32* aOutOffset, PRInt32 count,
     PRBool* fBailingOut, PRInt32 *_retval)
 {
+#ifdef debug_barry
   printf("munder EnterFromRight, count = %d\n", count);
+#endif
   if (count > 0)
   {
     nsIFrame * pFrame = GetFirstChild(nsnull); // the base
@@ -410,16 +416,20 @@ nsMathMLmunderFrame::EnterFromRight(nsIFrame *leavingFrame, nsIFrame** aOutFrame
         return NS_OK;
       }
     }
+#ifdef debug_barry    
     else 
     {
       printf("Found munder frame with no superscript\n");
     }
+#endif    
   }
+#ifdef debug_barry  
   else
   {
     printf("munder EnterFromRight called with count == 0\n");
     PlaceCursorAfter(this, PR_FALSE, aOutFrame, aOutOffset, count);
   }
+#endif  
   return NS_OK;  
 }
 
@@ -428,7 +438,9 @@ nsresult
 nsMathMLmunderFrame::MoveOutToRight(nsIFrame * leavingFrame, nsIFrame** aOutFrame, PRInt32* aOutOffset, PRInt32 count,
     PRBool* fBailingOut, PRInt32 *_retval)
 {
+#ifdef debug_barry
   printf("munder MoveOutToRight, count = %d\n", count);
+#endif  
   // if the cursor is leaving either of its children, the cursor goes past the end of the fraction if count > 0
   nsIFrame * pChild = GetFirstChild(nsnull);
   nsCOMPtr<nsIMathMLCursorMover> pMCM;
@@ -446,7 +458,9 @@ nsMathMLmunderFrame::MoveOutToRight(nsIFrame * leavingFrame, nsIFrame** aOutFram
     pChild = pChild->GetNextSibling();
     pMCM = GetMathCursorMover(pChild);
     if (pMCM) pMCM->EnterFromLeft(this, aOutFrame, aOutOffset, count, fBailingOut, _retval);
+#ifdef debug_barry    
     else printf("munder MoveOutToRight: no under symbol\n");
+#endif    
    *_retval = 0;
   }
   return NS_OK;  
@@ -456,7 +470,9 @@ nsresult
 nsMathMLmunderFrame::MoveOutToLeft(nsIFrame * leavingFrame, nsIFrame** aOutFrame, PRInt32* aOutOffset, PRInt32 count,
     PRBool* fBailingOut, PRInt32 *_retval)
 {                
+#ifdef debug_barry
   printf("munder MoveOutToLeft, count = %d\n", count);
+#endif
   // if the cursor is leaving either of its children, the cursor goes past the end of the fraction if count > 0
   nsIFrame * pChild = GetFirstChild(nsnull);
   nsCOMPtr<nsIMathMLCursorMover> pMCM;

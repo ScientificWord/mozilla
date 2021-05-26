@@ -557,7 +557,9 @@ nsresult
 nsMathMLmfracFrame::EnterFromLeft(nsIFrame *leavingFrame, nsIFrame** aOutFrame, PRInt32* aOutOffset, PRInt32 count, PRBool* fBailing,
     PRInt32 *_retval)
 {
+#ifdef debug_barry
   printf("mfrac EnterFromLeft, count = %d\n", count);
+#endif  
   if (count == 0)
   { // then the cursor should sit in front of this fraction
     PlaceCursorBefore(this, PR_FALSE, aOutFrame, aOutOffset, count);
@@ -596,10 +598,12 @@ nsMathMLmfracFrame::EnterFromLeft(nsIFrame *leavingFrame, nsIFrame** aOutFrame, 
       return NS_OK;
     }
   }
+#ifdef debug_barry  
   else 
   {
     printf("Found frac frame with no children\n");
   }
+#endif  
   return NS_OK;  
 }
 
@@ -607,7 +611,9 @@ nsresult
 nsMathMLmfracFrame::EnterFromRight(nsIFrame *leavingFrame, nsIFrame** aOutFrame, PRInt32* aOutOffset, PRInt32 count,
     PRBool* fBailingOut, PRInt32 *_retval)
 {
+#ifdef debug_barry  
   printf("mfrac EnterFromRight, count = %d\n", count);
+#endif  
   if (count == 0)
   { // then the cursor should sit iafter this fraction
     PlaceCursorAfter(this, PR_FALSE, aOutFrame, aOutOffset, count);
@@ -629,10 +635,12 @@ nsMathMLmfracFrame::EnterFromRight(nsIFrame *leavingFrame, nsIFrame** aOutFrame,
       return NS_OK;
     }
   }
+#ifdef debug_barry  
   else 
   {
     printf("Found frac frame with no children\n");
   }
+#endif  
   return NS_OK;  
 }
 
@@ -641,7 +649,9 @@ nsresult
 nsMathMLmfracFrame::MoveOutToRight(nsIFrame * leavingFrame, nsIFrame** aOutFrame, PRInt32* aOutOffset, PRInt32 count,
     PRBool* fBailingOut, PRInt32 *_retval)
 {
+#ifdef debug_barry  
   printf("mfrac MoveOutToRight, count = %d\n", count);
+#endif  
   // if the cursor is leaving either of its children, the cursor goes past the end of the fraction if count > 0
   nsIFrame * pChild;
   nsCOMPtr<nsIMathMLCursorMover> pMCM;
@@ -671,7 +681,9 @@ nsresult
 nsMathMLmfracFrame::MoveOutToLeft(nsIFrame * leavingFrame, nsIFrame** aOutFrame, PRInt32* aOutOffset, PRInt32 count,
     PRBool* fBailingOut, PRInt32 *_retval)
 {                
+#ifdef debug_barry
   printf("mfrac MoveOutToLeft, count = %d\n", count);
+#endif
   // if the cursor is leaving either of its children, the cursor goes past the end of the fraction if count > 0
   nsIFrame * pChild;
   nsCOMPtr<nsIMathMLCursorMover> pMCM;
