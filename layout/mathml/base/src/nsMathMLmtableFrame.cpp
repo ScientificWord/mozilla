@@ -689,7 +689,9 @@ nsresult
 nsMathMLmtableFrame::EnterFromLeft(nsIFrame *leavingFrame, nsIFrame** aOutFrame, PRInt32* aOutOffset, PRInt32 count, PRBool* fBailing,
     PRInt32 *_retval)
 {
+#ifdef debug_barry
   printf("mtable EnterFromLeft, count = %d\n", count);
+#endif  
   nsIFrame * pFrame = GetFirstChild(nsnull);
   nsCOMPtr<nsIContent> pContent;
   nsCOMPtr<nsIDOMNode> pNode;
@@ -722,7 +724,9 @@ nsresult
 nsMathMLmtableFrame::EnterFromRight(nsIFrame *leavingFrame, nsIFrame** aOutFrame, PRInt32* aOutOffset, PRInt32 count,
     PRBool* fBailingOut, PRInt32 *_retval)
 {
+#ifdef debug_barry  
   printf("mtable EnterFromRight, count = %d\n", count);
+#endif  
   count = *_retval = 0;
   nsIFrame * pFrame = this;
   while (pFrame && pFrame->GetContent()->Tag() != nsGkAtoms::mtr_)
@@ -742,10 +746,12 @@ nsMathMLmtableFrame::EnterFromRight(nsIFrame *leavingFrame, nsIFrame** aOutFrame
       return NS_OK;
     }
   }
+#ifdef debug_barry
   else 
   {
     printf("Found mtable frame with no rows\n");
   }
+#endif  
   return NS_OK;  
 }
 
@@ -785,7 +791,9 @@ nsresult
 nsMathMLmtableFrame::MoveOutToLeft(nsIFrame * leavingFrame, nsIFrame** aOutFrame, PRInt32* aOutOffset, PRInt32 count,
     PRBool* fBailingOut, PRInt32 *_retval)
 {                
+#ifdef debug_barry
   printf("mtable MoveOutToLeft, count = %d\n", count);
+#endif
   // if the cursor is leaving either of its children, the cursor goes past the end of the fraction if count > 0
   if (IsEqnArray(this)) {
     *_retval = count = 1;

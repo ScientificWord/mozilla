@@ -351,7 +351,9 @@ nsresult
 nsMathMLmsqrtFrame::EnterFromLeft(nsIFrame *leavingFrame, nsIFrame** aOutFrame, PRInt32* aOutOffset, PRInt32 count, PRBool* fBailing,
     PRInt32 *_retval)
 {
+#ifdef debug_barry
   printf("msqrt EnterFromLeft, count = %d\n", count);
+#endif  
   count = 0;  // Just entering a radical uses up one count.
   nsIFrame * pBaseFrame = GetFirstChild(nsnull);
   nsCOMPtr<nsIMathMLCursorMover> pMCM;
@@ -387,10 +389,12 @@ nsMathMLmsqrtFrame::EnterFromLeft(nsIFrame *leavingFrame, nsIFrame** aOutFrame, 
       return NS_OK;
     }
   }
+#ifdef debug_barry  
   else 
   {
     printf("Found msqrt frame with no children\n");
   }
+#endif  
   *_retval = count;
   return NS_OK;  
 }
@@ -399,7 +403,9 @@ nsresult
 nsMathMLmsqrtFrame::EnterFromRight(nsIFrame *leavingFrame, nsIFrame** aOutFrame, PRInt32* aOutOffset, PRInt32 count,
     PRBool* fBailing, PRInt32 *_retval)
 {
+ #ifdef debug_barry
   printf("msqrt EnterFromRight, count = %d\n", count);
+#endif  
   if (count == 0)
   {
     PlaceCursorAfter(this, PR_FALSE, aOutFrame, aOutOffset, count);
@@ -447,10 +453,12 @@ nsMathMLmsqrtFrame::EnterFromRight(nsIFrame *leavingFrame, nsIFrame** aOutFrame,
       return NS_OK;
     }
   }
+#ifdef debug_barry  
   else 
   {
     printf("Found msqrt frame with no children\n");
   }
+#endif  
   return NS_OK;  
    
 //    if (count > 0)

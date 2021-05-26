@@ -365,7 +365,9 @@ nsresult
 nsMathMLmsubsupFrame::EnterFromLeft(nsIFrame *leavingFrame, nsIFrame** aOutFrame, PRInt32* aOutOffset, PRInt32 count, PRBool* fBailing,
     PRInt32 *_retval)
 {
+#ifdef debug_barry
   printf("msup EnterFromLeft, count = %d\n", count);
+#endif  
   nsIFrame * pBaseFrame = GetFirstChild(nsnull);
   nsCOMPtr<nsIMathMLCursorMover> pMCM;
   if (pBaseFrame)
@@ -379,10 +381,12 @@ nsMathMLmsubsupFrame::EnterFromLeft(nsIFrame *leavingFrame, nsIFrame** aOutFrame
       return NS_OK;
     }
   }
+#ifdef debug_barry
   else 
   {
     printf("Found msubsup frame with no children\n");
   }
+#endif  
   return NS_OK;  
 }
 
@@ -390,7 +394,9 @@ nsresult
 nsMathMLmsubsupFrame::EnterFromRight(nsIFrame *leavingFrame, nsIFrame** aOutFrame, PRInt32* aOutOffset, PRInt32 count,
     PRBool* fBailingOut, PRInt32 *_retval)
 {
+#ifdef debug_barry
   printf("msubsup EnterFromRight, count = %d\n", count);
+#endif  
   count = 0; // cursor coming in from the right changes vertical position, decrements count.
   *_retval = 0;
 
@@ -409,10 +415,12 @@ nsMathMLmsubsupFrame::EnterFromRight(nsIFrame *leavingFrame, nsIFrame** aOutFram
       PlaceCursorAfter(pFrame, PR_TRUE, aOutFrame, aOutOffset, count);
     }
   }
+#ifdef debug_barry  
   else 
   {
     printf("Found msubsup frame with no superscript\n");
   }
+#endif  
   *_retval = 0;
   return NS_OK;  
 }
@@ -422,7 +430,9 @@ nsresult
 nsMathMLmsubsupFrame::MoveOutToRight(nsIFrame * leavingFrame, nsIFrame** aOutFrame, PRInt32* aOutOffset, PRInt32 count,
     PRBool* fBailingOut, PRInt32 *_retval)
 {
+#ifdef debug_barry
   printf("msup MoveOutToRight, count = %d\n", count);
+#endif
   nsIFrame * pBase = GetFirstChild(nsnull);
   nsIFrame * pSub = nsnull;
   nsIFrame * pSup = nsnull;
@@ -442,7 +452,9 @@ nsMathMLmsubsupFrame::MoveOutToRight(nsIFrame * leavingFrame, nsIFrame** aOutFra
     count = 0;
     pMCM = GetMathCursorMover(pSup);
     if (pMCM) pMCM->EnterFromLeft(this, aOutFrame, aOutOffset, count, fBailingOut, _retval);
+#ifdef debug_barry    
     else printf("msup MoveOutToRight: no superscript\n");
+#endif    
    *_retval = 0;
   }
   return NS_OK;  
@@ -452,7 +464,9 @@ nsresult
 nsMathMLmsubsupFrame::MoveOutToLeft(nsIFrame * leavingFrame, nsIFrame** aOutFrame, PRInt32* aOutOffset, PRInt32 count,
     PRBool* fBailingOut, PRInt32 *_retval)
 {                
+#ifdef debug_barry
   printf("msup MoveOutToLeft, count = %d\n", count);
+#endif
   nsIFrame * pBase = GetFirstChild(nsnull);
   nsIFrame * pSub = nsnull;
   nsIFrame * pSup = nsnull;

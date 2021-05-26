@@ -566,7 +566,9 @@ nsresult
 nsMathMLTokenFrame::MoveOutToRight(nsIFrame* leavingFrame, nsIFrame** aOutFrame, PRInt32* aOutOffset, PRInt32 count,
    PRBool* fBailingOut, PRInt32* fRetValue)
 {
+#ifdef debug_barry
   printf("tokenframe: moveouttoright, count = %d\n", count);
+#endif
   nsIFrame * pParent = GetParent();
   nsCOMPtr<nsIMathMLCursorMover> pMCM;
   if (pParent)  // if this op is invisible (apply-function, invisible-times) pass this on
@@ -589,7 +591,9 @@ nsresult
 nsMathMLTokenFrame::MoveOutToLeft(nsIFrame* leavingFrame, nsIFrame** aOutFrame, PRInt32* aOutOffset, PRInt32 count,
    PRBool* fBailingOut, PRInt32* fRetValue)
 {
+#ifdef debug_barry
   printf("tokenframe: moveouttoleft, count = %d\n", count);
+#endif
   nsIFrame * pParent = GetParent();
   nsCOMPtr<nsIMathMLCursorMover> pMCM;
   if (pParent)  // if this op is invisible (apply-function, invisible-times) pass this on
