@@ -1763,32 +1763,19 @@ blackboardBold {
 
 fraktur {
   font-family: MathJax_Fraktur;
-  font-weight: 700;
 }
 
 italics {
   font-style: italic;
 }
 
-italics::-moz-selection {
-  color: red;
-  background-color: yellow;
-}
-
-msidisplay::-moz-selection {
-  color: green;
-  background-color: yellow;
-}
-
 slanted {
   font-style: italic;
-  font-weight: 400;
   color: #093e7d;
 }
 
 sansSerif {
   font-family: Arial;
-  font-weight: 400;
   color: #093e7d;
 }
 
@@ -1799,7 +1786,6 @@ smallCaps {
 
 typewriter {
   font-family: Courier New;
-  font-weight: 300;
 }
 
 ltxframe {
