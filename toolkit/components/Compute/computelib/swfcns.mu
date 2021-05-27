@@ -194,8 +194,8 @@ begin
   if (testtype(x,Dom::Complex)) then
     return(arg(Re(x),Im(x)));
   else
-    return(0);
-  end_if
+    return(arg(x));
+  end_if;
 end_proc:
 
 tcihermite := proc(M)
