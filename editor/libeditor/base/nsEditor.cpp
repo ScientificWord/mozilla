@@ -685,7 +685,7 @@ nsEditor::Init(nsIDOMDocument *aDoc, nsIPresShell* aPresShell, nsIContent *aRoot
 
 /* void removeContainer (in nsIDOMNode node); */
 NS_IMETHODIMP
-nsEditor::RemoveContainer(nsIDOMNode *inNode)
+ nsEditor::RemoveContainer(nsIDOMNode *inNode)
 {
   if (!inNode)
     return NS_ERROR_NULL_POINTER;
@@ -709,33 +709,37 @@ nsEditor::RemoveContainer(nsIDOMNode *inNode)
   // notify our internal selection state listener
   nsAutoRemoveContainerSelNotify selNotify(mRangeUpdater, inNode, parent, offset, nodeOrigLen);
 
-  // Move all children from inNode to its parent.
-  inNode->HasChildNodes(&bHasMoreChildren);
-  // PRBool inComplexTransaction;
-  // isInComplexTransaction(PR_TRUE, &inComplexTransaction);
+  {
+    nsAutoTxnsConserveSelection conserveSelection(this);
 
-  while (bHasMoreChildren) {
-    nsCOMPtr<nsIDOMNode> child;
-    res = inNode->GetLastChild(getter_AddRefs(child));
-    res = DeleteNode(child);
-    if (NS_FAILED(res)) {
-      return res;
-    }
-
-    // Insert the last child before the previous last child.  So, we need to
-    // use offset here because previous child might have been moved to
-    // container.
-    res = InsertNode(child,
-                    parent, offset);
-
-    if (NS_FAILED(res)) {
-      return res;
-    }
+    // Move all children from inNode to its parent.
     inNode->HasChildNodes(&bHasMoreChildren);
+    // PRBool inComplexTransaction;
+    // isInComplexTransaction(PR_TRUE, &inComplexTransaction);
 
+    while (bHasMoreChildren) {
+      nsCOMPtr<nsIDOMNode> child;
+      res = inNode->GetLastChild(getter_AddRefs(child));
+      res = DeleteNode(child);
+      if (NS_FAILED(res)) {
+        return res;
+      }
+
+      // Insert the last child before the previous last child.  So, we need to
+      // use offset here because previous child might have been moved to
+      // container.
+      res = InsertNode(child,
+                      parent, offset);
+
+      if (NS_FAILED(res)) {
+        return res;
+      }
+      inNode->HasChildNodes(&bHasMoreChildren);
+
+    }
+    // IsInComplexTransaction(inComplexTransaction, nsnull);
+    DeleteNode(inNode);
   }
-  // IsInComplexTransaction(inComplexTransaction, nsnull);
-  DeleteNode(inNode);
 }
 
 
