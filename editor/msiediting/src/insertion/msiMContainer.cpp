@@ -90,7 +90,7 @@ msiMContainer::InsertNodes(nsIEditor * editor,
     nsCOMPtr<nsIDOMNode> tobeRemoved;
     insertPos = DetermineInsertPosition(flags, deleteExisting);
     res = msiUtils::GetNumberofChildren(m_mathmlNode, numKids);
-    if (NS_SUCCEEDED(res) && !deleteExisting) // check to see if there is an inputbox in the neighborhood, is so wack it!
+    if (NS_SUCCEEDED(res) && !deleteExisting) // check to see if there is an inputbox in the neighborhood, is so whack it!
     {
       if (insertPos > 0 )
       {
@@ -203,12 +203,12 @@ msiMContainer::InsertNodes(nsIEditor * editor,
             insertPos += 1;
           }   
         }
+        if (rtSide) insertPos -= 1; // an extra node was appended for coalescing reasons
       }  
       if (NS_SUCCEEDED(res))
       {
-        msiUtils::MarkCaretPosition(editor, m_mathmlNode, insertPos, flags, PR_FALSE, PR_TRUE);
+        msiUtils::MarkCaretPosition(editor, m_mathmlNode, insertPos, flags, PR_FALSE, PR_FALSE);
         msiUtils::doSetCaretPosition(editor, selection, m_mathmlNode);
-        // selection->Collapse(m_mathmlNode, insertPos);
       }
     }  
   }    

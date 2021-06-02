@@ -66,7 +66,9 @@ nsAutoCompleteSearchStringArray::GetInstance()
 NS_IMETHODIMP nsAutoCompleteSearchStringArray::StartSearch(const nsAString & searchString, const nsAString & searchParam, nsIAutoCompleteResult *previousResult, nsIAutoCompleteObserver *listener)
 {
     if (m_imp) return m_imp->StartSearch(searchString, searchParam, previousResult, listener);
+#ifdef debug_barry
     printf("nsAutoCompletSearchStringArray uninitialized\n");
+#endif
     return NS_OK; // is there an NS_UNINITIALIZED ??
 }
 
@@ -74,7 +76,9 @@ NS_IMETHODIMP nsAutoCompleteSearchStringArray::StartSearch(const nsAString & sea
 NS_IMETHODIMP nsAutoCompleteSearchStringArray::StopSearch()
 {
   if (m_imp) return m_imp->StopSearch();
+#ifdef debug_barry
   printf("nsAutoCompletSearchStringArray uninitialized\n");
+#endif  
   return NS_OK; // is there an NS_UNINITIALIZED ??
 }
 
@@ -82,7 +86,9 @@ NS_IMETHODIMP nsAutoCompleteSearchStringArray::StopSearch()
 NS_IMETHODIMP nsAutoCompleteSearchStringArray::AddString(const nsAString & strCategory, const nsAString & strAdd, PRBool *_retval)
 {
   if (m_imp) return m_imp->AddString(strCategory, strAdd, _retval);
+#ifdef debug_barry
   printf("nsAutoCompletSearchStringArray uninitialized\n");
+#endif
   return NS_OK; // is there an NS_UNINITIALIZED ??
 }
 
@@ -91,15 +97,19 @@ NS_IMETHODIMP nsAutoCompleteSearchStringArray::AddStringEx(const nsAString & str
   const nsAString & strDescription, const nsAString & strMathOnly, PRBool *_retval)
 {
   if (m_imp) return m_imp->AddStringEx(strCategory, strAdd, strDescription, strMathOnly, _retval);
+#ifdef debug_barry
   printf("nsAutoCompletSearchStringArray uninitialized\n");
-  return NS_OK; // is there an NS_UNINITIALIZED ??
+#endif 
+ return NS_OK; // is there an NS_UNINITIALIZED ??
 }
 
 /* boolean deleteString (in AString strCategory, in AString strDelete); */
 NS_IMETHODIMP nsAutoCompleteSearchStringArray::DeleteString(const nsAString & strCategory, const nsAString & strDelete, PRBool *_retval)
 {
   if (m_imp) return m_imp->DeleteString(strCategory, strDelete, _retval);
+#ifdef debug_barry
   printf("nsAutoCompletSearchStringArray uninitialized\n");
+#endif  
   return NS_OK; // is there an NS_UNINITIALIZED ??
 }
 
@@ -107,7 +117,9 @@ NS_IMETHODIMP nsAutoCompleteSearchStringArray::DeleteString(const nsAString & st
 NS_IMETHODIMP nsAutoCompleteSearchStringArray::SortArrays()
 {
   if (m_imp) return m_imp->SortArrays();
+#ifdef debug_barry
   printf("nsAutoCompletSearchStringArray uninitialized\n");
+#endif
   return NS_OK; // is there an NS_UNINITIALIZED ??
 }
 
@@ -115,7 +127,9 @@ NS_IMETHODIMP nsAutoCompleteSearchStringArray::SortArrays()
 NS_IMETHODIMP nsAutoCompleteSearchStringArray::SetMarkedStrings(nsStringArray * sa)
 {
   if (m_imp) return m_imp->SetMarkedStrings(sa);
+#ifdef debug_barry
   printf("nsAutoCompletSearchStringArray uninitialized\n");
+#endif
   return NS_OK; // is there an NS_UNINITIALIZED ??
 }
 
@@ -124,7 +138,9 @@ NS_IMETHODIMP nsAutoCompleteSearchStringArray::SetMarkedStrings(nsStringArray * 
 NS_IMETHODIMP nsAutoCompleteSearchStringArray::SetImplementation(nsIAutoCompleteSearchStringArray *imp)
 {
     m_imp = do_QueryInterface(imp);
+#ifdef debug_barry
     if (!m_imp) printf("nsAutoCompletSearchStringArray uninitialized\n");
+#endif
     return NS_OK; // is there an NS_UNINITIALIZED ??
 }
 
@@ -143,7 +159,9 @@ NS_IMETHODIMP nsAutoCompleteSearchStringArray::GetNewImplementation(nsIAutoCompl
 NS_IMETHODIMP nsAutoCompleteSearchStringArray::SizeofArray(const nsAString & strCategory, PRInt32 *_retval)
 {
     if (m_imp) return m_imp->SizeofArray(strCategory, _retval);
+#ifdef debug_barry
     printf("nsAutoCompletSearchStringArray uninitialized\n");
+#endif
     return NS_OK; // is there an NS_UNINITIALIZED ??
 }
 
@@ -152,7 +170,9 @@ NS_IMETHODIMP nsAutoCompleteSearchStringArray::SizeofArray(const nsAString & str
 NS_IMETHODIMP nsAutoCompleteSearchStringArray::ContentsofArray(const nsAString & strCategory, const nsAString & strSep, nsAString & _retval)
 {
     if (m_imp) return m_imp->ContentsofArray(strCategory, strSep, _retval);
+#ifdef debug_barry    
     printf("nsAutoCompletSearchStringArray uninitialized\n");
+#endif
     return NS_OK; // is there an NS_UNINITIALIZED ??
 }
 /* AString contentsofArray (in AString strCategory, in AString strSep);
@@ -160,7 +180,9 @@ NS_IMETHODIMP nsAutoCompleteSearchStringArray::ContentsofArray(const nsAString &
 NS_IMETHODIMP nsAutoCompleteSearchStringArray::ViewArray(const nsAString & strCategory)
 {
     if (m_imp) return m_imp->ViewArray(strCategory);
+#ifdef debug_barry
     printf("nsAutoCompletSearchStringArray uninitialized\n");
+#endif
     return NS_OK; // is there an NS_UNINITIALIZED ??
 }
 
@@ -169,7 +191,9 @@ NS_IMETHODIMP nsAutoCompleteSearchStringArray::ViewArray(const nsAString & strCa
 NS_IMETHODIMP nsAutoCompleteSearchStringArray::ResetArray(const nsAString & strCategory)
 {
     if (m_imp) return m_imp->ResetArray(strCategory);
+#ifdef debug_barry
     printf("nsAutoCompletSearchStringArray uninitialized\n");
+#endif
     return NS_OK; // is there an NS_UNINITIALIZED ??
 }
 
@@ -177,7 +201,9 @@ NS_IMETHODIMP nsAutoCompleteSearchStringArray::ResetArray(const nsAString & strC
 NS_IMETHODIMP nsAutoCompleteSearchStringArray::ResetAll()
 {
     if (m_imp) return m_imp->ResetAll();
+#ifdef debug_barry
     printf("nsAutoCompletSearchStringArray uninitialized\n");
+#endif
     return NS_OK; // is there an NS_UNINITIALIZED ??
 }
 
@@ -185,7 +211,9 @@ NS_IMETHODIMP nsAutoCompleteSearchStringArray::ResetAll()
 NS_IMETHODIMP nsAutoCompleteSearchStringArray::SortArray(const nsAString & strCategory)
 {
     if (m_imp) return m_imp->SortArray(strCategory);
+#ifdef debug_barry
     printf("nsAutoCompletSearchStringArray uninitialized\n");
+#endif
     return NS_OK; // is there an NS_UNINITIALIZED ??
 }
 
@@ -193,7 +221,9 @@ NS_IMETHODIMP nsAutoCompleteSearchStringArray::SortArray(const nsAString & strCa
 NS_IMETHODIMP nsAutoCompleteSearchStringArray::GetGlobalSearchStringArray(nsIAutoCompleteSearchStringArray **_retval)
 {
     if (m_imp) return m_imp->GetGlobalSearchStringArray(_retval);
+#ifdef debug_barry
     printf("nsAutoCompletSearchStringArray uninitialized\n");
+#endif
     return NS_OK; // is there an NS_UNINITIALIZED ??
 }
 
@@ -331,7 +361,9 @@ NS_IMETHODIMP nsAutoCompleteSearchStringArrayImp::AddStringEx(const nsAString & 
   if (!psa) // unable to create new string array
   {
     *_retval = PR_FALSE;
+#ifdef debug_barry
     printf("out of memory in nsAutoCompleteSearchStringArrayImp::AddStringEx\n");
+#endif
     return NS_OK;
   }
   if (psa && (psa->IndexOf(strAdd)==-1))  // should be true, unless there was a error creating a new one.
@@ -407,7 +439,9 @@ NS_IMETHODIMP nsAutoCompleteSearchStringArrayImp::SetImplementation(nsIAutoCompl
 /* nsIAutoCompleteSearchStringArray getNewImplementation (); */
 NS_IMETHODIMP nsAutoCompleteSearchStringArrayImp::GetNewImplementation(nsIAutoCompleteSearchStringArray **_retval)
 {
+#ifdef debug_barry
   printf("Error: calling GetNewImplementation in nsAutoCompleteSearchStringArrayImp\n");
+#endif
   *_retval = nsnull;
   return NS_OK;
 }

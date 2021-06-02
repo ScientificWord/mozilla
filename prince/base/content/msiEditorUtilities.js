@@ -11385,10 +11385,10 @@ function setMathTextToggle(editorElement, isMath) {
   var inMathMenuState = document.getElementById('inMathMenuState');
   var inTextMenuState = document.getElementById('inTextMenuState');
   
-  inMathButtonState.hidden = inMath;
-  inTextButtonState.hidden = inText || inMathText;
-  inMathMenuState.hidden = inMath;
-  inTextMenuState.hidden = inText || inMathText;
+  if (inMathButtonState) inMathButtonState.hidden = inMath;
+  if (inTextButtonState) inTextButtonState.hidden = inText || inMathText;
+  if (inMathMenuState) inMathMenuState.hidden = inMath;
+  if (inTextMenuState) inTextMenuState.hidden = inText || inMathText;
 
 }
 
