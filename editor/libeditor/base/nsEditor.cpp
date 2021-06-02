@@ -151,7 +151,9 @@ void DumpNode(nsIDOMNode *aNode, PRInt32 indent, bool recurse, nsAString& output
   output.Append(indentString);
 
   if (aNode == 0){
+  #ifdef debug_barry
     printf("!NULL\n");
+  #endif
     output = NS_LITERAL_STRING("!NULL!");
     return;
   }
@@ -211,6 +213,84 @@ void DumpNode(nsIDOMNode *aNode, PRInt32 indent, bool recurse, nsAString& output
     output.Append(newline);
 #endif
 }
+
+// void DumpFrame(nsIFrame *aFrame, PRInt32 indent, bool recurse, nsAString& output)
+// {
+// #ifdef DEBUG
+//   PRInt32 i;
+//   nsAutoString tag;
+//   nsAutoString nodeName;
+//   nsAutoString tagWithAttributes;
+//   nsString oneIndent = NS_LITERAL_STRING("  ");
+//   nsString newline = NS_LITERAL_STRING("\n");
+//   nsString indentString = newline;
+
+//   for (i=0; i<indent; i++) {
+//     indentString.Append(oneIndent);
+//   }
+//   output.Append(indentString);
+
+//   if (aFrame == 0){
+//     printf("!NULL\n");
+//     output = NS_LITERAL_STRING("!NULL!");
+//     return;
+//   }
+
+//   PRUint16 nodeType = 0;
+//   aNode->GetNodeType(&nodeType);
+
+//   nsCOMPtr<nsIDOMElement> element = do_QueryInterface(aNode);
+//   nsCOMPtr<nsIDOMDocumentFragment> docfrag = do_QueryInterface(aNode);
+
+//   if ((nodeType == 1 /* element */) && element)
+//   {
+//     element->GetTagName(tag);
+//     nsEditor::DumpTagName(element, tagWithAttributes);
+//     // output.Append(indentString);
+//     output.Append(NS_LITERAL_STRING("<") + tagWithAttributes);
+//     output.Append(NS_LITERAL_STRING(">"));
+//   }
+//   else if ((nodeType == 11 /* Document fragment */) && docfrag)
+//   {
+//     tag = NS_LITERAL_STRING("document fragment");
+//     // output.Append(indentString);
+//     output.Append(NS_LITERAL_STRING("<document fragment>"));//, ((nsIDOMDocumentFragment*)docfrag)-28));
+//   }
+//   else if ((nodeType == 3 /* text */ )) {
+//     aNode->GetNodeName(nodeName);
+//     if (nodeName.EqualsLiteral("#text"))
+//     {
+//       nsCOMPtr<nsIDOMCharacterData> textNode = do_QueryInterface(aNode);
+//       nsAutoString str;
+//       textNode->GetData(str);
+//       // output.Append(indentString);
+//       output.Append(NS_LITERAL_STRING("<#text '") + str + NS_LITERAL_STRING("'>"));
+//     }
+//   }
+
+//   if (recurse){
+//      nsCOMPtr<nsIDOMNodeList> childList;
+//      aNode->GetChildNodes(getter_AddRefs(childList));
+//      if (!childList) return; // NS_ERROR_NULL_POINTER;
+//      PRUint32 numChildren;
+//      childList->GetLength(&numChildren);
+//      nsCOMPtr<nsIDOMNode> child, tmp;
+//      aNode->GetFirstChild(getter_AddRefs(child));
+//      for (i=0; i<numChildren; i++)
+//      {
+//        DumpNode(child, indent+1, true, output);
+//        child->GetNextSibling(getter_AddRefs(tmp));
+//        child = tmp;
+//      }
+//   }
+//   if (nodeType != 3 ) {
+//     output.Append(indentString);
+//     output.Append(NS_LITERAL_STRING("</") + tag + NS_LITERAL_STRING(">"));
+//   }
+//   if (indent == 0) 
+//     output.Append(newline);
+// #endif
+// }
 
 void AppendInt(nsAString &str, PRInt32 val)
 {
@@ -605,7 +685,7 @@ nsEditor::Init(nsIDOMDocument *aDoc, nsIPresShell* aPresShell, nsIContent *aRoot
 
 /* void removeContainer (in nsIDOMNode node); */
 NS_IMETHODIMP
-nsEditor::RemoveContainer(nsIDOMNode *inNode)
+ nsEditor::RemoveContainer(nsIDOMNode *inNode)
 {
   if (!inNode)
     return NS_ERROR_NULL_POINTER;
@@ -629,33 +709,37 @@ nsEditor::RemoveContainer(nsIDOMNode *inNode)
   // notify our internal selection state listener
   nsAutoRemoveContainerSelNotify selNotify(mRangeUpdater, inNode, parent, offset, nodeOrigLen);
 
-  // Move all children from inNode to its parent.
-  inNode->HasChildNodes(&bHasMoreChildren);
-  // PRBool inComplexTransaction;
-  // isInComplexTransaction(PR_TRUE, &inComplexTransaction);
+  {
+    nsAutoTxnsConserveSelection conserveSelection(this);
 
-  while (bHasMoreChildren) {
-    nsCOMPtr<nsIDOMNode> child;
-    res = inNode->GetLastChild(getter_AddRefs(child));
-    res = DeleteNode(child);
-    if (NS_FAILED(res)) {
-      return res;
-    }
-
-    // Insert the last child before the previous last child.  So, we need to
-    // use offset here because previous child might have been moved to
-    // container.
-    res = InsertNode(child,
-                    parent, offset);
-
-    if (NS_FAILED(res)) {
-      return res;
-    }
+    // Move all children from inNode to its parent.
     inNode->HasChildNodes(&bHasMoreChildren);
+    // PRBool inComplexTransaction;
+    // isInComplexTransaction(PR_TRUE, &inComplexTransaction);
 
+    while (bHasMoreChildren) {
+      nsCOMPtr<nsIDOMNode> child;
+      res = inNode->GetLastChild(getter_AddRefs(child));
+      res = DeleteNode(child);
+      if (NS_FAILED(res)) {
+        return res;
+      }
+
+      // Insert the last child before the previous last child.  So, we need to
+      // use offset here because previous child might have been moved to
+      // container.
+      res = InsertNode(child,
+                      parent, offset);
+
+      if (NS_FAILED(res)) {
+        return res;
+      }
+      inNode->HasChildNodes(&bHasMoreChildren);
+
+    }
+    // IsInComplexTransaction(inComplexTransaction, nsnull);
+    DeleteNode(inNode);
   }
-  // IsInComplexTransaction(inComplexTransaction, nsnull);
-  DeleteNode(inNode);
 }
 
 

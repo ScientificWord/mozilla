@@ -3739,7 +3739,7 @@ inserted into an mtext node or an ordinary text node, as appropriate. */
   while (!(msiNavigationUtils.isUnsplittableMath(rover)) && 
            !(msiNavigationUtils.hasFixedNumberOfChildren(rover.parentNode)) && 
            (!(rover.hasAttribute && rover.hasAttribute('msimathname'))) && 
-           (msiNavigationUtils.isMathNode(rover) || 
+           (msiNavigationUtils.isMathNode(rover) || // %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
             rover.nodeType === Node.TEXT_NODE))
   {
     editor.splitNode(rover, offset, newNode);  // when this is done, rover is on the right and newNode.value is on the left.
@@ -3928,11 +3928,11 @@ function mathToText(editor)
       range = editor.selection.getRangeAt(0);
       unicodeText = editor.selection.toString();
       editor.canonicalizeMathRange(range);
-      // editor.promoteMathRange(range);  --bug 4638
+      // editor.promoteMathRange(range);  // --bug 4638
       editor.setSelectionFromRange(range, editor.selection);
       editor.deleteSelection(0);
       editor.ValidateMathSyntax(mathNode, false, false);
-      splitMathDeep(editor,  editor.selection.anchorNode, editor.selection.anchorOffset, unicodeText);
+      splitMathDeep(editor,  editor.selection.anchorNode, editor.selection.anchorOffset, unicodeText)//
       editor.ValidateMathSyntax(mathNode, false, false);
       editor.isInComplexTransaction(complexTransaction);
     }

@@ -151,7 +151,9 @@ nsresult
 nsMathMLmspaceFrame::EnterFromLeft(nsIFrame *leavingFrame, nsIFrame** aOutFrame, PRInt32* aOutOffset, PRInt32 count, PRBool* fBailing,
     PRInt32 *_retval)
 {
+#ifdef debug_barry
   printf("mspace EnterFromLeft, count = %d\n", count);
+#endif  
 
   if (count > 0)
   {
@@ -169,8 +171,9 @@ nsresult
 nsMathMLmspaceFrame::EnterFromRight(nsIFrame *leavingFrame, nsIFrame** aOutFrame, PRInt32* aOutOffset, PRInt32 count,
     PRBool* fBailingOut, PRInt32 *_retval)
 {
+#ifdef debug_barry  
   printf("mspace EnterFromRight, count = %d\n", count);
-
+#endif
   if (count > 0)
   {
     count = 0;
@@ -188,8 +191,9 @@ nsresult
 nsMathMLmspaceFrame::MoveOutToRight(nsIFrame * leavingFrame, nsIFrame** aOutFrame, PRInt32* aOutOffset, PRInt32 count,
     PRBool* fBailingOut, PRInt32 *_retval)
 {
+#ifdef debug_barry
   printf("mspace MoveOutToRight, count = %d\n", count);
-
+#endif
   nsIFrame * pParent = GetParent();
   nsCOMPtr<nsIMathMLCursorMover> pMCM;
   if (pParent)  // if this op is invisible (apply-function, invisible-times) pass this on
@@ -205,7 +209,9 @@ nsresult
 nsMathMLmspaceFrame::MoveOutToLeft(nsIFrame * leavingFrame, nsIFrame** aOutFrame, PRInt32* aOutOffset, PRInt32 count,
     PRBool* fBailingOut, PRInt32 *_retval)
 {                
+#ifdef debug_barry
   printf("mspace MoveOutToLeft, count = %d\n", count);
+#endif
   nsIFrame * pParent = GetParent();
   nsCOMPtr<nsIMathMLCursorMover> pMCM;
   if (pParent)  // if this op is invisible (apply-function, invisible-times) pass this on

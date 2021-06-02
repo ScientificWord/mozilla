@@ -52,7 +52,9 @@ NS_IMETHODIMP msiUtil::SynchronousFileCopy(nsIFile * inFile, nsIFile * outFile, 
   buffostream->IsNonBlocking(&nonblocking);
   buffostream->WriteFrom(bstream, avail, &written);
   buffostream->Close();
+#ifdef debug_barry  
   printf("out of synchronouscopy");
+#endif  
   return NS_OK;
 }
 
