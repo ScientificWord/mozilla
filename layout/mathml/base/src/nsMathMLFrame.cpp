@@ -597,6 +597,7 @@ nsMathMLFrame::DumpMathFrameData(nsIFrame* aFrame)
 /*  static */ void
 nsMathMLFrame::DumpFrameData(nsIFrame* aFrame, PRUint32 indent)
 {
+#ifdef debug_barry  
   nsAutoString indentString;
   PRUint32 i = indent;
   NS_NAMED_LITERAL_STRING(spaces, "  ");
@@ -626,5 +627,6 @@ nsMathMLFrame::DumpFrameData(nsIFrame* aFrame, PRUint32 indent)
     pNextFrame = pFrame->GetNextSibling();
     pFrame = pNextFrame;
   }
+#endif  
 }
 

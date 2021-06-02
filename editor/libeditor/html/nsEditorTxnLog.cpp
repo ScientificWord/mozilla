@@ -382,9 +382,10 @@ nsEditorTxnLog::WriteInt(PRInt32 aInt)
 {
   if (mEditorLog)
     mEditorLog->WriteInt(aInt);
+#ifdef debug_barry  
   else
     printf("%d", aInt);
-
+#endif
   return NS_OK;
 }
 
