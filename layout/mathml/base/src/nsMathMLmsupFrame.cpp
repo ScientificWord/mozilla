@@ -261,7 +261,9 @@ nsresult
 nsMathMLmsupFrame::EnterFromLeft(nsIFrame *leavingFrame, nsIFrame** aOutFrame, PRInt32* aOutOffset, PRInt32 count, PRBool* fBailing,
     PRInt32 *_retval)
 {
+#ifdef debug_barry
   printf("msup EnterFromLeft, count = %d\n", count);
+#endif  
   nsIFrame * pFrame = GetFirstChild(nsnull);
   nsCOMPtr<nsIMathMLCursorMover> pMCM;
   if (pFrame)
@@ -275,10 +277,12 @@ nsMathMLmsupFrame::EnterFromLeft(nsIFrame *leavingFrame, nsIFrame** aOutFrame, P
       return NS_OK;
     }
   }
+#ifdef debug_barry  
   else
   {
     printf("Found msup frame with no children\n");
   }
+#endif  
   return NS_OK;
 }
 
@@ -286,7 +290,9 @@ nsresult
 nsMathMLmsupFrame::EnterFromRight(nsIFrame *leavingFrame, nsIFrame** aOutFrame, PRInt32* aOutOffset, PRInt32 count,
     PRBool* fBailingOut, PRInt32 *_retval)
 {
+#ifdef debug_barry
   printf("msup EnterFromRight, count = %d\n", count);
+#endif  
   if (count > 0)
   {
     nsIFrame * pFrame = GetFirstChild(nsnull); // the base
@@ -305,16 +311,20 @@ nsMathMLmsupFrame::EnterFromRight(nsIFrame *leavingFrame, nsIFrame** aOutFrame, 
         return NS_OK;
       }
     }
+#ifdef debug_barry    
     else
     {
       printf("Found msup frame with no superscript\n");
     }
+#endif    
   }
+#ifdef debug_barry  
   else
   {
     printf("msub EnterFromRight called with count == 0\n");
     PlaceCursorAfter(this, PR_FALSE, aOutFrame, aOutOffset, count);
   }
+#endif  
   return NS_OK;
 }
 
@@ -323,7 +333,9 @@ nsresult
 nsMathMLmsupFrame::MoveOutToRight(nsIFrame * leavingFrame, nsIFrame** aOutFrame, PRInt32* aOutOffset, PRInt32 count,
     PRBool* fBailingOut, PRInt32 *_retval)
 {
+#ifdef debug_barry  
   printf("msup MoveOutToRight, count = %d\n", count);
+#endif  
   nsIFrame * pChild = GetFirstChild(nsnull);
   nsIFrame * pParent;
   nsCOMPtr<nsIMathMLCursorMover> pMCM;
@@ -342,7 +354,9 @@ nsMathMLmsupFrame::MoveOutToRight(nsIFrame * leavingFrame, nsIFrame** aOutFrame,
     pChild = pChild->GetNextSibling();
     pMCM = GetMathCursorMover(pChild);
     if (pMCM) pMCM->EnterFromLeft(this, aOutFrame, aOutOffset, count, fBailingOut, _retval);
+#ifdef debug_barry    
     else printf("msup MoveOutToRight: no superscript\n");
+#endif    
     *_retval = 0;
   }
   return NS_OK;
@@ -352,7 +366,9 @@ nsresult
 nsMathMLmsupFrame::MoveOutToLeft(nsIFrame * leavingFrame, nsIFrame** aOutFrame, PRInt32* aOutOffset, PRInt32 count,
     PRBool* fBailingOut, PRInt32 *_retval)
 {
+#ifdef debug_barry
   printf("msup MoveOutToLeft, count = %d\n", count);
+#endif
   // if the cursor is leaving either of its children, the cursor goes past the end of the fraction if count > 0
   nsIFrame * pChild = GetFirstChild(nsnull);
   nsCOMPtr<nsIMathMLCursorMover> pMCM;

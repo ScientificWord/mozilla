@@ -2031,7 +2031,8 @@ nsHTMLEditRules::WillDeleteSelection(nsISelection *aSelection,
 {
 
   if (!aSelection || !aCancel || !aHandled) { return NS_ERROR_NULL_POINTER; }
-  nsCOMPtr<msiIMathMLEditor> mathmlEd;
+  nsCOMPtr<msiIMathMLEditor>mathmlEd = do_QueryInterface(reinterpret_cast<nsIHTMLEditor *>(mHTMLEditor));
+
   //DumpSelection(aSelection);
 
   // initialize out param
@@ -2153,6 +2154,7 @@ nsHTMLEditRules::WillDeleteSelection(nsISelection *aSelection,
     // what's in the direction we are deleting?
     nsWSRunObject wsObj(mHTMLEditor, startNode, startOffset);
     nsCOMPtr<nsIDOMNode> visNode;
+    nsCOMPtr<nsIDOMNode> visNodeParent;
     PRInt32 visOffset;
     PRInt16 wsType;
 
@@ -2271,7 +2273,6 @@ nsHTMLEditRules::WillDeleteSelection(nsISelection *aSelection,
     //   return res;
     // }
 
-
     if (wsType==nsWSRunObject::eNormalWS)
     {
       // we found some visible ws to delete.  Let ws code handle it.
@@ -2297,8 +2298,23 @@ nsHTMLEditRules::WillDeleteSelection(nsISelection *aSelection,
       }
       res = nsWSRunObject::PrepareToDeleteRange(mHTMLEditor, address_of(visNode), &so, address_of(visNode), &eo);
       if (NS_FAILED(res)) return res;
+      res = visNode->GetParentNode(getter_AddRefs(visNodeParent));
       nsCOMPtr<nsIDOMCharacterData> nodeAsText(do_QueryInterface(visNode));
       res = mHTMLEditor->DeleteText(nodeAsText,so,1);
+      // check to see if this deletion left an mi, mo, or mn empty. in which case, see if we can delete it.
+      PRBool visEmpty;
+      nsCOMPtr<nsIDOMNodeList> children;
+      if (visNodeParent) {
+        nsCOMPtr<nsIDOM3Node> domNode3 = do_QueryInterface(visNodeParent);
+        nsAutoString visContent;
+        domNode3->GetTextContent(visContent);
+        if (visContent.Length() == 0) {  // parent of visNode is now empty. If it is mi, mo, or mn, delete it unless parent requires an input box
+          visNodeParent->GetNodeName(nodeName);
+          if (nodeName.EqualsLiteral("mi") || nodeName.EqualsLiteral("mo") || nodeName.EqualsLiteral("mn") ) {
+            mHTMLEditor->DeleteNode(visNodeParent); // DeleteNode checks if deletion is the right thing to do
+          }
+        }
+      }
       *aHandled = PR_TRUE;
       if (NS_FAILED(res)) return res;
       res = InsertBRIfNeeded(aSelection);
@@ -2507,7 +2523,6 @@ nsHTMLEditRules::WillDeleteSelection(nsISelection *aSelection,
         rightParent = mHTMLEditor->GetBlockNodeParent(rightNode);
 
       // Check for deletion crossing the boundary of a math display
-      mathmlEd = do_QueryInterface(reinterpret_cast<nsIHTMLEditor *>(mHTMLEditor));
       if (mathmlEd) {
         mathmlEd->RemoveDisplay(leftParent, rightParent);
       }
@@ -3598,7 +3613,9 @@ void FindCursorNodeAndOffset(nsIEditor* editor, nsIDOMNode* mathnode, PRInt32& c
   nsCOMPtr<nsIDOMNode>& theNode, PRInt32& theOffset,
   nsAString& chars, nsCOMArray<nsIDOMNode> array)
 {
+#ifdef debug_barry
      printf("\nFindNodeAndOffset of char %d in node\n", charCount);
+#endif
      nsresult rv;
      nsAutoString txt;
      nsAutoString dupChars(chars);
@@ -3707,7 +3724,8 @@ PRBool IsSpecialMath(nsCOMPtr<nsIDOMElement>& node, PRBool isEmpty, PRUint32& no
   if (isMath) {
     node->GetTagName(name);
     while (node && (name.EqualsLiteral("mi") || name.EqualsLiteral("mo") || name.EqualsLiteral("mn") ||
-        name.EqualsLiteral("msqrt") || (name.EqualsLiteral("mrow") || name.EqualsLiteral("mstyle")) && empty)) {
+        // name.EqualsLiteral("msqrt") || 
+        (name.EqualsLiteral("mrow") || name.EqualsLiteral("mstyle")) && empty)) {
       editor->GetNodeLocation(node, &parent, &offset);
       node2 = do_QueryInterface(parent);
       if (empty) {
@@ -3984,7 +4002,7 @@ void   hackSelectionCorrection(nsHTMLEditor * ed,
       if (!HandledScripts(ed, elt, nextSiblingNode, deletingInputbox, startNode, startOffset))
       {
         ed->ReadInComplexTransaction(&isInComplexTransaction);
-        if (!isInComplexTransaction) {
+        // if (!isInComplexTransaction) {
           done = PR_TRUE;
 
           //Let's see where the insert point has gone...
@@ -4014,7 +4032,7 @@ void   hackSelectionCorrection(nsHTMLEditor * ed,
             }
             tempnode = nextSiblingNode;
           }
-        }
+        // }
       }
       return;
     }
@@ -4259,6 +4277,7 @@ nsHTMLEditRules::DidDeleteSelection(nsISelection *aSelection,
   res = msiUtils::GetMathParent(startNode, mathNode);
   if (NS_FAILED(res)) return res;
   // remove redundant mrows
+
   if (mathNode && !isInComplexTransaction) {
     PRBool useNewCode = PR_TRUE;
     if (useNewCode) {
@@ -4302,15 +4321,15 @@ nsHTMLEditRules::DidDeleteSelection(nsISelection *aSelection,
                 parentName.EqualsLiteral("mroot")
   //              parentName.EqualsLiteral("msqrt") sqrt is ok, but mroot is not
             )) {
+            
             mHTMLEditor->RemoveContainer(currNode);
           }
         }
         tw->NextNode(getter_AddRefs(currNode));
-      }
+      } 
     }
-  }
+  } 
 }
-
 
 
 
@@ -9820,7 +9839,9 @@ nsHTMLEditRules::RemoveStructure(nsIDOMNode *node, const nsAString& notThisTag)
 nsresult
 nsHTMLEditRules::RemoveStructureAboveSelection(nsISelection *selection)
 {
+#ifdef debug_barry
   printf("RemoveStructureAboveSelection\n");
+#endif
   nsAutoTxnsConserveSelection dontSpazMySelection(mHTMLEditor);
 
   nsCOMPtr<nsIDOMRange> domRange;

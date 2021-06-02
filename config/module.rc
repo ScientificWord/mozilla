@@ -23,7 +23,7 @@ BEGIN
         BLOCK "000004b0"
         BEGIN
             VALUE "Comments",         ""
-            VALUE "LegalCopyright",   "Copyright 2013 by MacKichan Software, Inc."
+            VALUE "LegalCopyright",   "Copyright 2021 by MacKichan Software, Inc."
             VALUE "CompanyName",      "MacKichan Software, Inc."
 #ifdef PROD_SWP
             VALUE "FileDescription",  "Scientific WorkPlace and related"
@@ -34,8 +34,8 @@ BEGIN
 #ifdef PROD_SNB
             VALUE "FileDescription",  "Scientific Notebook and related"
 #endif
-            VALUE "FileVersion",      "6.0.0"
-            VALUE "ProductVersion",   "6.0.0"
+            VALUE "FileVersion",      "6.1.0"
+            VALUE "ProductVersion",   "6.1.0"
             VALUE "InternalName",     "Prince"
             VALUE "LegalTrademarks",  "Scientific WorkPlace, Scientific Word, Scientific Notebook copyright MacKichan Software, Inc."
             VALUE "OriginalFilename", "MuPWrapperDLL.dll"
