@@ -477,8 +477,10 @@ public:
     // of date.
     //
     if (sDestructorOrderArr && mVal != sDestructorOrderArr[sDestructorCount]) {
+#ifdef debug_barry
       printf("ERROR: ~SimpleTransaction expected %d got %d.\n",
              mVal, sDestructorOrderArr[sDestructorCount]);
+#endif
       exit(NS_ERROR_FAILURE);
     }
 

@@ -10116,7 +10116,7 @@ var msiInsertTableCommand =
   isCommandEnabled: function(aCommand, dummy)
   {
     return msiIsDocumentEditable() && msiIsEditingRenderedHTML();
-  },
+  }, 
 
   getCommandStateParams: function(aCommand, aParams, aRefCon) {},
   doCommandParams: function(aCommand, aParams, aRefCon) {},
@@ -10126,7 +10126,13 @@ var msiInsertTableCommand =
     try
     {
       var editorElement = msiGetActiveEditorElement();
-      msiEditorInsertTable(editorElement, aCommand, this);
+      var editor = msiGetEditor(editorElement);
+      if (msiNavigationUtils.isMathNode(editor.selection.focusNode)) {
+        msiGoDoCommand("cmd_MSIMatrixCmd");
+      } 
+      else {
+        msiEditorInsertTable(editorElement, aCommand, this);
+      }
     }
     catch (e) {
       finalThrow(cmdFailString('inserttable'), e.message);
@@ -11348,10 +11354,12 @@ var msiShowTeXErrorsCommand =
             }
           }
         }
-        openDialog("chrome://prince/content/texErrorsDialog.xul",
+
+        var resurl = "data://text/plain;charset=UTF-8," + encodeURIComponent(message);
+        openDialog("chrome://global/content/viewSource.xul",
                "_blank",
-               "all",
-               message);
+               "all,dialog=no",
+               resurl, null, null);
       }
     }
     catch (e) {
@@ -11420,7 +11428,7 @@ var msiShowTeXFileCommand =
           }
           else
           {
-            openDialog("chrome://prince/content/viewTeXSource.xul",
+            openDialog("chrome://global/content/viewSource.xul",
                          "_blank",
                          "status,dependent,minimizable,resizable,scrollbars=1,dialog=1,close=1,",
                          resurl, 'charset=UTF-8', null);
