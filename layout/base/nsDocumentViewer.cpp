@@ -3394,7 +3394,7 @@ DocumentViewerImpl::Print(nsIPrintSettings*       aPrintSettings,
                           nsIWebProgressListener* aWebProgressListener)
 {
 
-#ifdef MOZ_XUL
+#ifdef Never
   // Temporary code for Bug 136185 / Bug 240490
   nsCOMPtr<nsIXULDocument> xulDoc(do_QueryInterface(mDocument));
   if (xulDoc) {
