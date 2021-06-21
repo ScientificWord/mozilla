@@ -18,7 +18,7 @@ var gAnimInterval = [0, 0];
 
 function initDocument(browserElement)
 {
-  FixJS()
+  // FixJS()
   msiHelpInit(browserElement);
 }
 
