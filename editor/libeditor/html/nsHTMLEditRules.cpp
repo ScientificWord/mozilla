@@ -4286,8 +4286,8 @@ nsHTMLEditRules::DidDeleteSelection(nsISelection *aSelection,
     nsCOMPtr<nsIDOMDocument> domdoc;
     nsCOMPtr<nsIDOMNode> currNode;
     nsCOMPtr<nsIDOMNode> parentNode;
-    nsCOMPtr<nsIDOMNode> firstChild;
-    nsCOMPtr<nsIDOMElement> firstChildElement;
+    nsCOMPtr<nsIDOMNode> firstChild, prevSib;
+    nsCOMPtr<nsIDOMElement> firstChildElement, prevSibElement;
 
     nsAutoString parentName;
     nsAutoString tagname;
@@ -4301,12 +4301,26 @@ nsHTMLEditRules::DidDeleteSelection(nsISelection *aSelection,
         currNode->GetLocalName(tagname);
         if (tagname.EqualsLiteral("mrow")) {
           // guard against removing mrow from fence pairs
+          // There seems to be some variance in how fences and mrows interact.
+          // The xslt code looks for a matching fence two positions before or after the current fence
+          // This requires that fences look like <mo><mrow>...</mrow><mo>
+          // Some other code seems to expect <mrow><mo>...<mo></mrow> but this does not get converted to TeX correctly
+          // We will leave both constructions in place
           hasAttribute = PR_FALSE;
           currNode->GetFirstChild(getter_AddRefs(firstChild));
           if (firstChild) {
             firstChildElement = do_QueryInterface(firstChild);
             if (firstChildElement) {
               res = firstChildElement->HasAttribute(NS_LITERAL_STRING("fence"), &hasAttribute);
+            }
+          }
+          if (!hasAttribute) {
+            currNode->GetPreviousSibling(getter_AddRefs(prevSib));
+            if (prevSib) {
+              prevSibElement = do_QueryInterface(prevSib);
+              if (prevSibElement) {
+                res = prevSibElement->HasAttribute(NS_LITERAL_STRING("fence"), &hasAttribute);
+              }
             }
           }
           res = currNode->GetParentNode(getter_AddRefs(parentNode));
