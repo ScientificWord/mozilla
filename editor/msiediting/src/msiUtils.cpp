@@ -1372,9 +1372,11 @@ nsresult msiUtils::CreateMRowFence(nsIEditor * editor,
   nsresult res(NS_OK);
   PRUint32 dummyFlags(msiIMathMLInsertion::FLAGS_NONE);
   nsCOMPtr<nsIDOMNode> theChild;
+  nsCOMPtr<nsIDOMElement> newChild;
   nsCOMPtr<nsIDOMElement> fence;
   nsCOMPtr<nsIDOMElement> opening;
   nsCOMPtr<nsIDOMElement> closing;
+  nsCOMPtr<nsIDOMElement> inputbox;
   nsAutoString emptyString;
   NS_NAMED_LITERAL_STRING(flv,"flv");
   PRUint32 commonflags(msiIMMLEditDefines::MO_ATTR_fence_T | msiIMMLEditDefines::MO_ATTR_stretchy_T | msiIMMLEditDefines::MO_ATTR_symmetric_T);
@@ -1405,15 +1407,20 @@ nsresult msiUtils::CreateMRowFence(nsIEditor * editor,
       }
       if (NS_SUCCEEDED(res))
       {
-        if (child)
-          res = mutableArray->AppendElement(child, PR_FALSE);
+        if (child) 
+        {
+          res = CreateMRow(editor, child, newChild);
+          res = mutableArray->AppendElement(newChild, PR_FALSE);
+        }
         else if (createInputBox)
         {
-          nsCOMPtr<nsIDOMElement> inputbox;
+
           res = CreateInputbox(editor, PR_FALSE, markCaret, flags, inputbox);
           NS_ASSERTION(inputbox, "CreateInputbox failed.");
-          if (NS_SUCCEEDED(res) && inputbox)
-            res = mutableArray->AppendElement(inputbox, PR_FALSE);
+          if (NS_SUCCEEDED(res) && inputbox) {
+            CreateMRow(editor, inputbox, newChild);
+            res = mutableArray->AppendElement(newChild, PR_FALSE);
+          }
         }
       }
       if (NS_SUCCEEDED(res) && closing) {
