@@ -189,7 +189,6 @@
 
 	      <xsl:when test="@display='block'">
           <xsl:text>true</xsl:text>
-          <xsl:message>Setting is-display to true</xsl:message>
 	      </xsl:when>
         
         <!-- mode attrib deprecated in MathML 2.0 -->

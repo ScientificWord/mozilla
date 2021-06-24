@@ -8960,6 +8960,7 @@ var msiNavigationUtils = {
     if (msiGetBaseNodeName(aNode) === 'mrow') {
       if (this.isFence(aNode))
         return false;
+      
       var retVal = true;
       var theAttrs = aNode.attributes;
       for (var jx = 0; jx < theAttrs.length && retVal; ++jx) {

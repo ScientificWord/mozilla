@@ -242,9 +242,11 @@
             </xsl:when>
 
             <xsl:when test="normalize-space(string())='{'">
+              <xsl:message> calling 'translate-fencing-mo' with parameter \{</xsl:message>
               <xsl:call-template name="translate-fencing-mo">
                 <xsl:with-param name="LaTeX-fence-token" select="'\{'"/>
               </xsl:call-template>
+              <xsl:message> returning from 'translate-fencing-mo' </xsl:message>
             </xsl:when>
             <xsl:when test="normalize-space(string())='}'">
               <xsl:call-template name="translate-fencing-mo">
