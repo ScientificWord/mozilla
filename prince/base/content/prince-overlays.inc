@@ -5,14 +5,15 @@
 <?xul-overlay href="chrome://prince/content/toolbarsOverlay.xul" ?>
 <?xul-overlay href="chrome://prince/content/mathmloverlay.xul" ?>
 <?xul-overlay href="chrome://cascades/content/cascadesOverlay.xul" ?>
-<?xul-overlay href="chrome://prince/content/computeOverlay.xul" ?>
 
 #ifdef PROD_SWP
+<?xul-overlay href="chrome://prince/content/computeOverlay.xul" ?>
 <?xul-overlay href="chrome://prince/content/vcamoverlay.xul" ?>
 <?xul-overlay href="chrome://prince/content/typesetOverlay.xul" ?>
 #endif
 
 #ifdef PROD_SNB
+<?xul-overlay href="chrome://prince/content/computeOverlay.xul" ?>
 <?xul-overlay href="chrome://prince/content/vcamoverlay.xul" ?>
 #endif
 
