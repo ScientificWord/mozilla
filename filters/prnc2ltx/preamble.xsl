@@ -40,9 +40,6 @@
     <xsl:param name="pkgString" />
     <xsl:param name="optString" />
     <xsl:param name="priString" />
-    <xsl:message>
-      <xsl:value-of select = "@priString"/>
-    </xsl:message>
     <xsl:variable name="ourPkg">
       <xsl:choose>
         <xsl:when test="contains($pkgString,';')">
