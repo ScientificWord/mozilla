@@ -820,12 +820,15 @@ msiEditor::InsertEngineFunction(const nsAString & mathname)
 
 PRBool IsTempInput(nsIDOMElement * pElement)
 {
+  nsresult res;
   PRBool fResult = PR_FALSE;
   nsAutoString name;
-  pElement->GetTagName(name);
-  if ( name.EqualsLiteral("mi")) {
-    pElement->HasAttribute(NS_LITERAL_STRING("tempinput"), &fResult);
-  }
+  res = pElement->GetTagName(name);
+  if ( res == 0 ) {
+    if (name.EqualsLiteral("mi")) {
+      pElement->HasAttribute(NS_LITERAL_STRING("tempinput"), &fResult);
+    }
+  } 
   return fResult;
 }
 
@@ -898,6 +901,7 @@ msiEditor::InsertFence(const nsAString & open, const nsAString & close, const ns
         PRUint32 attrFlags(msiIMathMLInsertion::FLAGS_NONE);
         
         // Create a fence object: <mrow><mo>'('</mo>    <mo>')'</mo></mrow>
+
         res = selection->GetIsCollapsed(&bCollapsed);
         res = m_msiEditingMan->PrepareSelectionForCopying(this, range, getter_AddRefs(content));    
 
@@ -916,10 +920,17 @@ msiEditor::InsertFence(const nsAString & open, const nsAString & close, const ns
           res = InsertMathNodeAtSelection(mathmlElement);
           IsInComplexTransaction(saveInComplexTransaction, nsnull);
           if (bCollapsed) { // it is the temp input part of the fence.
+            nsAutoString name;
             mathmlElement->GetFirstChild(getter_AddRefs(child)); //left fence or empty space
             childElem = do_QueryInterface(child);
             while (child && !IsTempInput(childElem)) { 
-              child->GetNextSibling(getter_AddRefs(child));
+              child->GeTagName(name);
+              if (name.EqualsLiteral("mrow")) {
+                child->GetFirstChild(getter_AddRefs(child));
+              }
+              else {
+                child->GetNextSibling(getter_AddRefs(child));
+              }
               childElem = do_QueryInterface(child);
             }
             if (IsTempInput(childElem)){
