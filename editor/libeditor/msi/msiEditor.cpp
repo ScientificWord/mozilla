@@ -924,7 +924,7 @@ msiEditor::InsertFence(const nsAString & open, const nsAString & close, const ns
             mathmlElement->GetFirstChild(getter_AddRefs(child)); //left fence or empty space
             childElem = do_QueryInterface(child);
             while (child && !IsTempInput(childElem)) { 
-              child->GetTagName(name);
+              child->GetNodeName(name);
               if (name.EqualsLiteral("mrow")) {
                 child->GetFirstChild(getter_AddRefs(child));
               }
