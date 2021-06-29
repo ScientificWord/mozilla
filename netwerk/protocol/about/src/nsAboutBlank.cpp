@@ -49,7 +49,9 @@ NS_IMPL_ISUPPORTS1(nsAboutBlank, nsIAboutModule)
 static const char kBlankPage1[] = "<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\">"
 "<html><head><title></title></head><body style='background-color: rgb(220,220,235);'>"
 "<span style='font-family: sans-serif; font-size:30pt; display: block; margin-top: 1in; color: rgb(160,160,160); text-align:center;'>Scientific ";
-static const char kBlankPage2[] = " 6.0<br/><span style='font-size: 14pt;'>MacKichan Software, Inc.</span></span></body></html>";
+static const char kBlankPage2[] = "<br/><span style='font-size: 14pt;'>MacKichan Software, Inc.</span></span></body></html>";
+// BBM: Replace hard-wired version number by gAppData->version
+
 
 NS_IMETHODIMP
 nsAboutBlank::NewChannel(nsIURI *aURI, nsIChannel **result)
@@ -61,15 +63,17 @@ nsAboutBlank::NewChannel(nsIURI *aURI, nsIChannel **result)
     nsCString appname;
     if (name.EqualsLiteral("SNB"))
     {
-      appname.Assign(NS_LITERAL_CSTRING("Notebook"));
+      appname.Assign(NS_LITERAL_CSTRING("Notebook "));
     } else if (name.EqualsLiteral("SW"))
     {
-      appname.Assign(NS_LITERAL_CSTRING("Word"));
+      appname.Assign(NS_LITERAL_CSTRING("Word "));
     }
-    else appname.Assign(NS_LITERAL_CSTRING("WorkPlace"));
-      
+    else appname.Assign(NS_LITERAL_CSTRING("WorkPlace "));
+    nsCString shortVersion (gAppData->version);
+    shortVersion.Truncate(3);
+
     nsCOMPtr<nsIInputStream> in;
-    rv = NS_NewCStringInputStream(getter_AddRefs(in), NS_LITERAL_CSTRING(kBlankPage1)+appname+NS_LITERAL_CSTRING(kBlankPage2));
+    rv = NS_NewCStringInputStream(getter_AddRefs(in), NS_LITERAL_CSTRING(kBlankPage1)+appname+shortVersion+NS_LITERAL_CSTRING(kBlankPage2));
     if (NS_FAILED(rv)) return rv;
 
     rv = NS_NewInputStreamChannel(&channel, aURI, in,
