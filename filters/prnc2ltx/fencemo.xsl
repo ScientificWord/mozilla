@@ -168,7 +168,6 @@
       and             $right-mo-stretchy!='false'
       and            ($right-mo-form='postfix'
       or              $right-mo-form='ambiguous') "> <!-- If we get here, the current mo is a stretchy fence opener. set up variable re fence body. The current <mo> may be absorbed by the object to its right -->
-        <xsl:message>test1</xsl:message>
         <xsl:variable name="fenced-content.tr">
     		  <is-left-absorbed>
     		    <xsl:choose>
@@ -177,13 +176,11 @@
                              @flv='v' or
                              @flv='V' or
                              @flv='p'">
-                <xsl:message>test2</xsl:message>
                 <xsl:text>true</xsl:text>
               </xsl:when>  
       			  <xsl:when test="
                         following-sibling::*[1][self::mml:mfrac]
                     and following-sibling::*[2][self::mml:mo]">
-                <xsl:message>test3</xsl:message>
                 <xsl:text>true</xsl:text>
       			  </xsl:when>
       			  <xsl:when test="
@@ -192,11 +189,9 @@
                     and following-sibling::*[1][self::mml:mrow]/*[1][self::mml:mstyle]/*[1][self::mml:mfrac]
                     and following-sibling::*[2][self::mml:mo]">
                 <xsl:text>true</xsl:text>
-                <xsl:message>test4</xsl:message>
       			  </xsl:when>
       			  <xsl:otherwise>
                 <xsl:text>false</xsl:text>
-                <xsl:message>test5</xsl:message>
       			  </xsl:otherwise>
     		    </xsl:choose>
           </is-left-absorbed>
@@ -207,12 +202,10 @@
         <xsl:choose>
           <xsl:when test="$fenced-content/is-left-absorbed='true'"> <!-- We don't script anything here - this <mo> will be handled later
  when when the object on its right is scripted. -->
-            <xsl:message>test6</xsl:message>
           </xsl:when>
           <xsl:otherwise>
             <xsl:text xml:space="preserve">\left </xsl:text>
             <xsl:value-of select="$LaTeX-fence-token"/>
-            <xsl:message>writing '\left'</xsl:message>
           </xsl:otherwise>
         </xsl:choose>
       </xsl:when>
@@ -256,15 +249,12 @@
         </xsl:variable>
 
         <xsl:variable name="fenced-content" select="exsl:node-set($fenced-content.tr)"/>
-        <xsl:message>test8</xsl:message>
         <xsl:choose>
           <xsl:when test="$fenced-content/is-right-absorbed='true'">
-            <xsl:message>test9</xsl:message>
           </xsl:when>
           <xsl:otherwise>
             <xsl:text xml:space="preserve">\right </xsl:text>
             <xsl:value-of select="$LaTeX-fence-token"/>
-            <xsl:message>test10</xsl:message>
           </xsl:otherwise>
         </xsl:choose>
       </xsl:when>
@@ -272,7 +262,6 @@
       <xsl:otherwise>
 <!-- Here, the current mo is NOT part of a fence -->
         <xsl:if test="string-length(@lspace) &gt; 0">
-          <xsl:message>test11</xsl:message>
           <xsl:call-template name="operator-lrspace-2LaTeX">
             <xsl:with-param name="value" select="substring(@lspace,1,string-length(@lspace)-2)"/>
             <xsl:with-param name="unit"  select="substring(@lspace,string-length(@lspace)-1,2)"/>
@@ -282,7 +271,6 @@
         <xsl:value-of select="$LaTeX-fence-token"/>
 
         <xsl:if test="string-length(@rspace) &gt; 0">
-          <xsl:message>test12</xsl:message>
           <xsl:call-template name="operator-lrspace-2LaTeX">
             <xsl:with-param name="value" select="substring(@rspace,1,string-length(@rspace)-2)"/>
             <xsl:with-param name="unit"  select="substring(@rspace,string-length(@rspace)-1,2)"/>
@@ -298,7 +286,6 @@
 
   <xsl:template name="mo-is-LaTeX-fence">
     <xsl:param name="op-nom"/>
-    <xsl:message>op-nom is <xsl:value-of select="$op-nom"/></xsl:message>
   	<xsl:choose>
       <xsl:when test="
          $op-nom=')'
@@ -328,11 +315,9 @@
       or $op-nom='&#x21D3;'
       or $op-nom='&#x250A;'">
     		<xsl:text>true</xsl:text>
-        <xsl:message>test13</xsl:message>
       </xsl:when>
   	  <xsl:otherwise>
     		<xsl:text>false</xsl:text>
-        <xsl:message>test14</xsl:message>
   	  </xsl:otherwise>
   	</xsl:choose>
   </xsl:template>
