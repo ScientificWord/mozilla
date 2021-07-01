@@ -160,7 +160,7 @@ separators are specified in attributes.  Defaults are ( and ) and ,
         <xsl:text>]</xsl:text>
       </xsl:when>
       <xsl:when test="$mml-delim-str='{'">
-        <xsl:message> $mml-delim-str set to {</xsl:message>
+<!--         <xsl:message> $mml-delim-str set to {</xsl:message> -->
         <xsl:text>\{</xsl:text>
       </xsl:when>
       <xsl:when test="$mml-delim-str='}'">
