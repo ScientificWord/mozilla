@@ -155,42 +155,42 @@ function okToPrint()
   return (isLicensed() || !canUndo);
 }
 
-function licenseTimeRemaining() {
-  var editorElement = msiGetActiveEditorElement();
-  var editor = msiGetEditor(editorElement);
-  var expDate, remaining;
-  var dateArray;
-  var day = new Date(2000,0,1) - new Date(2000,0,0);
-  var licenseDateStr = editor.mAppUtils.licensedUntil;
-  if (licenseDateStr === 'permanent') return 'permanent';
-  if (licenseDateStr === 'unlicensed') return 'unlicensed';
-  if (licenseDateStr && licenseDateStr.length > 0) {
-    try {
-      dateArray = licenseDateStr.split('-');
-      licenseDateStr = dateArray[1] + " " + dateArray[0] + ", " + dateArray[2];
-      expDate = Date.parse(licenseDateStr);
-      remaining = expDate - Date.now();
-      if (remaining > 0) {
-        return Math.round(remaining / day);
-      }
-      else return null;
-    }
-    catch(e) {
-      return null;
-    }
-  }
-  return null;
-}
+// function licenseTimeRemaining() {
+//   var editorElement = msiGetActiveEditorElement();
+//   var editor = msiGetEditor(editorElement);
+//   var expDate, remaining;
+//   var dateArray;
+//   var day = new Date(2000,0,1) - new Date(2000,0,0);
+//   var licenseDateStr = editor.mAppUtils.licensedUntil;
+//   if (licenseDateStr === 'permanent') return 'permanent';
+//   if (licenseDateStr === 'unlicensed') return 'unlicensed';
+//   if (licenseDateStr && licenseDateStr.length > 0) {
+//     try {
+//       dateArray = licenseDateStr.split('-');
+//       licenseDateStr = dateArray[1] + " " + dateArray[0] + ", " + dateArray[2];
+//       expDate = Date.parse(licenseDateStr);
+//       remaining = expDate - Date.now();
+//       if (remaining > 0) {
+//         return Math.round(remaining / day);
+//       }
+//       else return null;
+//     }
+//     catch(e) {
+//       return null;
+//     }
+//   }
+//   return null;
+// }
 
-function licenseExpDate() {
-  var editorElement = msiGetActiveEditorElement();
-  var editor = msiGetEditor(editorElement);
-  // var prefs = GetPrefs();
-  var expDate, remaining;
-  var day = new Date(2000,0,1) - new Date(2000,0,0);
-  var licenseDateStr = editor.mAppUtils.licensedUntil;
-  return licenseDateStr;
-}
+// function licenseExpDate() {
+//   var editorElement = msiGetActiveEditorElement();
+//   var editor = msiGetEditor(editorElement);
+//   // var prefs = GetPrefs();
+//   var expDate, remaining;
+//   var day = new Date(2000,0,1) - new Date(2000,0,0);
+//   var licenseDateStr = editor.mAppUtils.licensedUntil;
+//   return licenseDateStr;
+// }
 
 function markDocumentChanged(editorElement) {  //ordinary undoable transactions automatically mark the document as changed; this is for dialogs
   if (editorElement == null) editorElement = msiGetActiveEditorElement();
