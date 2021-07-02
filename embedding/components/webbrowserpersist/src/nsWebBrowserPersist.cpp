@@ -120,7 +120,6 @@
 #include "nsIProtocolHandler.h"
 
 #include "nsWebBrowserPersist.h"
-#include "../../../../editor/libeditor/base/msiAppUtils.h"
 
 // Buffer file writes in 32kb chunks
 #define BUFFERED_OUTPUT_SIZE (1024 * 32)
@@ -415,8 +414,6 @@ NS_IMETHODIMP nsWebBrowserPersist::SaveDocument(
     nsIDOMDocument *aDocument, nsISupports *aFile, nsISupports *aDataPath,
     const char *aOutputContentType, PRUint32 aEncodingFlags, PRUint32 aWrapColumn)
 {
-    PRBool ok = msiAppUtils::rlm_save_ok();
-    NS_ENSURE_TRUE(ok, NS_ERROR_FAILURE);
     NS_ENSURE_TRUE(mFirstAndOnlyUse, NS_ERROR_FAILURE);
     mFirstAndOnlyUse = PR_FALSE; // Stop people from reusing this object!
 
@@ -1483,8 +1480,6 @@ nsWebBrowserPersist::GetDocEncoderContentType(nsIDOMDocument *aDocument, const P
 nsresult nsWebBrowserPersist::SaveDocumentInternal(
     nsIDOMDocument *aDocument, nsIURI *aFile, nsIURI *aDataPath)
 {
-    PRBool ok = msiAppUtils::rlm_save_ok();
-    NS_ENSURE_TRUE(ok, NS_ERROR_FAILURE);
     NS_ENSURE_ARG_POINTER(aDocument);
     NS_ENSURE_ARG_POINTER(aFile);
 
@@ -1714,8 +1709,6 @@ nsresult nsWebBrowserPersist::SaveDocumentInternal(
 
 nsresult nsWebBrowserPersist::SaveDocuments()
 {
-    PRBool ok = msiAppUtils::rlm_save_ok();
-    NS_ENSURE_TRUE(ok, NS_ERROR_FAILURE);
     nsresult rv = NS_OK;
 
     mStartSaving = PR_TRUE;
@@ -3670,8 +3663,6 @@ nsWebBrowserPersist::SaveDocumentWithFixup(
     nsIURI *aFile, PRBool aReplaceExisting, const nsACString &aFormatType,
     const nsCString &aSaveCharset, PRUint32 aFlags)
 {
-    PRBool ok = msiAppUtils::rlm_save_ok();
-    NS_ENSURE_TRUE(ok, NS_ERROR_FAILURE);
     NS_ENSURE_ARG_POINTER(aFile);
     
     nsresult  rv = NS_OK;
