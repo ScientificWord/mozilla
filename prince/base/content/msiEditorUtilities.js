@@ -11340,6 +11340,20 @@ function setupXMLToTeXProcessor() {
   }
   return xsltProcessor;
 }
+
+function setupXMLToMdProcessor() {
+  var xslFileURL = 'chrome://prnc2ltx/content/markdown.xsl';
+  var xsltStr = getXSLAsString(xslFileURL);
+  var xsltProcessor = new XSLTProcessor();
+  try {
+    var parser = new DOMParser();
+    var xslDoc = parser.parseFromString(xsltStr, 'text/xml');
+    xsltProcessor.importStylesheet(xslDoc);
+  } catch (e) {
+    dump('error: ' + e + '\n');
+  }
+  return xsltProcessor;
+}
 function processXMLFragWithLoadedStylesheet(xsltProcessor, intermediateString) {
   var str = '<html xmlns="http://www.w3.org/1999/xhtml" xmlns:mml="http://www.w3.org/1998/Math/MathML">' + intermediateString + '</html>';
   var texStr;
@@ -11400,6 +11414,14 @@ function xmlFragToTeX(intermediateString) {
   var editor = msiGetCurrentEditor();
   retStr = processXMLFragWithLoadedStylesheet(xsltProcessor, intermediateString);
   retStr = editor.filterCharsForLaTeX(false, retStr);
+  return retStr;
+}
+function xmlFragToMd(intermediateString) {
+  var xsltProcessor = setupXMLToMdProcessor();
+  var retStr;
+  var editor = msiGetCurrentEditor();
+  retStr = processXMLFragWithLoadedStylesheet(xsltProcessor, intermediateString);
+  // retStr = editor.filterCharsForLaTeX(false, retStr);
   return retStr;
 }
 function getChildByTagName(anElement, tagName) {

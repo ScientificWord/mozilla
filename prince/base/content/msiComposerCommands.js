@@ -212,6 +212,7 @@ function msiSetupTextEditorCommands(editorElement)
   commandTable.registerCommand("cmd_oneshotSymbol", msiOneShotSymbol);
   commandTable.registerCommand("cmd_fontcolor", msiFontColor);
   commandTable.registerCommand("cmd_copytex", msiCopyTeX);
+  commandTable.registerCommand("cmd_copymd", msiCopyMd);
   commandTable.registerCommand("cmd_help_contents", msiHelpContents);
   commandTable.registerCommand("cmd_convert_graphics_at_selection", msiConvertGraphics);
 }
@@ -4211,6 +4212,52 @@ var msiCopyTeX =
     }
     catch (e) {
       finalThrow(cmdFailString('copyTeX'), e.message);
+    }
+  }
+};
+//-----------------------------------------------------------------------------------
+
+var msiCopyMd =
+{
+  isCommandEnabled: function(aCommand, aRefCon)
+  {
+    //var editor = aRefCon.QueryInterface(Components.interfaces.nsIEditor);
+    var editorElement = msiGetActiveEditorElement();
+    var editor = msiGetEditor(editorElement);
+    var nsed = editor.QueryInterface(Components.interfaces.nsIEditor);
+    if (nsed)
+      return nsed.canCut();
+    return false;
+  },
+
+  getCommandStateParams: function(aCommand, aParams, aRefCon)
+  {
+  },
+  doCommandParams: function(aCommand, aParams, aRefCon)
+  {
+  },
+  doCommand: function(aCommand)
+  {
+    try {
+      var editorElement = msiGetActiveEditorElement();
+      var editor = msiGetEditor(editorElement);
+      if (!editor) {
+        throw("No editor in msiCopyMd");
+      }
+      var selection = editor.selection;
+      if (!selection)
+      {
+        throw("No selection in msiCopyMd!");
+      }
+      var intermediateText;
+      intermediateText = editor.outputToString("text/xml", kOutputFormatted | kOutputSelectionOnly);
+      var output = xmlFragToMd(intermediateText);
+      const gClipboardHelper = Components.classes["@mozilla.org/widget/clipboardhelper;1"].
+      getService(Components.interfaces.nsIClipboardHelper);
+      gClipboardHelper.copyString(output);
+    }
+    catch (e) {
+      finalThrow(cmdFailString('copyMd'), e.message);
     }
   }
 };
