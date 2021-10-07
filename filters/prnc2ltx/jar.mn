@@ -1,5 +1,6 @@
 prnc2ltx.jar:
 % content prnc2ltx %/
+* markdown.xsl     (markdown.xsl)
 * latex.xsl        (latex.xsl)
 * MML2LTeX.xsl     (MML2LTeX.xsl)
 * attrutil.xsl     (attrutil.xsl)
