@@ -119,6 +119,12 @@ function msiEditorTestSelection()
   dump(output + "\n\n");
   alert(output);
 
+dump("====== Selection as markdown ============\n");
+  intermediateText = editor.outputToString("text/xml", kOutputFormatted | kOutputSelectionOnly);
+  output = xmlFragToMd(intermediateText);
+  dump(output + "\n\n");
+  alert(output);
+
   dump("====== Selection as HTML ======================\n");
   output = editor.outputToString("text/html", kOutputSelectionOnly);
   dump(output + "\n\n");
