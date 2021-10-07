@@ -110,6 +110,9 @@
       <menuitem id="menu_copytex"
                 label="&copytexCmd.label;"
                 observes="cmd_copytex"/>
+      <menuitem id="menu_copymd"
+                label="&copymdCmd.label;"
+                observes="cmd_copymd"/>
       <menuitem id="menu_copypicture"
                 label="&copypictureCmd.label;"
                 accesskey="&copypictureCmd.accesskey;"
@@ -318,10 +321,6 @@
           observes="cmd_help_contents"
           id="helpmenuContents"
       />
-      <menuseparator/>
-      <menuitem id="helpmenuWebsite"
-                label="&helpmenuWebsite.label;"
-                oncommand="openBrowser('http://www.mackichan.com');"/>
       <menuseparator id="aboutSeparator"/>
       <menuitem label="&aboutCmd.label;"
                 id="aboutName"
@@ -693,6 +692,9 @@
             disabled="true"/>
     <command id="cmd_copytex"
              oncommand="msiGoDoCommand('cmd_copytex')"
+             disabled="true">
+    <command id="cmd_copymd"
+             oncommand="msiGoDoCommand('cmd_copymd')"
              disabled="true">
       <observes element="cmd_MSIcopy" attribute="disabled" />
     </command>

@@ -3484,6 +3484,12 @@ var graphVarDataBase =
       this.xsltProcessor = setupXMLToTeXProcessor();
     return this.xsltProcessor;
   },
+  getXMLToMdProcessor : function()
+  {
+    if (!this.xsltProcessor)
+      this.xsltProcessor = setupXMLToMdProcessor();
+    return this.xsltProcessor;
+  },
   convertXMLFragToSimpleTeX : function(xmlStr)
   {
     var xsltProcessor = this.getXMLToTeXProcessor();

@@ -71,7 +71,7 @@
 	    <xsl:value-of select="$unit1"/>
       </xsl:when>
       <xsl:otherwise>
-	    <xsl:text>Add idmens, mixed units!!</xsl:text>
+	    <xsl:text>Add dimens, mixed units!!</xsl:text>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
