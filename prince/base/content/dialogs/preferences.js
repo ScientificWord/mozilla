@@ -1,7 +1,10 @@
 "use strict";
+#ifndef PROD_SW
 Components.utils.import("resource://app/modules/computelogger.jsm");
+#endif
 Components.utils.import("resource://app/modules/unitHandler.jsm");
 Components.utils.import("resource://app/modules/os.jsm");
+Components.utils.import("resource://app/modules/pathutils.jsm");
 
 var placementIdsGraphics = {prefID : "defaultGraphicsPlacement", placementRadio : "placementRadioGroup",
                             hereRadioGroup : "herePlacementRadioGroup", placeForceHereCheckbox : "placeForceHereCheck",
