@@ -4252,6 +4252,14 @@ var msiCopyMd =
       var intermediateText;
       intermediateText = editor.outputToString("text/xml", kOutputFormatted | kOutputSelectionOnly);
       var output = xmlFragToMd(intermediateText);
+      // move all line starts to the left
+      output = output.replace(/\n[ \t]*/g,'\n');
+      output = output.replace(/\n/g,' ');
+      output = output.replace(/@@br@@/g,' \n');
+
+      // We put all math expressions on a line of their own
+      output = output.replace(/>[ \t\r\n\v\f]*</g, '><');
+      output = output.replace(/<\/math><math>/g,'</math>\n<math>');
       const gClipboardHelper = Components.classes["@mozilla.org/widget/clipboardhelper;1"].
       getService(Components.interfaces.nsIClipboardHelper);
       gClipboardHelper.copyString(output);

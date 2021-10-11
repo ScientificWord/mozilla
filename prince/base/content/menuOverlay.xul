@@ -693,6 +693,8 @@
     <command id="cmd_copytex"
              oncommand="msiGoDoCommand('cmd_copytex')"
              disabled="true">
+      <observes element="cmd_MSIcopy" attribute="disabled" />
+    </command>
     <command id="cmd_copymd"
              oncommand="msiGoDoCommand('cmd_copymd')"
              disabled="true">
