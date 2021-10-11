@@ -24,7 +24,14 @@
 
 <!-- When a <math> in encountered write out <math> and switch to math mode -->
 <xsl:template match="mml:math">
-	<xsl:text>&lt;math&gt;</xsl:text>
+	<xsl:choose>
+		<xsl:when test="local-name(..)='msidisplay'">
+			<xsl:text>&lt;math display='block'&gt; </xsl:text>
+		</xsl:when>
+		<xsl:otherwise>
+			<xsl:text>&lt;math&gt;</xsl:text>
+		</xsl:otherwise>
+	</xsl:choose>
 	<xsl:apply-templates mode="in-math"/>
 	<xsl:text>&lt;/math&gt;</xsl:text>
 </xsl:template>
@@ -79,46 +86,89 @@
 <!-- Sections and section titles. Move down from the section. -->
 <xsl:template match="html:chapter">
 	<xsl:apply-templates/>
+	<xsl:text>@@br@@</xsl:text>
 </xsl:template>
 
 <xsl:template match="html:section">
 	<xsl:apply-templates/>
+	<xsl:text>@@br@@</xsl:text>
 </xsl:template>
 
 <xsl:template match="html:subsection">
 	<xsl:apply-templates/>
+	<xsl:text>@@br@@</xsl:text>
 </xsl:template>
 
 <xsl:template match="html:subsubsection">
 	<xsl:apply-templates/>
+	<xsl:text>@@br@@</xsl:text>
 </xsl:template>
 
 <xsl:template match="html:paragraph">
 	<xsl:apply-templates/>
+	<xsl:text>@@br@@</xsl:text>
 </xsl:template>
 
 
 <xsl:template match="html:sectiontitle">
 	<xsl:choose>
 		<xsl:when test="local-name(..)='chapter'">
-			<xsl:text># </xsl:text>
+			<xsl:text>@@br@@# </xsl:text>
 		</xsl:when>
 		<xsl:when test="local-name(..)='section'">
-			<xsl:text>## </xsl:text>
+			<xsl:text>@@br@@## </xsl:text>
 		</xsl:when>
 		<xsl:when test="local-name(..)='subsection'">
-			<xsl:text>### </xsl:text>
+			<xsl:text>@@br@@### </xsl:text>
 		</xsl:when>
 		<xsl:when test="local-name(..)='subsubsection'">
-			<xsl:text>#### </xsl:text>
+			<xsl:text>@@br@@#### </xsl:text>
 		</xsl:when>
 		<xsl:when test="local-name(..)='paragraph'">
-			<xsl:text>##### </xsl:text>
+			<xsl:text>@@br@@##### </xsl:text>
 		</xsl:when>
 	</xsl:choose>
 	<xsl:apply-templates/>
+	<xsl:text>@@br@@ </xsl:text>
 </xsl:template>
 <!-- To do: lists -->
+
+<!-- Theorem-like tags-->
+<xsl:template match="html:theorem">
+	<xsl:text>**Theorem:** </xsl:text>
+	<xsl:apply-templates/>
+	<xsl:text>@@br@@</xsl:text>
+</xsl:template>
+
+<xsl:template match="html:proof">
+	<xsl:text>**Proof:** </xsl:text>
+	<xsl:apply-templates/>
+	<xsl:text>@@qed@@</xsl:text>
+</xsl:template>
+
+<xsl:template match="html:lemma">
+	<xsl:text>**Lemma:** </xsl:text>
+	<xsl:apply-templates/>
+	<xsl:text>@@br@@</xsl:text>
+</xsl:template>
+
+<xsl:template match="html:corollary">
+	<xsl:text>**Corollary:** </xsl:text>
+	<xsl:apply-templates/>
+	<xsl:text>@@br@@</xsl:text>
+</xsl:template>
+
+<xsl:template match="html:conjecture">
+	<xsl:text>**Conjecture:** </xsl:text>
+	<xsl:apply-templates/>
+	<xsl:text>@@br@@</xsl:text>
+</xsl:template>
+
+<xsl:template match="html:xref">
+	<xsl:text>reference </xsl:text>
+	<xsl:apply-templates/>
+</xsl:template>
+
 
 <!-- Pick up all the remaining cases -->
 <xsl:template match="*"> 
