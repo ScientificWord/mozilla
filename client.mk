@@ -336,11 +336,11 @@ MODULES_composer :=                             \
   mozilla/composer                              \
   $(NULL)
 				
-MODULES_prince :=                             \
-  $(MODULES_NS_toolkit)                         \
-  mozilla/filters							  \
-  mozilla/prince                              \
-  $(NULL)
+MODULES_prince :=         \
+	$(MODULES_NS_toolkit)   \
+	mozilla/filters \
+	mozilla/prince          \
+	$(NULL)
 
 MODULES_NS_calendar :=                          \
   $(MODULES_NS_toolkit)                         \

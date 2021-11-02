@@ -1,6 +1,6 @@
 modern.jar:
 % skin prince modern %skin/modern/
-  skin/modern/toolbarsOverlay.css       (toolbarsOverlay.css)
+* skin/modern/toolbarsOverlay.css       (toolbarsOverlay.css)
   skin/modern/toolbarbuttonoverride.css (toolbarbuttonoverride.css)
   skin/modern/toolbaroverride.css       (toolbaroverride.css)
   skin/modern/MathmlOverlay.css         (MathMLOverlay.css)

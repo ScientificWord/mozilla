@@ -1208,7 +1208,7 @@ toolbox[iconsize="small"] #formulaButton[disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/math_formula-disabled-sm.png");
 }
 
-#ifdef PROD_SNB
+#ifndef PROD_TEX
 #printButton{
   list-style-image: url("chrome://prince/skin/icons/print.png");
 }

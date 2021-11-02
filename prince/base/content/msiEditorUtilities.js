@@ -11604,6 +11604,13 @@ function detectLicenseInText(someText, editor) {
         fContinue = true;
       }
 #endif
+#ifdef PROD_SN4
+      if (product.indexOf('sn4') === 0) {
+        product = 'Scientific Notebook Lite';
+        prodnum = 1;
+        fContinue = true;
+      }
+#endif
     }
     if (!fContinue) {  // Didn't find fixed license. Look for a site client license
       match = someText.match(regexSite); // returns license with asterisks and license part only

@@ -322,7 +322,7 @@
           </rows>
         </grid>
       </hbox>
-#ifndef PROD_SNB
+#ifdef PROD_TEX
       <hbox id="rotate" align="center">
         <label value="&sizeTab.rotateContents;"/>
         <menulist id = "rotationList" value="rot0" persist="value" sizetopopup="always">

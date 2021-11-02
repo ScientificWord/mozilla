@@ -40,7 +40,7 @@
   <html:p>
   &label.generaluseA;
   </html:p>
-#ifndef PROD_SNB
+#ifdef PROD_TEX
   <html:p>
   &label.generaluseB;
   </html:p>
@@ -86,7 +86,7 @@
       </row>  
     </rows>
   </grid>
-#ifndef PROD_SNB
+#ifdef PROD_TEX
   <vbox flex="1">
   <!-- JLF to BBBM -->
   <label>Raw <texlogo>T<sub>E</sub>X</texlogo></label>

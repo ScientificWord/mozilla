@@ -22,7 +22,6 @@
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorCommandsDebug.js"/>
 
 #include editorkeys.inc
-
   <menu id="fileMenu" label="&fileMenu.label;" accesskey="&filemenu.accesskey;">
     <menupopup id="menu_FilePopup" onpopupshowing="msiEditorInitFileMenu();">
       <menuitem id="menu_newDocument" label="&newDocument.label;"
@@ -56,7 +55,7 @@
       <menuseparator/>
       <menuitem id="printSetupMenuItem" observes="cmd_printSetup" label="&printSetupCmd.label;"
             accesskey="&fileprintsetup.accesskey;"/>
-#ifndef PROD_SNB
+#ifdef PROD_TEX
       <menuitem id="printPreviewPDF" observes="cmd_previewPdf" key="msiTypesetPrintKey"
             label="&printPreviewPDF.label;"/>
 #endif
@@ -155,7 +154,7 @@
                 key="msiFindPrevKey"
                 observes="cmd_findPrev"
                 acceltext="&editfindprev.acceltext;"/>
-#     <menuitem id="menu_replace"       accesskey="&editreplace.accesskey;"        key="findprevkb"     observes="cmd_findPrev"/>
+      <!-- <menuitem id="menu_replace"       accesskey="&editreplace.accesskey;"        key="findprevkb"     observes="cmd_findPrev"/> -->
       <menuseparator id="sep_checkspelling"/>
       <menuitem id="menu_checkspelling"
                 accesskey="&editcheckspelling.accesskey;"
@@ -261,7 +260,7 @@
     </menupopup>
   </menu>
   <!--menu id="tableMenu"/>  -->
-#ifndef PROD_SNB
+#ifdef PROD_TEX
   <menu id="MSITypesetMenu"/>
 #endif
   <menu id="toolsMenu" label="&toolsmenu.label;" accesskey="&toolsmenu.accesskey;">
@@ -348,7 +347,7 @@
                 accesskey="&SourceMode.accesskey;"
                 observes="cmd_HTMLSourceMode"
                 label="&SourceMode.label;"/>
-#ifndef PROD_SNB
+#ifdef PROD_TEX
 <!--   later we could have this bring up the direct print preview in SNB  -->
       <menuitem id="viewPreviewMode"
                 type="radio"
@@ -489,6 +488,7 @@
     </menupopup>
   </menu>
 
+
   <!-- commands updatgd when the editor gets created -->
   <commandset id="commonEditorMenuItems"
           commandupdater="true"
@@ -507,6 +507,9 @@
 #endif
 #ifdef PROD_SNB
       label="&helpmenuSNB.label;"
+#endif
+#ifdef PROD_SN4
+      label="&helpmenuSN4.label;"
 #endif
       oncommand="msiGoDoCommand('cmd_help_contents')" />
     <command id="cmd_printSetup"   oncommand="msiGoDoCommand('cmd_printSetup')"/>

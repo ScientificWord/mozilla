@@ -6,7 +6,7 @@
 <?xml-stylesheet href="chrome://prince/skin/preferences.css" type="text/css"?>
 #include ../productname.inc
 
-#ifndef PROD_SW
+#ifdef PROD_COMPUTE
 
 #include ../requiredEditorOverlays.inc
 <?xul-overlay href="chrome://prince/content/computeOverlay.xul"?>
@@ -26,7 +26,7 @@
             persist="height width screenX screenY"
             xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 
-#ifndef PROD_SW
+#ifdef PROD_COMPUTE
 #include ../keysfordialogs.inc
 
 #include ../requiredEditorCommandSets.inc
@@ -148,7 +148,7 @@
       <preference id="saveintervalseconds"
                   name="swp.saveintervalseconds"
                   type="int"/>
-#ifndef PROD_SNB
+#ifdef PROD_TEX
       <preference id="genTeXonsave"
                   name="swp.generateTeXonsave"
                   type="bool"/>
@@ -458,7 +458,7 @@
               <textbox type="number" label="Save interval in seconds" preference="saveintervalseconds" class="medwidth"/>
               <label value="&SaveIntervalSeconds.label;"/>
             </hbox>
-#ifndef PROD_SNB
+#ifdef PROD_TEX
             <checkbox id="generatetex" label="&GenerateTeXonAutoSave.label;" preference="genTeXonsave"/>
 #endif
           </groupbox>
@@ -840,7 +840,7 @@
       </tabpanels>
     </tabbox>
   </prefpane>
-#ifndef PROD_SW
+#ifdef PROD_COMPUTE
   <prefpane id="prefComp" label="&Computation.label;">
     <tabbox id="outer-box" flex="1" persist="selectedIndex" selectedIndex="0">
 	    <tabs class="tabs-top">
@@ -1956,7 +1956,7 @@ Currently these are all simple signed numbers or identifiers
 
   </prefpane>
 #endif
-#ifndef PROD_SNB
+#ifdef PROD_TEX
   <prefpane id="prefTypesetting" label="&TypesettingTab.label;">
     <preferences>
 <!--       <preference id="bibTeXExecutable"
@@ -2083,16 +2083,15 @@ Currently these are all simple signed numbers or identifiers
 
   <script type="application/x-javascript" src="chrome://prince/content/preferences.js"/>
 
-#ifndef PROD_SW
+#ifdef PROD_COMPUTE
   <!-- Following scripts are needed by any MSI dialog containing an editor -->
 
   <script type="application/x-javascript" src="chrome://prince/content/graphOverlay.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/plotDlgUtils.js" />
-#include ../requiredEditorScripts.inc
-#else
   <script type="application/x-javascript" src="chrome://prince/content/computeOverlay.js"/>
+#include ../requiredEditorScripts.inc
+#endif
   <script type="application/x-javascript" src="chrome://prince/content/preferences.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiDialogUtilities.js"/>
-#endif
 
 </prefwindow>
