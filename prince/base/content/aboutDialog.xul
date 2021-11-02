@@ -38,6 +38,9 @@
 #ifdef PROD_SNB
           src="chrome://prince/content/aboutSNB.png" 
 #endif
+#ifdef PROD_SN4
+          src="chrome://prince/content/aboutSN4.png" 
+#endif
 #ifdef PROD_SWP
           src="chrome://prince/content/aboutSWP.png" 
 #endif

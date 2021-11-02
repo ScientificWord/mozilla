@@ -51,6 +51,6 @@ add_makefiles "
 	prince/TeX/Makefile
 	prince/dictionaries/Makefile
 	prince/user/Makefile
-  prince/Wrappers/Makefile
+	prince/Wrappers/Makefile
 "
 #	prince/saxon/Makefile
