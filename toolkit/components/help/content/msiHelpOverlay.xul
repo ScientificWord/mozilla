@@ -21,7 +21,7 @@
          xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
          onload="msiHelpInit();">
 
-#ifndef PROD_SW
+#ifdef PROD_COMPUTE
   <toolbar id="VCamToolbar" class="chromeclass-toolbar" persist="collapsed" 
     flex = "1" iconsize="small"
     mode="icons" customizable="true"  hidden = "true" observes="vcamactive">

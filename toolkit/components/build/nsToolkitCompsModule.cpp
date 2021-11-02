@@ -71,10 +71,11 @@
 #include "nsAutoCompleteStringArray.h"
 #include "msiAutosub.h"
 #include "msiUtil.h"
-#include "msiSimpleComputeEngine2.h"
 #include "msiKeyMap.h"
 #include "msiArrowStateService.h"
-
+#ifdef PROD_COMPUTE
+#include "msiSimpleComputeEngine2.h"
+#endif
 
 /////////////////////////////////////////////////////////////////////////////
 
@@ -133,7 +134,9 @@ NS_GENERIC_FACTORY_CONSTRUCTOR(nsAutoCompleteMdbResult)
 #endif
 NS_GENERIC_FACTORY_SINGLETON_CONSTRUCTOR(msiAutosub, msiAutosub::GetInstance)
 NS_GENERIC_FACTORY_SINGLETON_CONSTRUCTOR(msiUtil, msiUtil::GetInstance)
+#ifdef PROD_COMPUTE
 NS_GENERIC_FACTORY_SINGLETON_CONSTRUCTOR(msiSimpleComputeEngine2, msiSimpleComputeEngine2::GetInstance)
+#endif
 NS_GENERIC_FACTORY_SINGLETON_CONSTRUCTOR(msiArrowStateService, msiArrowStateService::GetInstance)
 
 NS_GENERIC_FACTORY_SINGLETON_CONSTRUCTOR(msiKeyMap,msiKeyMap::GetInstance)
@@ -235,10 +238,12 @@ static const nsModuleComponentInfo components[] =
    MSI_UTIL_CONTRACTID,
    msiUtilConstructor },
    
+#ifdef PROD_COMPUTE  
  { "SimpleComputeEngine",
    MSI_SIMPLECOMPUTEENGINE2_CID ,
    MSI_SIMPLECOMPUTEENGINE2_CONTRACTID,
    msiSimpleComputeEngine2Constructor },
+#endif  
 
  { "Key map",
    MSI_KEYMAP_CID ,

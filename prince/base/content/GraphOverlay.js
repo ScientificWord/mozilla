@@ -3,7 +3,7 @@
 /* jshint ignore:start */
 // For JSHint documentation see  http://www.jshint.com/docs/
 #include productname.inc
-#ifndef PROD_SW
+#ifdef PROD_COMPUTE
 /* jshint ignore:end */
 Components.utils.import("resource://app/modules/os.jsm");
 //----------------------------------------------------------------------------------

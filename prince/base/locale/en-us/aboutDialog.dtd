@@ -8,6 +8,9 @@
 #ifdef PROD_SNB
 <!ENTITY aboutDialog.title      "About Scientific Notebook">
 #endif
+#ifdef PROD_SNB
+<!ENTITY aboutDialog.title      "About Scientific Notebook Lite">
+#endif
 <!ENTITY copyright              "Copyright and contributor information">
 <!ENTITY copyrightLink          "http://www.mackichan.com">
 <!ENTITY AboutTab.label "About">

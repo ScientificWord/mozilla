@@ -1,5 +1,5 @@
 "use strict";
-#ifndef PROD_SW
+#ifdef PROD_COMPUTE
 Components.utils.import("resource://app/modules/computelogger.jsm");
 #endif
 Components.utils.import("resource://app/modules/unitHandler.jsm");
@@ -37,9 +37,9 @@ function initialize()
   tree.currentIndex = 0;
   showShellsInDir(tree);
   setGraphicLayoutPreferences("graphics");
-  setGraphicLayoutPreferences("plot");
-#ifndef PROD_SW
+#ifdef PROD_COMPUTE
   try {
+	  setGraphicLayoutPreferences("plot");
     initPlotItemPreferences();
   }
   catch(e) {}
@@ -758,7 +758,7 @@ function setFilePrefFromTextbox(aPref)
 
 function setTypesetFilePrefTextboxes()
 {
-#ifndef PROD_SNB
+#ifdef PROD_TEX
   setTextboxValue(document.getElementById("bibTeXExecutable"));
   setTextboxValue(document.getElementById("bibTeXDatabaseDir"));
   setTextboxValue(document.getElementById("bibTeXStyleDir"));
@@ -768,7 +768,7 @@ function setTypesetFilePrefTextboxes()
 
 function getTypesetFilePrefs()
 {
-#ifndef PROD_SNB
+#ifdef PROD_TEX
   setFilePrefFromTextbox(document.getElementById("bibTeXExecutable"));
   setFilePrefFromTextbox(document.getElementById("bibTeXDatabaseDir"));
   setFilePrefFromTextbox(document.getElementById("bibTeXStyleDir"));

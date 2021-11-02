@@ -1,6 +1,6 @@
 classic.jar:
 % skin prince classic %skin/classic/
-  skin/classic/toolbarsOverlay.css	(toolbarsOverlay.css)
+* skin/classic/toolbarsOverlay.css	(toolbarsOverlay.css)
   skin/classic/toolbarbuttonoverride.css	(toolbarbuttonoverride.css)
   skin/classic/toolbaroverride.css	(toolbaroverride.css)
   skin/classic/MathmlOverlay.css	(MathMLOverlay.css)
