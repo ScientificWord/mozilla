@@ -43,7 +43,7 @@
       <toolbarbutton id="newButton"/>
       <toolbarbutton id="openButton"/>
       <toolbarbutton id="saveButton"/>
-#ifndef PROD_SNB
+#ifdef PROD_TEX
       <toolbarbutton id="exporttexButton"/>
 #endif
       <toolbarbutton id="exportwebButton"/>
@@ -60,7 +60,7 @@
       <toolbarbutton id="undoButton"/>
       <toolbarbutton id="redoButton"/>
 
-#ifndef PROD_SW
+#ifdef PROD_COMPUTE
       <toolbarbutton id="evalButton"/>
       <toolbarbutton id="evalnumButton"/>
       <toolbarbutton id="solveButton" />
@@ -93,7 +93,7 @@
       <toolbarbutton id="footnoteButton" tooltiptext="&footnoteButton.tooltip;" label="&footnoteButton.label;" observes="cmd_footnote"/>
       <toolbarbutton id="markerButton" tooltiptext="&markerButton.tooltip;" label="&markerButton.label;" observes="cmd_marker" />
       <toolbarbutton id="htlinkButton" command="cmd_link" tooltiptext="&htlinkButton.tooltip;" label="&htlinkButton.label;" />
-#ifndef PROD_SNB
+#ifdef PROD_TEX
 <!--      <toolbarbutton id="pdfcompileButton" tooltiptext="&pdfcompileButton.tooltip;" label="&pdfcompileButton.label;"/> -->
       <toolbarbutton id="packagesButton" tooltiptext="&packagesButton.tooltip;" label="&packagesButton.label;" observes="cmd_MSItypesetOptionsAndPackagesCmd"/>
       <toolbarbutton id="indexentryButton" tooltiptext="&indexentryButton.tooltip;" label="&indexentryButton.label;" observes="cmd_MSIinsertIndexEntryCmd"/>
@@ -131,7 +131,11 @@
       context="toolbar-context-menu"
 #ifdef PROD_SNB
  defaultset= "newButton,openButton,saveButton,printButton,printPreviewButton,mathButton,textButton,TextTags,ParaTags,StructTags,FrontMTags"
-#else
+#endif
+#ifdef PROD_SN4
+defaultset= "newButton,openButton,saveButton,printButton,mathButton,textButton,TextTags,ParaTags,StructTags,FrontMTags"
+#endif
+#ifdef PROD_TEX
 defaultset=
 "newButton,openButton,saveButton,printButton,printPreviewButton,printPreviewButtonMac,mathButton,textButton,TextTags,ParaTags,StructTags,FrontMTags"
 #endif
@@ -147,9 +151,14 @@ defaultset=
       context="toolbar-context-menu"
 #ifdef PROD_SNB
 defaultset="spellcheckButton,copyButton,cutButton,pasteButton,boldButton,italicButton,undoButton,redoButton,findButton,importimageButton,exportwebButton,footnoteButton,noteButton,markerButton,htlinkButton,citationButton,hspaceButton,importtexButton"
-#elifdef PROD_SW
+#endif
+#ifdef PROD_SN4
+defaultset="spellcheckButton,copyButton,cutButton,pasteButton,boldButton,italicButton,undoButton,redoButton,findButton,importimageButton,exportwebButton,footnoteButton,noteButton,markerButton,htlinkButton,citationButton,hspaceButton,importtexButton"
+#endif
+#ifdef PROD_SW
  defaultset="spellcheckButton,copyButton,cutButton,pasteButton,boldButton,italicButton,undoButton,redoButton,findButton,importimageButton,exportwebButton,footnoteButton,noteButton,markerButton,htlinkButton,citationButton,hspaceButton,indexentryButton,xrefButton,texfieldButton,bibliographyButton,importtexButton"
-#else
+#endif
+#ifdef PROD_SWP
 defaultset="spellcheckButton,copyButton,cutButton,pasteButton,boldButton,italicButton,undoButton,redoButton,findButton,importimageButton,exportwebButton,footnoteButton,noteButton,markerButton,htlinkButton,citationButton,hspaceButton,indexentryButton,xrefButton,texfieldButton,bibliographyButton,importtexButton"
 #endif
       mode="icons"
@@ -164,7 +173,8 @@ defaultset="spellcheckButton,copyButton,cutButton,pasteButton,boldButton,italicB
       context="toolbar-context-menu"
 #ifdef PROD_SW
       defaultset="fractionButton,radicalButton,superscriptButton,subscriptButton,parenthesesButton,bracketsButton,sumButton,integralButton,unitnameButton,displayButton,bigopButton,genBracketsButton,matrixButton,mathnameButton,binomialButton,decorationButton"
-#else
+#endif
+#ifdef PROD_COMPUTE
 defaultset="evalButton,evalnumButton,solveButton,simplifyButton,expandButton,plotButton,plot3DButton,defineButton,showdefsButton,stopButton,fractionButton,radicalButton,superscriptButton,subscriptButton,parenthesesButton,bracketsButton,sumButton,integralButton,unitnameButton,displayButton,bigopButton,genBracketsButton,matrixButton,mathnameButton,binomialButton,decorationButton"
 #endif
       mode="icons"
@@ -193,7 +203,7 @@ defaultset="evalButton,evalnumButton,solveButton,simplifyButton,expandButton,plo
     <observes element="inTextMenuState" onbroadcast="msiOnButtonUpdate(this.parentNode,'cmd_MSItext')"/>
   </toolbarbutton>
 
-#ifndef PROD_SW
+#ifdef PROD_COMPUTE
   <toolbarbutton id="evalButton" class="toolbarbutton-1" tooltiptext="&MSIComputeEval.tooltip;"
     label="&MSIComputeEval.label;" observes="cmd_MSIComputeEval" >
   </toolbarbutton>
@@ -296,7 +306,7 @@ defaultset="evalButton,evalnumButton,solveButton,simplifyButton,expandButton,plo
   <toolbarbutton id="saveButton" class="toolbarbutton-1" observes="cmd_save"
                  tooltiptext="&saveToolbarCmd.tooltip;"
                   label="&saveToolbarCmd.label;" />
-#ifdef PROD_SNB
+#ifndef PROD_TEX
   <toolbarbutton id="printPreviewButton"  class="toolbarbutton-1"
         observes="cmd_previewDirect"/>
   <toolbarbutton id="printButton"  class="toolbarbutton-1"

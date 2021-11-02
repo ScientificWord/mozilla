@@ -249,6 +249,9 @@
 #ifdef PROD_SNB
 <!ENTITY helpmenuSNB.label    "Scientific Notebook help...">
 #endif
+#ifdef PROD_SN4
+<!ENTITY helpmenuSN4.label    "Scientific Notebook Lite help...">
+#endif
 <!ENTITY helpmenuProduct.accesskey    "S">
 <!ENTITY helpmenuWebsite.label    "MacKichan Software website">
 <!ENTITY helpmenuWebsite.accesskey    "M">

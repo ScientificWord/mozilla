@@ -84,10 +84,10 @@ var importTimer;
 //var typesetGraphicTypes = ["eps", "pdf", "png", "jpg"];
 var videoTypes = ["avi","mov","qt","mp4","mpeg","mpg","prc","rm","rv","swf","u3d","wmv"];
 
-#ifdef PROD_SNB
-var bNeedTypeset = false;
-#else
+#ifdef PROD_TEX
 var bNeedTypeset = true;
+#else
+var bNeedTypeset = false;
 #endif
 
 // dialog initialization code
@@ -719,6 +719,9 @@ function chooseImgFile(fBrowsing)
 #ifdef PROD_SNB
       product = "snb";
 #endif
+#ifdef PROD_SN4
+      product = "sn4";
+#endif
 
     internalFile = graphicDir.clone(false);
     internalFile.append(leafname);
@@ -1069,6 +1072,9 @@ function getGraphicsImportTargets(inputFile, mode)
 #endif
 #ifdef PROD_SNB
   product = "snb";
+#endif
+#ifdef PROD_SN4
+  product = "sn4";
 #endif
   if (!mode || !mode.length)
     mode = "import";
@@ -1651,6 +1657,9 @@ function onAccept()
 #endif
 #ifdef PROD_SNB
     product = "snb";
+#endif
+#ifdef PROD_SN4
+    product = "sn4";
 #endif
 
     graphicsConverter.init(window, getDocumentGraphicsDir('').parent, product);

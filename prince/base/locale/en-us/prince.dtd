@@ -11,6 +11,10 @@
 <!ENTITY prince.title       "Scientific Notebook">
 <!ENTITY editorWindow.titlemodifier	"Scientific Notebook">
 #endif
+#ifdef PROD_SN4
+<!ENTITY prince.title       "Scientific Notebook Lite">
+<!ENTITY editorWindow.titlemodifier	"Scientific Notebook Lite">
+#endif
 <!ENTITY editorWindow.titlemodifierseparator	" - ">
 
 
