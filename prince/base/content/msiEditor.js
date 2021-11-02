@@ -150,6 +150,9 @@ function initMetaData(doc) {
 #ifdef PROD_SNB
   product = "Scientific Notebook";
 #endif
+#ifdef PROD_SN4
+  product = "Scientific Notebook Lite";
+#endif
   node.setAttribute("product", product);
   node.setAttribute("version", navigator.productSub);
   var dt = new Date();
@@ -176,6 +179,9 @@ function onsaveMetaData(doc) {
 #endif
 #ifdef PROD_SNB
   product = "Scientific Notebook";
+#endif
+#ifdef PROD_SN4
+  product = "Scientific Notebook Lite";
 #endif
   node.setAttribute("product", product);
   node.setAttribute("version", navigator.productSub);
@@ -301,7 +307,7 @@ function msiInitializeEditorForElement(editorElement, initialText, bWithContaini
     commandTable.registerCommand("cmd_findPrev", msiFindAgainCommand);
 
     msiSetupMSIMathMenuCommands(editorElement);
-#ifndef PROD_SW
+#ifdef PROD_COMPUTE
     if (msiSetupMSIComputeMenuCommands) msiSetupMSIComputeMenuCommands(editorElement);
 #endif
 #ifndef PROD_SNB
@@ -552,6 +558,9 @@ var msiResizeListener = {
 #endif
 #ifdef PROD_SNB
           product = "snb";
+#endif
+#ifdef PROD_SN4
+          product = "sn4";
 #endif
 
         var ext = /\....$/.exec(copiedSrcUrl)[0];
@@ -1237,6 +1246,9 @@ function msiEditorDocumentObserver(editorElement) {
 #ifdef PROD_SNB
             product = "snb";
 #endif
+#ifdef PROD_SN4
+            product = "sn4";
+#endif
 
           var doc = msiGetEditor(this.mEditorElement).document;
           var win = this.mEditorElement.contentWindow;
@@ -1312,7 +1324,7 @@ function msiEditorDocumentObserver(editorElement) {
             value: null
           };
           editor.canUndo(enabled, can);
-#ifndef PROD_SNB
+#ifdef PROD_TEX
           if (enabled.value && can.value && !isLicensed()) {
             document.getElementById("cmd_PreviewMode").setAttribute("disabled", true);
           } else
@@ -1395,6 +1407,10 @@ function copyAndLoadWelcomeDoc() {
   welcomeLeaf = "swwelcome.sci";
 #endif
 #ifdef PROD_SNB
+  welcomeLeaf = "snwelcome.sci";
+#endif
+#ifdef PROD_SN4
+// BBM Fix!!
   welcomeLeaf = "snwelcome.sci";
 #endif
   sourceFile.append(welcomeLeaf);

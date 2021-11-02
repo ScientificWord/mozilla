@@ -1454,7 +1454,7 @@ var msiPrintDirectCommand =
       try {
         var editorElement = msiGetActiveEditorElement();
         var doc = editorElement.contentDocument;
-#ifndef PROD_SW
+#ifdef PROD_COMPUTE
         rebuildSnapshots(doc);
 #endif
         PrintUtils.print();
@@ -1507,7 +1507,7 @@ var msiPreviewDirectCommand =
         var doc = editorElement.contentDocument;
         // var enterPP = window.onEnterPP;
         // var exitPP = window.exitPP;
-#ifndef PROD_SW
+#ifdef PROD_COMPUTE
         rebuildSnapshots(doc);
         window.setTimeout(function() {
             PrintUtils.printPreview(onEnterPP, onExitPP);
@@ -2748,7 +2748,7 @@ function msiSaveDocument(aContinueEditing, aSaveAs, aSaveCopy, aMimeType, editor
     AlertWithTitle(saveDocStr, failedStr);
     throw Components.results.NS_ERROR_UNEXPECTED;
   }
-#ifndef PROD_SNB
+#ifdef PROD_TEX
   document.getElementById("preview-frame").loadURI("about:blank");  // This should cause Acrobat to loosen its grip on our pdf file.
 #endif
 
@@ -3973,7 +3973,7 @@ var msiDirectPrintCommand =
       {
         var editorElement = msiGetActiveEditorElement();
         var doc = editorElement.contentDocument;
-#ifndef PROD_SW
+#ifdef PROD_COMPUTE
         rebuildSnapshots(doc);
 #endif
         msiFinishHTMLSource();
@@ -4368,6 +4368,9 @@ var msiConvertGraphics =
 #ifdef PROD_SNB
       product = "snb";
 #endif
+#ifdef PROD_SN4
+      product = "sn4";
+#endif
 
     if (!editor) {
       throw("No editor in msiConvertGraphics");
@@ -4429,6 +4432,9 @@ var msiHelpContents =
 #endif
 #ifdef PROD_SNB
       product = 'snb';
+#endif
+#ifdef PROD_SN4
+      product = 'sn4';
 #endif
       openHelp('swp-doc','chrome://prince/locale/helpfiles/' + product + '.rdf');
     }

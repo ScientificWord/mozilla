@@ -55,7 +55,7 @@ function msiEditPageOrFrame()
 
 function msiPrefs()
 {
-#ifndef PROD_SW
+#ifdef PROD_COMPUTE
   var compsample = GetCurrentEngine();
   msiComputeLogger.Sent("user settings","");
 #endif

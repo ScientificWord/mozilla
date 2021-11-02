@@ -26,6 +26,8 @@ endif
 
 PLUGINS := $(wildcard	$(srcdir)/$(PLATFORM)/*)
 
+ifdef PROD_COMPUTE
 libs::	$(PLUGINS)
 	$(INSTALL)	$(PLUGINS)	$(FINAL_TARGET)/plugins
+endif
 

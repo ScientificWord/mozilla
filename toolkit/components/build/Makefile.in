@@ -64,9 +64,8 @@ REQUIRES = 	\
 		intl \
 		docshell \
 		autosub \
-    msiutil \
+        msiutil \
 		autocomplete \
-		compute \
 		keymap \
 		arrowstate \
 		editor \
@@ -90,6 +89,11 @@ REQUIRES = 	\
 		storage \
 		$(NULL)
 
+ifdef PROD_COMPUTE
+	REQUIRES += compute 
+endif
+
+
 ifdef ALERTS_SERVICE
 REQUIRES	+= alerts
 endif
@@ -104,17 +108,21 @@ LOCAL_INCLUDES = \
 	-I$(srcdir)/../typeaheadfind/src \
 	-I$(srcdir)/../url-classifier/src \
 	-I$(srcdir)/../feeds/src \
-	-I$(srcdir)/../Compute/src \
-  -I$(srcdir)/../Compute/Engines/MuPAD \
-	-I$(srcdir)/../Compute/Engines \
-	-I$(srcdir)/../Compute/public \
-  -I$(srcdir)/../Compute/computelib \
 	-I$(srcdir)/../autosub/src \
 	-I$(srcdir)/../msiutil/src \
 	-I$(srcdir)/../autocomplete/src \
 	-I$(srcdir)/../keymap/src \
 	-I$(srcdir)/../arrowstate/src \
 	$(NULL)
+ifdef PROD_COMPUTE
+LOCAL_INCLUDES += \
+	-I$(srcdir)/../Compute/src \
+    -I$(srcdir)/../Compute/Engines/MuPAD \
+	-I$(srcdir)/../Compute/Engines \
+	-I$(srcdir)/../Compute/public \
+    -I$(srcdir)/../Compute/computelib 
+endif
+
 
 ifdef ALERTS_SERVICE
 LOCAL_INCLUDES += \
@@ -140,9 +148,10 @@ ifdef MOZ_MSI_PRINCE
 endif
 
 
-
+ifdef PROD_COMPUTE
 ifeq ($(OS_ARCH),WINNT)
 SHARED_LIBRARY_LIBS += 	$(srcdir)/../Compute/MuPAD/win32/$(LIB_PREFIX)mupkernel.$(LIB_SUFFIX)
+endif
 endif
 
 

@@ -113,7 +113,7 @@ function onAccept()
 	var color = getColorFromColorPicker();
 	var fontsize = unitHandler.getValueAs(getFontSize(), "pt");
 	var rawtex = null;
-#ifndef PROD_SNB
+#ifdef PROD_TEX
   rawtex = getRawTeX();
 #endif
 

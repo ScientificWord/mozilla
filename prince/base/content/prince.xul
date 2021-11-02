@@ -45,6 +45,9 @@
 #ifdef PROD_SNB
   <!-- product is snb-->
 #endif
+#ifdef PROD_SN4
+  <!-- product is sn4-->
+#endif
 
    <script type="application/x-javascript" src="chrome://editor/content/StructBarContextMenu.js"/>
    <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
@@ -99,7 +102,7 @@
         <iframe id="content-source"
                 src="resource://app/res/cm2.html" flex="1" tooltip="aSourceTooltip"/>
       </vbox>
-#ifndef PROD_SNB
+#ifdef PROD_TEX
       <browser id="preview-frame" src="about:blank" disablehistory="1" flex="1"/>
 #endif
     </deck>
@@ -111,7 +114,7 @@
            oncommand="msiGoDoCommand('cmd_AllTagsMode');" tooltiptext="&TagsMode.tooltip;"/>
        <tab id="SourceModeButton"   class="tab-bottom edit-mode _plain" type="text" selected="0" label="&SourceMode.label;"
              oncommand="msiGoDoCommand('cmd_HTMLSourceMode');" tooltiptext="&SourceMode.tooltip;" dir="&SourceTabDirection;"/>
-#ifndef PROD_SNB
+#ifdef PROD_TEX
        <tab id="PreviewModeButton"  class="tab-bottom edit-mode _plain" type="text" selected="0" label="&PreviewMode.label;"
              command="cmd_PreviewMode" tooltiptext="&PreviewMode.tooltip;"/>
 #endif

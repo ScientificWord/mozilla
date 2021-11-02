@@ -19,6 +19,12 @@
 <!ENTITY mainWindow.titlemodifier	"Scientific Notebook">
 <!ENTITY aboutCmd.label         "About Scientific Notebook">
 #endif
+#ifdef PROD_SN4
+<!ENTITY  brandFullName         "Scientific Notebook Lite">
+<!ENTITY  brandShortName        "Scientific Notebook Lite">
+<!ENTITY mainWindow.titlemodifier	"Scientific Notebook Lite">
+<!ENTITY aboutCmd.label         "About Scientific Notebook Lite">
+#endif
 <!ENTITY  vendorShortName       "MacKichan Software, Inc">
 <!ENTITY  sidebarName           "Sidebar">
 <!ENTITY mainWindow.titlemodifiermenuseparator	" - ">

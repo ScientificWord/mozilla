@@ -34,7 +34,7 @@
   &instructions;
 </description>
 <separator/>
-#ifndef PROD_SNB
+#ifdef PROD_TEX
 
 <checkbox id="auxfiles" persist="checked" checked="true" label="&auxfiles.label;"/>
 <checkbox id="logfiles" persist="checked" checked="true" label="&logfiles.label;"/>

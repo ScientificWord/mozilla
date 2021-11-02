@@ -1,1 +1,1 @@
-#define PROD_SW
+#define PROD_SN4
