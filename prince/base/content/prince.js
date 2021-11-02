@@ -836,7 +836,7 @@ function exportTeX()
   var editorElement = msiGetActiveEditorElement();
   var editor = msiGetEditor(editorElement);
   if (!editor) return;
-#ifndef PROD_SW
+#ifdef PROD_COMPUTE
   rebuildSnapshots(editor.document);
 #endif
   uri = editor.document.documentURI;
@@ -1030,7 +1030,7 @@ function compileDocument(preview)
   var editorElement = msiGetActiveEditorElement();
   var editor = msiGetEditor(editorElement);
   if (!editor) return null;
-#ifndef PROD_SW
+#ifdef PROD_COMPUTE
   rebuildSnapshots(editor.document);
 #endif
   var compiler = "pdflatex";

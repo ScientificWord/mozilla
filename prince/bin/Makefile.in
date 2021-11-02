@@ -6,12 +6,12 @@ VPATH		= @srcdir@
 include $(DEPTH)/config/autoconf.mk
 
 ifeq ($(OS_ARCH),WINNT)
-platform	= windows
+	platform	= windows
 else
 ifeq ($(OS_ARCH),Darwin)
-platform	= OSX
+	platform	= OSX
 else
-platform	= Linux
+	platform	= Linux
 endif
 endif
 

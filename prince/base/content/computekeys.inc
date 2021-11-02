@@ -1,5 +1,5 @@
 #include productname.inc
-#ifndef PROD_SW
+#ifdef PROD_COMPUTE
 <keyset id="msiComputeKeySet">
   <key id="MSIdefineKey"     modifiers="accel,alt" key="&MSIComputeDefineCmd.keybinding;" oncommand="doComputeCommand('cmd_compute_Define')"/>    
   <key id="MSIdefineKey2"     modifiers="accel" key="&MSIComputeDefineCmd.keybinding;" oncommand="doComputeCommand('cmd_compute_Define')"/>    

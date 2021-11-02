@@ -232,10 +232,10 @@ function msiEditorOnLoad()
 //    commandTable.registerCommand("cmd_findPrev",    msiFindAgainCommand);
 //
     msiSetupMSIMathMenuCommands(editorElement);
-#ifndef PROD_SW
+#ifdef PROD_COMPUTE
     if (msiSetupMSIComputeMenuCommands) msiSetupMSIComputeMenuCommands(editorElement);
 #endif
-#ifndef PROD_SNB
+#ifdef PROD_TEX
     msiSetupMSITypesetMenuCommands(editorElement);
     msiSetupMSITypesetInsertMenuCommands(editorElement);
 #endif

@@ -34,6 +34,9 @@ BEGIN
 #ifdef PROD_SNB
             VALUE "FileDescription",  "Scientific Notebook and related"
 #endif
+#ifdef PROD_SN4
+            VALUE "FileDescription",  "Scientific Notebook Lite"
+#endif
             VALUE "FileVersion",      "6.1.0"
             VALUE "ProductVersion",   "6.1.0"
             VALUE "InternalName",     "Prince"
@@ -50,6 +53,9 @@ BEGIN
 #endif
 #ifdef PROD_SNB
             VALUE "ProductName",       "Scientific Notebook"
+#endif
+#ifdef PROD_SN4
+            VALUE "ProductName",       "Scientific Notebook Lite"
 #endif
         END
     END
