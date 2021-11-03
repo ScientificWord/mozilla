@@ -12,8 +12,9 @@ include $(DEPTH)/config/autoconf.mk
 DIRS		= base samples res plugins helpfiles bin sidebar shells dictionaries user  \
 	fastcursor modules utilities conversions \
 	$(NULL)
+# Took out helpfiles from DIRS above since they were making the initial package on GitHub too big
 
-ifneq (,$PROD_TEX)
+ifeq ($PROD_TEX,1)
 	DIRS += Wrappers TeX
 endif
 
@@ -22,17 +23,16 @@ PREF_JS_EXPORTS	= $(srcdir)/prince-prefs.js
 # DIST_FILES	= application.ini
 
 ifneq (,$(filter windows,$(MOZ_WIDGET_TOOLKIT)))
-	ICONS		= icons/SWP.ico icons/SW.ico icons/SNB.ico icons/SN4.ico icons/document.ico
+	ICONS= icons/SWP.ico icons/SW.ico icons/SNB.ico icons/SN4.ico icons/document.ico
 endif
 ifneq (,$(filter gtk gtk2,$(MOZ_WIDGET_TOOLKIT)))
-	ICONS		= icons/SWP.xpm
+	ICONS= icons/SWP.xpm
 endif
 ifneq (,$(filter mac cocoa,$(MOZ_WIDGET_TOOLKIT)))
-	ICONS		= icons/SWP.icns icons/SW.icns icons/SNB.icns icons/SN4.ico icons/document.icns
+	ICONS= icons/SWP.icns icons/SW.icns icons/SNB.icns icons/SN4.ico icons/document.icns
 endif
 
 include $(topsrcdir)/config/rules.mk
-
 
 ifneq (,$(ICONS))
 libs:: $(ICONS)
