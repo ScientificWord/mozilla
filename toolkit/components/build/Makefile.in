@@ -89,7 +89,7 @@ REQUIRES = 	\
 		storage \
 		$(NULL)
 
-ifdef PROD_COMPUTE
+ifeq ($PROD_COMPUTE,1)
 	REQUIRES += compute 
 endif
 
@@ -114,7 +114,7 @@ LOCAL_INCLUDES = \
 	-I$(srcdir)/../keymap/src \
 	-I$(srcdir)/../arrowstate/src \
 	$(NULL)
-ifdef PROD_COMPUTE
+ifeq ($PROD_COMPUTE,1)
 LOCAL_INCLUDES += \
 	-I$(srcdir)/../Compute/src \
     -I$(srcdir)/../Compute/Engines/MuPAD \
@@ -148,7 +148,7 @@ ifdef MOZ_MSI_PRINCE
 endif
 
 
-ifdef PROD_COMPUTE
+ifeq ($PROD_COMPUTE,1)
 ifeq ($(OS_ARCH),WINNT)
 SHARED_LIBRARY_LIBS += 	$(srcdir)/../Compute/MuPAD/win32/$(LIB_PREFIX)mupkernel.$(LIB_SUFFIX)
 endif
