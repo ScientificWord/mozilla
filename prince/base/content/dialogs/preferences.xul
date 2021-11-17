@@ -6,9 +6,8 @@
 <?xml-stylesheet href="chrome://prince/skin/preferences.css" type="text/css"?>
 #include ../productname.inc
 
-#ifdef PROD_COMPUTE
-
 #include ../requiredEditorOverlays.inc
+#ifdef PROD_COMPUTE
 <?xul-overlay href="chrome://prince/content/computeOverlay.xul"?>
 
 #endif
@@ -26,9 +25,7 @@
             persist="height width screenX screenY"
             xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 
-#ifdef PROD_COMPUTE
 #include ../keysfordialogs.inc
-
 #include ../requiredEditorCommandSets.inc
 <!-- 
   <commandset id="tasksCommands">
@@ -46,7 +43,7 @@
   </commandset>
   <commandset id="MSImathMenuCommands"/>
  -->
-#endif
+
 <broadcaster id="floatEnabled" disabled="true"/>
 <broadcaster id="inlineOffsetEnabled" disabled="true"/>
 <broadcaster id="locationEnabled" />
@@ -2089,8 +2086,8 @@ Currently these are all simple signed numbers or identifiers
   <script type="application/x-javascript" src="chrome://prince/content/graphOverlay.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/plotDlgUtils.js" />
   <script type="application/x-javascript" src="chrome://prince/content/computeOverlay.js"/>
-#include ../requiredEditorScripts.inc
 #endif
+#include ../requiredEditorScripts.inc
   <script type="application/x-javascript" src="chrome://prince/content/preferences.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiDialogUtilities.js"/>
 
