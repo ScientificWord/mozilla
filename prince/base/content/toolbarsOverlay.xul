@@ -129,15 +129,11 @@
       flex = "1"
       tbalign="center"
       context="toolbar-context-menu"
-#ifdef PROD_SNB
- defaultset= "newButton,openButton,saveButton,printButton,printPreviewButton,mathButton,textButton,TextTags,ParaTags,StructTags,FrontMTags"
-#endif
-#ifdef PROD_SN4
-defaultset= "newButton,openButton,saveButton,printButton,mathButton,textButton,TextTags,ParaTags,StructTags,FrontMTags"
-#endif
 #ifdef PROD_TEX
 defaultset=
 "newButton,openButton,saveButton,printButton,printPreviewButton,printPreviewButtonMac,mathButton,textButton,TextTags,ParaTags,StructTags,FrontMTags"
+#else
+ defaultset= "newButton,openButton,saveButton,printButton,printPreviewButton,mathButton,textButton,TextTags,ParaTags,StructTags,FrontMTags"
 #endif
       mode="icons"
       customizable="true" />
@@ -171,11 +167,10 @@ defaultset="spellcheckButton,copyButton,cutButton,pasteButton,boldButton,italicB
       flex = "1"
       tbalign="center"
       context="toolbar-context-menu"
-#ifdef PROD_SW
-      defaultset="fractionButton,radicalButton,superscriptButton,subscriptButton,parenthesesButton,bracketsButton,sumButton,integralButton,unitnameButton,displayButton,bigopButton,genBracketsButton,matrixButton,mathnameButton,binomialButton,decorationButton"
-#endif
 #ifdef PROD_COMPUTE
 defaultset="evalButton,evalnumButton,solveButton,simplifyButton,expandButton,plotButton,plot3DButton,defineButton,showdefsButton,stopButton,fractionButton,radicalButton,superscriptButton,subscriptButton,parenthesesButton,bracketsButton,sumButton,integralButton,unitnameButton,displayButton,bigopButton,genBracketsButton,matrixButton,mathnameButton,binomialButton,decorationButton"
+#else
+defaultset="fractionButton,radicalButton,superscriptButton,subscriptButton,parenthesesButton,bracketsButton,sumButton,integralButton,unitnameButton,displayButton,bigopButton,genBracketsButton,matrixButton,mathnameButton,binomialButton,decorationButton"
 #endif
       mode="icons"
       customizable="true" />
