@@ -55,7 +55,7 @@ pref("editor.publish.",                      "");
 pref("editor.resizing.preserve_ratio",       true);
 pref("editor.save_associated_files",         true);
 pref("editor.text_color",                   "#000000");
-pref("editor.throbber.url","chrome://editor-region/locale/region.properties");
+# pref("editor.throbber.url","chrome://editor-region/locale/region.properties");
 pref("accessibility.typeaheadfind.flashBar", 0);
 pref("editor.use_background_image",         false);
 pref("editor.use_custom_default_colors", 1);

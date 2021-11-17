@@ -1,0 +1,35 @@
+# sh
+# Build configuration script
+#
+# See http://www.mozilla.org/build/unix.html for build instructions.
+#
+#
+# Options for client.mk.
+
+. $topsrcdir/prince/config/mozconfig
+mk_add_options MOZ_OBJDIR=@TOPSRCDIR@/../release
+mk_add_options MOZ_MAKE_FLAGS=" -j2"
+ac_add_options --enable-optimize
+ac_add_options --disable-tests
+ac_add_options --disable-mochitest
+ac_add_options --enable-shared
+ac_add_options --disable-static
+ac_add_options --enable-chrome-format=flat
+ac_add_options --enable-libxul
+ac_add_options --enable-macos-target=10.5
+CC="gcc-4.0 -arch i386"
+CXX="g++-4.0 -arch i386"
+DARWIN_VERSION=`uname -r`
+ac_add_options --target=i386-apple-darwin9.0.0
+ac_add_options --with-macos-sdk=/Developer/SDKs/MacOSX10.5.sdk
+ac_add_options --enable-macos-target=10.5
+# bug 491774. crashreporter won't build in cross compile
+ac_add_options --disable-crashreporter
+HOST_CC="gcc-4.0"
+HOST_CXX="g++-4.0"
+RANLIB=ranlib
+AR=ar
+AS=$CC
+LD=ld
+STRIP="strip -x -S"
+CROSS_COMPILE=1
