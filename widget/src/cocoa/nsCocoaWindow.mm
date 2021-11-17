@@ -443,9 +443,8 @@ NS_IMETHODIMP nsCocoaWindow::Create(nsNativeWidget aNativeWindow,
                       nsWidgetInitData *aInitData)
 {
   return(StandardCreate(nsnull, aRect, aHandleEventFunction, aContext,
-                        aAppShell, aToolkit, aInitData, aNativeWindow));
+	                        aAppShell, aToolkit, aInitData, aNativeWindow));
 }
-
 
 NS_IMETHODIMP nsCocoaWindow::Create(nsIWidget* aParent,
                       const nsRect &aRect,
