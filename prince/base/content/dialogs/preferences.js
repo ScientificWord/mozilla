@@ -514,7 +514,7 @@ function writeGraphicPlacementPreferences(whichIDs)
   pref.value = pos + "," + placeLocation + "," + placement;
 }
 
-
+#ifdef PROD_COMPUTE
 function onComputeSettingChange(pref, force)
 {
   if (force || pref.instantApply)
@@ -576,7 +576,9 @@ function onComputeSettingChange(pref, force)
     dump(e.message+"\n");
   }
 }
+#endif
 
+#ifdef PROD_TEX
 function onBrowseBibTeXExecutable()
 {
   var filePicker = Components.classes["@mozilla.org/filepicker;1"].createInstance(Components.interfaces.nsIFilePicker);
@@ -597,6 +599,7 @@ function onBrowseBibTeXExecutable()
 //    document.getElementById("bibTeXExecutableTextbox").value = gDialog.bibTeXExe.path;
   }
 }
+#endif
 
 function onBrowseDir( textid )
 {
@@ -625,6 +628,7 @@ function onBrowseDir( textid )
   }
 }
 
+#ifdef PROD_TEX
 function onBrowseBibTeXDatabaseDir()
 {
   var dirPicker = Components.classes["@mozilla.org/filepicker;1"].createInstance(Components.interfaces.nsIFilePicker);
@@ -670,6 +674,7 @@ function onBrowseBibTeXStyleDir()
 //    document.getElementById("bibTeXDatabaseDirTextbox").value = gDialog.bibTeXDBDir.path;
   }
 }
+#endif
 
 
 function systemDocDir()
@@ -817,6 +822,8 @@ function getColorAndUpdatePref(id)
   // next line for immediate writing only
   writeColorWell(id);
 }
+
+#ifdef PROD_COMPUTE
 
 //***************************Plot Item tab**************************//
 var plotItemIds = ["plotLineColorWell", "plotDirectionalShading", "plotBaseColorWell", "plotSecondColorWell",
@@ -1333,6 +1340,7 @@ function storePlotColorWell(colorId)
       pref.value = theVal;
   }
 }
+#endif
 
 function elementDisabledOrHidden(anElement)
 {

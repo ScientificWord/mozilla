@@ -10,7 +10,6 @@ Components.utils.import("resource://app/modules/mathnamedictionary.jsm");
 #include productname.inc
 const msiEditorJS_duplicateTest = "Bad";
 var dynAllTagsStyleSheet;
-var licenseWarningGiven = false;
 
 function aColorObj(editorElement) {
   if (!editorElement) editorElement = msiGetActiveEditorElement();
@@ -820,61 +819,6 @@ function coalesceDocumentOptions(editor) {
   }
 }
 
-var license_timercallback = {
-  notify: function(timer)
-  {
-    var licenseStatus, daysleft, prefs, timestamp, date, d, prefs, now;
-    var elapsed = 0;
-    var day = 24*3600*1000; // one day in milliseconds
-    var editorElement = msiGetActiveEditorElement();
-//    if (!isLicensed())
-      detectLicenseOnClipboard();
-
-    now = Date.now();
-
-    d = new Date( 1980, 1, 1 );
-    timestamp = d.valueOf();
-    prefs = GetPrefs();
-    if (prefs) {
-      try {
-        timestamp = parseInt(prefs.getCharPref("swp.lastexpirationwarning"), 10);
-      }
-      catch(e){}
-      elapsed = now.valueOf() - timestamp;
-    }
-
-    if (!licenseWarningGiven && (editorElement.id === 'content-frame')) {
-      licenseStatus = licenseTimeRemaining();
-      if (licenseStatus === "unlicensed" ) {
-        openDialog('chrome://prince/content/licensestatus.xul', 'licensestatus',
-          'chrome,close,titlebar,resizable,alwaysRaised,centerscreen', false, 0);
-      } else if (licenseStatus !== "permanent" && elapsed > day) {
-        // licenseStatus should be a number
-        daysleft = Number(licenseStatus);
-        if (!isNaN(daysleft)) {
-          if (daysleft <= 5 && daysleft >= 0) {
-            openDialog('chrome://prince/content/licensestatus.xul', 'licensestatus',
-              'chrome,close,titlebar,resizable,alwaysRaised,centerscreen', true, daysleft
-            );
-            prefs.setCharPref("swp.lastexpirationwarning", Number(now).toString(10));
-          } else if (daysleft < 0) {
-            openDialog('chrome://prince/content/licensestatus.xul', 'licensestatus',
-              'chrome,close,titlebar,resizable,alwaysRaised,centerscreen', false, 0);
-          }
-        }
-      }
-      licenseWarningGiven = true;
-    }
-  }
-};
-
-
-function queueLicenseCheck ()
-{
-  var timer = Components.classes["@mozilla.org/timer;1"]
-              .createInstance(Components.interfaces.nsITimer);
-  timer.initWithCallback(license_timercallback, 4000, Components.interfaces.nsITimer.TYPE_ONE_SHOT);
-}
 
 function buildDefinitions(editor) {
   var elemList = editor.document.getElementsByTagName("definitionlist");
@@ -938,8 +882,6 @@ function msiEditorDocumentObserver(editorElement) {
       case "obs_documentCreated":
       try{
         // Get state to see if document creation succeeded
-        queueLicenseCheck();
-
         setZoom();
         var params = newCommandParams();
         if (!params)
@@ -1040,6 +982,7 @@ function msiEditorDocumentObserver(editorElement) {
             } catch (e) {}
           }
 
+#ifdef PROD_COMPUTE
           try {
             if (is_topLevel) {
               initVCamObjects(editor.document);
@@ -1048,7 +991,7 @@ function msiEditorDocumentObserver(editorElement) {
           } catch (e) {
             dump("Problem restoring compute definitions. Exception: " + e + "\n");
           }
-
+#endif
           try {
             this.mEditorElement.mgMathStyleSheet = msiColorObj.Format();
           } catch (e) {
@@ -1152,12 +1095,14 @@ function msiEditorDocumentObserver(editorElement) {
             dump(e + "\n");
           }
 
+#ifdef PROD_COMPUTE
           // Try to start compute engine
           try {
             GetCurrentEngine();
           } catch (e) {
             dump(e + "\n");
           }
+#endif
         }
         if (bIsRealDocument) {
           try {
@@ -1325,9 +1270,6 @@ function msiEditorDocumentObserver(editorElement) {
           };
           editor.canUndo(enabled, can);
 #ifdef PROD_TEX
-          if (enabled.value && can.value && !isLicensed()) {
-            document.getElementById("cmd_PreviewMode").setAttribute("disabled", true);
-          } else
             document.getElementById("cmd_PreviewMode").removeAttribute("disabled");
 #endif
         }
@@ -4276,64 +4218,63 @@ function msiSetEditMode(mode, editorElement) {
     sourceEditor.focus();
     MarkSelectionInCM(sourceEditor);
     sourceIframe.setUserData("oldSource", sourceEditor.getValue(), null);
-  } else if (previousMode == kDisplayModeSource) {
-    // Only rebuild document if a change was made in source window and licensed
-    if (isLicensed()) {
-      var historyCount = sourceEditor.historySize();
-      if (historyCount.undo > 0) {
-        //   Reduce the undo count so we don't use too much memory
-        //   during multiple uses of source window
-        //   (reinserting entire doc caches all nodes)
-        //      try {
-        //      editor.transactionManager.maxTransactionCount = 1;
-        //      } catch (e) {}
-        //
-        var errMsg = "";
-        var willReturn = false;
-        source = sourceEditor.getValue();
-        //source = decodeEntities(source);
-        var xmlParser = new DOMParser();
-        try {
-          var doc = xmlParser.parseFromString(source, "text/xml");
-          if (doc.documentElement.nodeName == "parsererror") {
-            var errMsg = doc.documentElement.firstChild.textContent;
-            var ptrLine = doc.documentElement.lastChild.textContent;
-            errMsg += "\n" + ptrLine;;
-            willReturn = handleSourceParseError(errMsg);
-            if (willReturn) {
-              msiSetDisplayMode(editorElement, kDisplayModeSource);
-              return;
-            }
-          } else {
-            RebuildFromSource(doc, editorElement);
+  } 
+  else if (previousMode == kDisplayModeSource) {
+  // Only rebuild document if a change was made in source window
+    var historyCount = sourceEditor.historySize();
+    if (historyCount.undo > 0) {
+      //   Reduce the undo count so we don't use too much memory
+      //   during multiple uses of source window
+      //   (reinserting entire doc caches all nodes)
+      //      try {
+      //      editor.transactionManager.maxTransactionCount = 1;
+      //      } catch (e) {}
+      //
+      var errMsg = "";
+      var willReturn = false;
+      source = sourceEditor.getValue();
+      //source = decodeEntities(source);
+      var xmlParser = new DOMParser();
+      try {
+        var doc = xmlParser.parseFromString(source, "text/xml");
+        if (doc.documentElement.nodeName == "parsererror") {
+          var errMsg = doc.documentElement.firstChild.textContent;
+          var ptrLine = doc.documentElement.lastChild.textContent;
+          errMsg += "\n" + ptrLine;;
+          willReturn = handleSourceParseError(errMsg);
+          if (willReturn) {
+            msiSetDisplayMode(editorElement, kDisplayModeSource);
+            return;
           }
-        } catch (e) {}
-        // Get the text for the <title> from the newly-parsed document
-        // (must do this for proper conversion of "escaped" characters)
-        var title = "";
-        var preambles = editor.document.getElementsByTagName("preamble");
-        if (preambles.length > 0) {
-          var titlenodelist = preambles[0].getElementsByTagName("title");
-          if (titlenodelist.length > 0) {
-            var titleNode = titlenodelist.item(0);
-            if (titleNode)
-              title = titleNode.textContent;
-          }
+        } else {
+          RebuildFromSource(doc, editorElement);
         }
         if (editor.document.title != title && ("msiUpdateWindowTitle" in window)) {
           editor.document.title = title;
           msiUpdateWindowTitle();
         }
+      } catch (e) {}
+      // Get the text for the <title> from the newly-parsed document
+      // (must do this for proper conversion of "escaped" characters)
+      var title = "";
+      var preambles = editor.document.getElementsByTagName("preamble");
+      if (preambles.length > 0) {
+        var titlenodelist = preambles[0].getElementsByTagName("title");
+        if (titlenodelist.length > 0) {
+          var titleNode = titlenodelist.item(0);
+          if (titleNode)
+            title = titleNode.textContent;
+        }
       }
-      buildDefinitions(editor);
-      editorElement.makeEditable("html");
     }
+    buildDefinitions(editor);
+    editorElement.makeEditable("html");
 
-    // Clear out the string buffers
-    msiClearSource(editorElement);
-    editorElement.contentWindow.focus();
-  } else editorElement.contentWindow.focus();
-  msiSetAllTagsMode(editor, mode == kDisplayModeAllTags)
+	  // Clear out the string buffers
+	  msiClearSource(editorElement);
+	  editorElement.contentWindow.focus();
+		msiSetAllTagsMode(editor, mode == kDisplayModeAllTags)
+	}
 }
 
 
