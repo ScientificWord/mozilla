@@ -2572,6 +2572,8 @@ function msiIsSupportedTextMimeType(aMimeType)
   return false;
 }
 
+#ifdef PROD_COMPUTE
+
 function putDefinitionsInPreamble (editor) {
 
 // Get the current definitions from compute engine and place in preamble.
@@ -2611,7 +2613,7 @@ function putDefinitionsInPreamble (editor) {
     }
   }
 }
-
+#endif
 // Now that we save documents in a zip file, the save operation has two steps. We first save
 // everything that is in memory to the disk in the working directory. Then we replace the *.sci
 // or write a new one, update backup files etc. after the first step is completed. Since the first
@@ -2648,9 +2650,11 @@ function msiSoftSave( editor, editorElement, noTeX)
 
   //Check the my.css file to see if changes need to be written to it.
   saveCSSFileIfChanged(editorDoc);
+  checkPackageDependenciesForEditor(editor);
+#ifdef PROD_COMPUTE
   ensurePlotIdsAreUnique(editorDoc);
   putDefinitionsInPreamble (editor);
-   checkPackageDependenciesForEditor(editor);
+#endif
 
   var saveAsTextFile = msiIsSupportedTextMimeType(aMimeType);
   // check if the file is to be saved is a format we don't understand; if so, bail
