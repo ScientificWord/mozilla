@@ -218,6 +218,7 @@ function focusOn(id) {
   if (node) node.focus();
 }
 
+#ifdef PROD_COMPUTE
 function runFixup(math)
 {
   try {
@@ -234,7 +235,7 @@ function GetFixedMath(math)
 {
   return runFixup(GetMathAsString(math));
 }
-
+#endif
 
 //The function coalescemath is defined in computeOverlay.js
 
@@ -949,10 +950,6 @@ function removeOldPDFFiles(outputDir)
 function compileTeXFile( compiler, infileLeaf, infilePath, outputDir, compileInfo, callbackFn )
 {
   // the following requires that the pdflatex program (or a hard link to it) be in TeX/bin/pdflatex
-  if (!okToPrint()) {
-    finalThrow(cmdFailString("compiletex"), "Compiling a modified TeX file is not permitted since this program is not licensed.");
-    return false;
-  }
   var passData;
   var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].createInstance(Components.interfaces.nsIProperties);
   var exefile = dsprops.get("resource:app", Components.interfaces.nsILocalFile);

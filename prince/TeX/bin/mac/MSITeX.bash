@@ -18,4 +18,3 @@ export MSITEXMF_HOME=$MSITEX/texmf-dist
 export PATH=$MSITEXBIN:/usr/local/bin:$PATH
 export TEXMFLOCAL=$MSITEXMF
 export INKSCAPE=/Applications/Inkscape.app/Contents/Resources/bin/inkscape
-
