@@ -1,0 +1,16 @@
+**/.mozconfig.mk
+**/*.out
+**/*.xcodeproj/*di
+**/*.cache
+**/*.log
+**/.cvsignore
+**/NONE
+security/manager/.nss.checkout
+**/*.pyc
+*/.DS_Store
+**/*.orig
+**/*.wontrun
+confdefs.h
+prince/currentProject
+prince/application.ini
+prince/base/content/productname.inc
