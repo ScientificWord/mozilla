@@ -49,6 +49,7 @@ DIRS		= base/public
 ifdef MOZ_PLUGINS
 DIRS		+= base/src 
 
+#ifndef SKIPTHIS
 ifndef MINIMO
 
 ifneq (,$(filter gtk2 ,$(MOZ_WIDGET_TOOLKIT)))
@@ -84,11 +85,13 @@ ifneq (,$(filter WINNT Darwin Linux,$(OS_ARCH)))
 TOOL_DIRS += tools/sdk
 endif
 endif
+#  endif  # SKIPTHIS
 
 endif # MOZ_PLUGINS
 
 include $(topsrcdir)/config/rules.mk
 
+#  endif  # SKIPTHIS
 ifdef MOZ_PLUGINS
 $(DIST)/bin/plugins:
 	$(NSINSTALL) -D $@
