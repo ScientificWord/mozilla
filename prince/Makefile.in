@@ -9,13 +9,13 @@ include $(DEPTH)/config/autoconf.mk
 
 
 
-DIRS		= base samples res plugins helpfiles bin sidebar shells dictionaries user TeX  \
+DIRS		= base samples res helpfiles bin sidebar shells dictionaries user TeX  \
 	fastcursor modules utilities conversions \
 	$(NULL)
 # Took out helpfiles from DIRS above since they were making the initial package on GitHub too big
 
 ifeq ($PROD_TEX,1)
-	DIRS += Wrappers TeX
+	DIRS += TeX
 endif
 
 PREPROCESS_FILES = application.ini
