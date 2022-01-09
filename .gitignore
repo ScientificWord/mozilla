@@ -11,6 +11,6 @@ security/manager/.nss.checkout
 **/*.orig
 **/*.wontrun
 confdefs.h
-prince/currentProject
+prince/currentProduct
 prince/application.ini
 prince/base/content/productname.inc
