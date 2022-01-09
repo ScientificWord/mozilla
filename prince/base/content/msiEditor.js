@@ -4181,7 +4181,9 @@ function msiSetEditMode(mode, editorElement) {
   if (!msiSetDisplayMode(editorElement, mode))
     return;
   if (mode == kDisplayModeSource) {
+#ifdef PROD_COMPUTE
     putDefinitionsInPreamble (editor);
+#endif
     // Display the DOCTYPE as a non-editable string above edit area, if it exists
     displayDocTypeIfExists(editor);
     // Get the entire document's source string
