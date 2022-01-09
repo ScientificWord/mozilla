@@ -41,7 +41,6 @@ add_makefiles "
 	prince/base/Makefile
 	prince/samples/Makefile
 	prince/res/Makefile
-	prince/plugins/Makefile
 	prince/modules/Makefile
 	prince/helpfiles/Makefile
 	prince/bin/Makefile
@@ -51,6 +50,5 @@ add_makefiles "
 	prince/TeX/Makefile
 	prince/dictionaries/Makefile
 	prince/user/Makefile
-	prince/Wrappers/Makefile
-"
+	"
 #	prince/saxon/Makefile
