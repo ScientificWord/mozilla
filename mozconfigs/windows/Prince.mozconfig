@@ -1,0 +1,16 @@
+# sh
+# Build configuration script
+#
+# See http://www.mozilla.org/build/unix.html for build instructions.
+#
+# ac_add_options --disable-static --disable-libxul
+#
+# Options for client.mk.
+
+. $topsrcdir/prince/config/mozconfig
+
+mk_add_options MOZ_OBJDIR=@TOPSRCDIR@/../debug
+mk_add_options MOZ_MAKE_FLAGS=" -j4"
+ac_add_options --enable-debug							
+ac_add_options --disable-optimize
+ac_add_options --enable-chrome-format=flat
