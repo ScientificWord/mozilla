@@ -117,7 +117,6 @@ LOCAL_INCLUDES = \
 ifeq ($PROD_COMPUTE,1)
 LOCAL_INCLUDES += \
 	-I$(srcdir)/../Compute/src \
-    -I$(srcdir)/../Compute/Engines/MuPAD \
 	-I$(srcdir)/../Compute/Engines \
 	-I$(srcdir)/../Compute/public \
     -I$(srcdir)/../Compute/computelib 
@@ -147,12 +146,6 @@ ifdef MOZ_MSI_PRINCE
 #  	$(NULL)
 endif
 
-
-ifeq ($PROD_COMPUTE,1)
-ifeq ($(OS_ARCH),WINNT)
-SHARED_LIBRARY_LIBS += 	$(srcdir)/../Compute/MuPAD/win32/$(LIB_PREFIX)mupkernel.$(LIB_SUFFIX)
-endif
-endif
 
 
 
