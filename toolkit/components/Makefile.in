@@ -100,7 +100,6 @@ ifdef MOZ_XUL
 DIRS += \
 	autocomplete \
 	autosub \
-	rlm \
 	Compute \
 	keymap \
 	scriptrunner \
