@@ -4,9 +4,7 @@ en-US.jar:
 % locale branding en-US %locale/branding/
 * locale/prince.dtd                       (prince.dtd)
 * locale/aboutDialog.dtd                  (aboutDialog.dtd)
-* locale/licenseDialog.dtd                  (dialogs/licenseDialog.dtd)
 * locale/activate.dtd                  (dialogs/activate.dtd)
-* locale/licensestatus.dtd                  (dialogs/licensestatus.dtd)
 * locale/texErrorsDialog.dtd                  (dialogs/texErrorsDialog.dtd)
 * locale/toolbarsOverlay.dtd              (toolbarsOverlay.dtd)
 * locale/menuOverlay.dtd                  (menuOverlay.dtd)
@@ -62,7 +60,6 @@ en-US.jar:
   locale/indexentry.dtd                   (dialogs/indexentry.dtd)
   locale/intervalsAndAnimation.dtd        (dialogs/intervalsAndAnimation.dtd)
   locale/latexpagenumberstyle.dtd         (dialogs/latexpagenumberstyle.dtd)
-  locale/MapMuPADName.dtd                 (dialogs/MapMuPADName.dtd)
   locale/marker.dtd                       (dialogs/marker.dtd)
   locale/MathColors.dtd                   (dialogs/MathColors.dtd)
   locale/mathmlMathName.dtd               (dialogs/mathmlMathName.dtd)
