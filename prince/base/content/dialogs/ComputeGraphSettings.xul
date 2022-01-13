@@ -10,7 +10,6 @@
 
 <!--Following needed by any dialog using commandsets defined there; generally by any dialog containing an editor-->
 <?xul-overlay href="chrome://prince/content/msiFrameOverlay.xul"?> 
-<?xul-overlay href="chrome://prince/content/vcamoverlay.xul"?>
 
 #include ../requiredEditorOverlays.inc
 

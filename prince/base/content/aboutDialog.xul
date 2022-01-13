@@ -25,7 +25,7 @@
   <tabbox>
     <tabs pack="start">
       <tab label="&AboutTab.label;"/>
-      <tab label="&LicensesTab.label;"/>
+<!--       <tab label="&LicensesTab.label;"/> -->
       <tab label="&CreditsTab.label;"/>
     </tabs>
     <tabpanels>
@@ -49,9 +49,9 @@
         <description id="versionField" align="center"/> 
         <description id="CopyRight" align="center"/>
       </tabpanel> 
-      <tabpanel>
+<!--       <tabpanel>
         <iframe src="chrome://prince/content/licenses.html"/>
-      </tabpanel>     
+      </tabpanel>     -->
       <tabpanel>
         <iframe src="chrome://prince/content/credits.html"/>
       </tabpanel>     

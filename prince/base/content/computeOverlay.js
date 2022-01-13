@@ -2659,20 +2659,7 @@ function doComputeClearDefs() {
 }
 
 function doComputeMapMuPADName(editorElement) {
-  if (!editorElement) editorElement = msiGetActiveEditorElement();
-  msiComputeLogger.Sent("Define MuPAD Name", "");
-  var o = {};
-  var parentWin = msiGetParentWindowForNewDialog(editorElement);
-  parentWin.openDialog("chrome://prince/content/mapMuPADName.xul", "mupname", "modal,chrome,close,titlebar,resizable,dependent", o);
-  if (o.Cancel) return;
-  else {
-    markDocumentChanged(editorElement);
-  }
-  var swpname = o.swpname;
-  var mupname = o.mupadname;
-  var infile = o.infile;
-  var eng = GetCurrentEngine();
-  var res = eng.defineMupadName(swpname, mupname, infile);
+	return;
 }
 
 function doComputeSetBasisVars(editorElement, cmd) {

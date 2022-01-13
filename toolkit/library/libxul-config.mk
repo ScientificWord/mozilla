@@ -119,7 +119,6 @@ COMPONENT_LIBS += \
 	webbrwsr \
 	nsappshell \
 	txmgr \
-	rlm  \
 	chrome \
 	commandlines \
 	toolkitcomps \
