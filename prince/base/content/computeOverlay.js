@@ -974,6 +974,7 @@ var compsample;
 var compengine;
 
 function GetCurrentEngine() {
+#ifdef PROD_COMPUTE
   if (!compsample) {
     compsample = Components.classes["@mackichan.com/simplecomputeengine;2"].getService(Components.interfaces.msiISimpleComputeEngine);
     try {
@@ -1008,6 +1009,9 @@ function GetCurrentEngine() {
     compsample.setEditorID(edID);
   }
   return compsample;
+#else
+  return null;
+#endif
 }
 
 function postDialogTimerCallback(editorElement, obj) {
