@@ -41,10 +41,12 @@ function getCurrentEditorElement()
 
 function refreshVCam()
 {
+#ifdef PROD_COMPUTE
   var theEditorElement = msiGetActiveEditorElement();
   var editor = msiGetEditor(theEditorElement);
   deleteSelection();
   initVCamObjects(editor.document);
+#endif
 }
 
 function define()
