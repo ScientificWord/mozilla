@@ -128,20 +128,7 @@ function FixJS() {
 }
 
 function isLicensed() {
-  var editorElement = msiGetActiveEditorElement();
-  var editor = msiGetEditor(editorElement);
-  if (editor && editor.mAppUtils && editor.mAppUtils.licensedApp) {
-#ifdef PROD_SWP
-      return editor.mAppUtils.licensedApp(3);
-#endif
-#ifdef PROD_SW
-      return editor.mAppUtils.licensedApp(2);
-#endif
-#ifdef PROD_SNB
-      return editor.mAppUtils.licensedApp(1);
-#endif
-  }
-  else return true;
+	return true;
 }
 
 function okToPrint()
