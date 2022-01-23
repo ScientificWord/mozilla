@@ -1037,8 +1037,9 @@ function openNewDocument()
           newdocumentfile = createWorkingDirectory(thefile);
           var url = msiFileURLFromAbsolutePath( newdocumentfile.path );
           msiEditPage( url, window, false, true, null, false);
-        } catch (e) { dump("msiEditPage failed: "+e.toString()+"\n"); }
-
+        } catch (e) {
+           dump("msiEditPage failed: "+e.toString()+"\n");
+        }
       }
     }
   }

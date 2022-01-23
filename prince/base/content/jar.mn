@@ -249,7 +249,7 @@ prince.jar:
   content/sourceparseerror.xul     (dialogs/sourceparseerror.xul)
   content/sourceparseerror.js      (dialogs/sourceparseerror.js)
   content/passes.xul               (dialogs/passes.xul)
-  content/passes.js                (dialogs/passes.js)
+* content/passes.js                (dialogs/passes.js)
   content/msiEdTableProps.js       (dialogs/msiEdTableProps.js)
 *  content/msiEdTableProps.xul      (dialogs/msiEdTableProps.xul)
   content/msiEdReviseChars.js    (dialogs/msiEdReviseChars.js)
