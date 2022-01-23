@@ -1,6 +1,8 @@
 Components.utils.import('resource://app/modules/os.jsm');
 Components.utils.import("resource://app/modules/msiEditorDefinitions.jsm");
 
+#include ../productname.inc
+#include ../shortName.inc
 
 var theProcess;
 var theIndexProcess;
@@ -60,14 +62,14 @@ var timerCallback =
           outputfile.initWithPath( passData.outputDir );
           var tempOutputfile;
           tempOutputfile = outputfile.clone();
-          var leaf = "SWP.pdf";
+          var leaf = productShortName+".pdf";
           outputfile.append("main.pdf"); // outputfile is now main.pdf. This is the result of the compilation.
           tempOutputfile.append(leaf); // this is SWP.pdf which is the new name of main.pdf if there is no collision.
           var n = 0;
           msidump("Leaf is "+leaf+"\n");
           while (tempOutputfile.exists())
           {
-            leaf = "SWP"+(n++)+".pdf";
+            leaf = productShortName+(n++)+".pdf";
             tempOutputfile = tempOutputfile.parent;
             tempOutputfile.append(leaf);
           }

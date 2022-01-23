@@ -2,6 +2,7 @@ Components.utils.import("resource://app/modules/graphicsConverter.jsm");
 Components.utils.import("resource://app/modules/pathutils.jsm");
 
 #include productname.inc
+#include shortName.inc
 
 // const NS_IPCSERVICE_CONTRACTID  = "@mozilla.org/process/ipc-service;1";
 // const NS_IPCBUFFER_CONTRACTID   = "@mozilla.org/process/ipc-buffer;1";
@@ -14,6 +15,7 @@ Components.utils.import("resource://app/modules/pathutils.jsm");
 Components.utils.import("resource://app/modules/macroArrays.jsm");
 Components.utils.import("resource://app/modules/os.jsm");
 Components.utils.import("resource://app/modules/msiEditorDefinitions.jsm");
+
 
 var currPDFfileLeaf = "main.pdf"; // this is the leafname of the last pdf file generated.
 
@@ -932,10 +934,11 @@ function removeOldPDFFiles(outputDir)
 {
   var thedir = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
   thedir.initWithPath( outputDir );
+  var name= ''+productShortName;
   var items = thedir.directoryEntries;
   while (items.hasMoreElements()) {
     var item = items.getNext().QueryInterface(Components.interfaces.nsIFile);
-    if (item.isFile() && item.leafName.indexOf("SWP") === 0)
+    if (item.isFile() && item.leafName.indexOf(name) === 0)
     {
       try {
         item.remove(false);
@@ -961,7 +964,7 @@ function compileTeXFile( compiler, infileLeaf, infilePath, outputDir, compileInf
   // Unfortunately, the Acrobat plugin keeps a lock on the file it is displaying in the preview pane, so
   // compiling to main.pdf will frequently fail.
   //
-  // The strategy: always compile to main.pdf, and then try renaming it to SWP.pdf, or SWP0.pdf, or SWP1.pdf, or ...
+  // The strategy: always compile to main.pdf, and then try renaming it to SW.pdf or SWP.pdf, or SWP0.pdf, or SWP1.pdf, or ...
   // The final leafname is returned in compileInfo, for use of the routines that display the pdf file and stored in the global
   // currPDFfileLeaf, where it is used to display the pdf when changes have not been made to the document.
   //
