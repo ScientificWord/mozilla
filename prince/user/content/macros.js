@@ -39,13 +39,6 @@ function getCurrentEditorElement()
   return theEditorElement;
 }
 
-function refreshVCam()
-{
-  var theEditorElement = msiGetActiveEditorElement();
-  var editor = msiGetEditor(theEditorElement);
-  deleteSelection();
-  initVCamObjects(editor.document);
-}
 
 function define()
 {

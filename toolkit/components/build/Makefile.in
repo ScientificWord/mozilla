@@ -90,7 +90,7 @@ REQUIRES = 	\
 		$(NULL)
 
 ifeq ($PROD_COMPUTE,1)
-	REQUIRES += compute 
+	REQUIRES += compute
 endif
 
 
@@ -117,10 +117,9 @@ LOCAL_INCLUDES = \
 ifeq ($PROD_COMPUTE,1)
 LOCAL_INCLUDES += \
 	-I$(srcdir)/../Compute/src \
-    -I$(srcdir)/../Compute/Engines/MuPAD \
 	-I$(srcdir)/../Compute/Engines \
 	-I$(srcdir)/../Compute/public \
-    -I$(srcdir)/../Compute/computelib 
+    -I$(srcdir)/../Compute/computelib
 endif
 
 
@@ -136,7 +135,7 @@ SHARED_LIBRARY_LIBS = \
 
 
 ifdef MOZ_MSI_PRINCE
-#  SHARED_LIBRARY_LIBS += ../autocomplete/src/$(LIB_PREFIX)tkautocomplete.$(LIB_SUFFIX) 
+#  SHARED_LIBRARY_LIBS += ../autocomplete/src/$(LIB_PREFIX)tkautocomplete.$(LIB_SUFFIX)
 #  SHARED_LIBRARY_LIBS += \
 #  	../autosub/src/$(LIB_PREFIX)tkautosub.$(LIB_SUFFIX) \
 #  	../Compute/src/$(LIB_PREFIX)compeng2.$(LIB_SUFFIX) \
@@ -146,15 +145,6 @@ ifdef MOZ_MSI_PRINCE
 #  	../arrowstate/src/$(LIB_PREFIX)arrowstate.$(LIB_SUFFIX) \
 #  	$(NULL)
 endif
-
-
-ifeq ($PROD_COMPUTE,1)
-ifeq ($(OS_ARCH),WINNT)
-SHARED_LIBRARY_LIBS += 	$(srcdir)/../Compute/MuPAD/win32/$(LIB_PREFIX)mupkernel.$(LIB_SUFFIX)
-endif
-endif
-
-
 
 
 
