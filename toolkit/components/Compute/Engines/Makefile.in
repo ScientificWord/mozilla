@@ -64,7 +64,6 @@ LOCAL_INCLUDES = \
 
 GMR_FILES := \
       commands.gmr \
-      MuPAD.gmr \
       MAPLE.gmr \
       $(srcdir)/MMLents.gmr \
       $(NULL)

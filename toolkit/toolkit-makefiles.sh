@@ -651,7 +651,6 @@ MAKEFILES_xulapp="
   toolkit/components/autosub/Makefile
   toolkit/components/autosub/public/Makefile
   toolkit/components/autosub/src/Makefile
-  toolkit/components/rlm/Makefile
   toolkit/components/msiutil/Makefile
   toolkit/components/msiutil/public/Makefile
   toolkit/components/msiutil/src/Makefile

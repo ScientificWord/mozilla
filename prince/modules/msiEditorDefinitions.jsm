@@ -134,5 +134,4 @@ const mmlns    = "http://www.w3.org/1998/Math/MathML";
 const xhtmlns  = "http://www.w3.org/1999/xhtml";
 const sciwordns = "http://www.sciword.com/namespaces/sciword";
 const fullmath = '<math xmlns="http://www.w3.org/1998/Math/MathML">';
-
 const MSI_EXTENSION = "sci";

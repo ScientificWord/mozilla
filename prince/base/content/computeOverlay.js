@@ -974,6 +974,7 @@ var compsample;
 var compengine;
 
 function GetCurrentEngine() {
+#ifdef PROD_COMPUTE
   if (!compsample) {
     compsample = Components.classes["@mackichan.com/simplecomputeengine;2"].getService(Components.interfaces.msiISimpleComputeEngine);
     try {
@@ -1008,6 +1009,9 @@ function GetCurrentEngine() {
     compsample.setEditorID(edID);
   }
   return compsample;
+#else
+  return null;
+#endif
 }
 
 function postDialogTimerCallback(editorElement, obj) {
@@ -2659,20 +2663,7 @@ function doComputeClearDefs() {
 }
 
 function doComputeMapMuPADName(editorElement) {
-  if (!editorElement) editorElement = msiGetActiveEditorElement();
-  msiComputeLogger.Sent("Define MuPAD Name", "");
-  var o = {};
-  var parentWin = msiGetParentWindowForNewDialog(editorElement);
-  parentWin.openDialog("chrome://prince/content/mapMuPADName.xul", "mupname", "modal,chrome,close,titlebar,resizable,dependent", o);
-  if (o.Cancel) return;
-  else {
-    markDocumentChanged(editorElement);
-  }
-  var swpname = o.swpname;
-  var mupname = o.mupadname;
-  var infile = o.infile;
-  var eng = GetCurrentEngine();
-  var res = eng.defineMupadName(swpname, mupname, infile);
+	return;
 }
 
 function doComputeSetBasisVars(editorElement, cmd) {

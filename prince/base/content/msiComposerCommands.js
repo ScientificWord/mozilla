@@ -1,4 +1,4 @@
-/* @flow */
+
 // Copyright (c) 2006 MacKichan Software, Inc.  All Rights Reserved.
 #include productname.inc
 Components.utils.import("resource://app/modules/graphicsConverter.jsm");
