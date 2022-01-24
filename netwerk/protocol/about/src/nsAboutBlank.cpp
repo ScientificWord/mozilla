@@ -41,7 +41,7 @@
 #include "nsStringStream.h"
 #include "nsNetUtil.h"
 #include "../../../../toolkit/xre/nsXULAppAPI.h"
-extern const nsXREAppData* gAppData;   
+extern const nsXREAppData* gAppData;
 
 NS_IMPL_ISUPPORTS1(nsAboutBlank, nsIAboutModule)
 
@@ -49,7 +49,7 @@ NS_IMPL_ISUPPORTS1(nsAboutBlank, nsIAboutModule)
 static const char kBlankPage1[] = "<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\">"
 "<html><head><title></title></head><body style='background-color: rgb(220,220,235);'>"
 "<span style='font-family: sans-serif; font-size:30pt; display: block; margin-top: 1in; color: rgb(160,160,160); text-align:center;'>Scientific ";
-static const char kBlankPage2[] = "<br/><span style='font-size: 14pt;'>MacKichan Software, Inc.</span></span></body></html>";
+static const char kBlankPage2[] = "<br/></body></html>";
 
 
 NS_IMETHODIMP
@@ -63,7 +63,12 @@ nsAboutBlank::NewChannel(nsIURI *aURI, nsIChannel **result)
     if (name.EqualsLiteral("SNB"))
     {
       appname.Assign(NS_LITERAL_CSTRING("Notebook "));
-    } else if (name.EqualsLiteral("SW"))
+    }
+    else if (name.EqualsLiteral("SN4"))
+	  {
+	  	appname.Assign(NS_LITERAL_CSTRING("Notebook Lite "));
+	  }
+    else if (name.EqualsLiteral("SW"))
     {
       appname.Assign(NS_LITERAL_CSTRING("Word "));
     }

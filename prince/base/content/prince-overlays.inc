@@ -8,13 +8,11 @@
 
 #ifdef PROD_SWP
 <?xul-overlay href="chrome://prince/content/computeOverlay.xul" ?>
-<?xul-overlay href="chrome://prince/content/vcamoverlay.xul" ?>
 <?xul-overlay href="chrome://prince/content/typesetOverlay.xul" ?>
 #endif
 
 #ifdef PROD_SNB
 <?xul-overlay href="chrome://prince/content/computeOverlay.xul" ?>
-<?xul-overlay href="chrome://prince/content/vcamoverlay.xul" ?>
 #endif
 
 #ifdef PROD_SW
