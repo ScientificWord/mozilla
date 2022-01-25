@@ -58,15 +58,15 @@ LOCAL_INCLUDES = \
     -I$(srcdir)/../libtci	\
     -I$(srcdir)/../Engines	\
     -I$(srcdir)/../computelib \
-    -I$(srcdir)/../src \
     -I$(srcdir)/../public \
      $(NULL)
+#     -I$(srcdir)/../src 
 
 GMR_FILES := \
       commands.gmr \
-      MAPLE.gmr \
       $(srcdir)/MMLents.gmr \
       $(NULL)
+#      MAPLE.gmr 
 
 include $(topsrcdir)/config/rules.mk
 
