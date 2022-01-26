@@ -1,0 +1,45 @@
+# Copyright (c) 2005 MacKichan Software, Inc.  All Rights Reserved.
+
+DEPTH		= ../../../../..
+topsrcdir	= @top_srcdir@
+srcdir		= @srcdir@
+VPATH		= @srcdir@
+
+include $(DEPTH)/config/autoconf.mk
+
+MODULE = compute
+MODULE_NAME = computeModule
+LIBRARY_NAME	= MplWrapperDLL_s
+DIST_INSTALL = 1
+
+include $(topsrcdir)/config/config.mk
+
+REQUIRES = string \
+	xpcom \
+	compute \
+	$(NULL)
+
+CPPSRCS =				\
+  eAnalyzer.cpp \
+  mapl_eng.cpp \
+  Mpl2Tree.cpp \
+  MplWrap.cpp \
+	$(NULL)
+
+# we don't want the shared lib, but we want to force the creation of a static lib.
+FORCE_STATIC_LIB = 1
+
+LOCAL_INCLUDES = -I$(srcdir)/../../libtci	\
+			-I$(srcdir)/../../Engines	\
+            -I$(srcdir)/../../computelib \
+            -I$(srcdir)/../../src \
+	        -I$(srcdir)/../../public \
+	        $(NULL)
+
+#SHARED_LIBRARY_LIBS += \
+#      $(DIST)/lib/$(LIB_PREFIX)computelib_s.$(LIB_SUFFIX) \
+#      $(DIST)/lib/$(LIB_PREFIX)enginelib_s.$(LIB_SUFFIX) \
+#      $(DIST)/lib/$(LIB_PREFIX)libtci_s.$(LIB_SUFFIX) \
+#			$(NULL)
+#
+include $(topsrcdir)/config/rules.mk
