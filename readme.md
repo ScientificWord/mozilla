@@ -1,11 +1,13 @@
 **Scientific Word** is now open source.
 
-The source code is on Github, at https://github.com/ScientificWord/mozilla. Instructions on how to build the project, as well as discussion of bugs, gotchas, etc. should be coming soon.
+This repository contains the source code. Instructions on how to build the project, as well as discussion of bugs, gotchas, etc. should be coming soon.
 
 A build of Scientific Word for Windows is at https://github.com/ScientificWord/sciword, along with instructions on how to install it and to install MiKTeX.
-----------------
-*The remainder of this file is the original Readme for Mozilla; it is out of date.* 
-----------------
+
+***The remainder of this file is the original Readme.txt for Mozilla; it is out of date.*** 
+
+
+
 
 ==============================================================
 
