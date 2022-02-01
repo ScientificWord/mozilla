@@ -286,7 +286,7 @@ clean clobber::
 	rm -rf $(DIST)/$(FRAMEWORK_NAME).framework
 endif
 
-README_FILE = $(topsrcdir)/README.txt
+README_FILE = $(topsrcdir)/README.md
 
 libs::
 	$(SYSINSTALL) $(README_FILE) $(DIST)/bin
