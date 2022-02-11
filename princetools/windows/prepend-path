@@ -1,0 +1,12 @@
+#! /bin/bash
+
+USAGE="source prepend-path path. \nPuts the argument at the start of the PATH variable if it is not already in the path \nUse with 'source'"
+FOUND=`echo $PATH | fgrep -c "$1"`
+if [ "x$FOUND" = "x0" ]
+then
+  PATH="$1":$PATH
+  export PATH
+  echo Prepended "$1" to PATH
+else
+  echo PATH already included "$1"
+fi

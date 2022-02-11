@@ -1,0 +1,57 @@
+#!/bin/bash
+
+# Before running this, set the following variables. 
+# This assumes there is a common base directory ($PRINCEBASE) for the mozilla, debug, and release folders,
+# so that those three folders are siblings. The two phases of the build (xulrunner and prince) put their results in
+# $PRINCEBASE/$MOZILLAMODE/<xulrunner or prince>
+
+# MOZILLAMODE is debug or release to determine which build mode is used.
+# PROD is the short name of the product: SWP, SW, SNB, or SN4. It is read from <princebase>/currentproduct.
+# The following variables are set from the product names to avoid Boolean expressions in the #ifdefs
+# PROD_SW, PROD_SWP, PROD_SNB, and PROD_SN4 are undefined, except for the one which matches PROD, which is 1.
+# PROD_TEX is undefined or 1 depending on whether the product includes TeX capabilities.
+# PROD_COMPUTE is undefined or 1 depending on whether it include computer algebra capabilities.
+
+# The script setup sets up all these variables,
+# rewrites $PRINCEBASE/mozilla/prince/application.ini by adding lines to the appbase.ini file, writes
+# some information to some other files, and it selects
+# the correct mozconfig file from $PRINCEBASE/mozilla/mozconfigs
+
+#. DESTDIR is usually /c/Program Files (x86)
+DESTDIR=/c/"Program Files (x86)"
+
+# To allow building a debug and a release version without stepping on toes, we create a directory under $PRINCEBASE and go there
+
+cd /c/"$PRINCEBASE"/$MOZILLAMODE/
+
+# Usage description goes here
+
+echo Installing $PRINCEPROD
+
+rm -rf $PRINCEPROD/
+echo removed old $PRINCEPROD
+
+# Copy runtime stuff from dist/bin for both xulrunner and prince
+cp -RL prince/dist/bin $PRINCEPROD
+cp -RL xulrunner/dist/bin $PRINCEPROD/xulrunner
+
+# Copy grammar files used in working with mathml grammar
+cp xulrunner/dist/bin/*.gmr $PRINCEPROD/
+
+# remove previous build, if there is one
+
+rm -rf $DESTDIR/$PRINCEPROD.exe
+
+echo xulrunner/dist/bin/xulrunner --install-app $PRINCEPROD "$DESTDIR"/$PRINCEPROD $PRINCEPROD
+#
+# xulrunner --install-app <directory containing applications.ini> <destination> <destination directory name>
+#
+# This uses the ability of xulrunner to install xulrunner apps.
+
+xulrunner/dist/bin/xulrunner --install-app $PRINCEPROD "$DESTDIR"/$PRINCEPROD $PRINCEPROD
+
+echo `ls "$DESTDIR"/$MOZILLAMODE`
+
+
+echo "The installation is done"
+

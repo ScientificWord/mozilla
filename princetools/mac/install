@@ -1,0 +1,60 @@
+#!/bin/zsh
+
+# Before running this, set the following variables. 
+# This assumes there is a common base directory ($PRINCEBASE) for the mozilla, debug, and release folders,
+# so that those three folders are siblings. The two phases of the build (xulrunner and prince) put their results in
+# $PRINCEBASE/$MOZILLAMODE/<xulrunner or prince>
+
+# MOZILLAMODE is debug or release to determine which build mode is used.
+# PROD is the name of the product: SWP, SW, SNB, or SN4. It is read from <princebase>/currentproduct.
+# The following variables are set from the product names to avoid Boolean expressions in the #ifdefs
+# PROD_SW, PROD_SWP, PROD_SNB, and PROD_SN4 are undefined, except for the one which matches PROD, which is 1.
+# PROD_TEX is undefined or 1 depending on whether the product includes TeX capabilities.
+# PROD_COMPUTE is undefined or 1 depending on whether it include computer algebra capabilities.
+
+# The script 'setup' sets up all these variables, puts the right thing in the currentProduct file, and 
+# rewrites $PRINCEBASE/mozilla/prince/application.ini by adding lines to the appbase.ini file, and it selects
+# the correct mozconfig file from $PRINCEBASE/mozilla/mozconfigs
+
+pushd $PRINCEBASE/$MOZILLAMODE/
+echo working directory is `pwd`
+PROD=`cat $PRINCEBASE/mozilla/prince/currentProduct`
+echo PROD is $PROD
+if ([ "$PROD" != "SW" ] && [ "$PROD" != "SWP" ] && [ "$PROD" != "SNB" ] && [ "$PROD" != "SN4" ])
+then
+  echo Current product ($PROD) is not SW, SWP, SNB, or SN4. Set it in $PRINCEBASE/mozilla/prince/currentProduct
+  exit 1
+fi
+
+echo Installing $PROD
+rm -rf $PROD/
+echo removed old $PROD, `pwd` listing: `ls`
+
+cp -RL prince/dist/bin $PROD
+cp -RL xulrunner/dist/bin $PROD/xulrunner
+
+# cp xulrunner/dist/bin/*.gmr $PROD/
+
+rm -rf $DESTDISK/Applications/$MOZILLAMODE/$PROD.app
+echo Going to run: xulrunner/dist/bin/xulrunner-bin --install-app $PROD $DESTDISK/Applications/$MOZILLAMODE
+xulrunner/dist/bin/xulrunner-bin --install-app $PROD $DESTDISK/Applications/$MOZILLAMODE
+
+echo
+echo `ls $DESTDISK/Applications/$MOZILLAMODE`
+
+
+chmod +x $DESTDISK/Applications/$MOZILLAMODE/$PROD.app/Contents/Resources/BuildFontFamilyList.bash
+if test "x$PROD_TEX" != "x"
+then
+chmod +x $DESTDISK/Applications/$MOZILLAMODE/$PROD.app/Contents/Resources/pdflatex.bash
+chmod +x $DESTDISK/Applications/$MOZILLAMODE/$PROD.app/Contents/Resources/xelatex.bash
+chmod +x $DESTDISK/Applications/$MOZILLAMODE/$PROD.app/Contents/Resources/runbibtex.bash
+chmod +x $DESTDISK/Applications/$MOZILLAMODE/$PROD.app/Contents/Resources/makeindex.bash
+chmod +x $DESTDISK/Applications/$MOZILLAMODE/$PROD.app/Contents/Resources/utilities/inkscapepdf
+chmod +x $DESTDISK/Applications/$MOZILLAMODE/$PROD.app/Contents/Resources/utilities/inkscapepng
+chmod +x $DESTDISK/Applications/$MOZILLAMODE/$PROD.app/Contents/Resources/utilities/msiepstopdf
+chmod +x $DESTDISK/Applications/$MOZILLAMODE/$PROD.app/Contents/Resources/utilities/epstopng
+fi
+
+popd && say -v Alex "The installation is done"
+

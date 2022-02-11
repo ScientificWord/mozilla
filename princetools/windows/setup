@@ -1,0 +1,128 @@
+#! /bin/bash
+
+# @Author: Barry MacKichan
+# @Date:   2021-12-30 11:22:33
+# @Last Modified by:   barry
+# @Last Modified time: 2021-12-30 13:16:17
+
+# This command file sets the parameters that control the build of Scientific Word and related programs.
+
+
+HOST="windows"
+
+Usage1="This file must be run in the parent directory of the repository base"
+Usage2="Error: "$1" must be 'debug' or 'release'"
+Usage3="Error: "$2" must be 'SWP', 'SW', 'SNB', or 'SN4'"
+usage4="Usage: setup debug/release shortProductName"
+
+PRINCEBASE=`pwd`
+if [ -d "$PRINCEBASE/mozilla" ]
+then
+	export PRINCEBASE
+	cd mozilla
+else
+	echo $Usage1
+#	exit 0
+fi
+
+# Get first parameter in lower case, copy to MOZILLAMODE
+MOZILLAMODE=$(echo "$1" | tr 'A-Z' 'a-z')
+FOUND=`echo " debug release "| fgrep -c " $MOZILLAMODE "`
+if [ "x$FOUND" != "x0" ]
+then
+#	echo $FOUND
+	export MOZILLAMODE
+else
+  echo $Usage2
+#  exit
+fi
+
+# we have enough to determine MOZCONFIG
+case $MOZILLAMODE in
+debug)
+	MOZCONFIG=$PRINCEBASE/mozilla/mozconfigs/$HOST/Prince.mozconfig
+	;;
+release)
+	MOZCONFIG=$PRINCEBASE/mozilla/mozconfigs/$HOST/PrinceRelease.mozconfig
+	;;
+esac
+export MOZCONFIG
+
+
+# Get second paramter in upper case, copy to SHORTNAME
+SHORTNAME=$(echo "$2" | tr 'a-z' 'A-Z')
+FOUND=`echo " SWP SW SNB SN4 "| fgrep -c " $SHORTNAME "`
+if [ "x$FOUND" != "x0" ]
+then
+#	echo $FOUND
+	export SHORTNAME
+	PRINCEPROD=$SHORTNAME
+	export PRINCEPROD
+else
+  echo $Usage3
+#  exit
+fi
+
+
+# Now using SHORTNAME, compute the values of PROD_xxx
+# Save longname when we see it
+
+unset PROD_SWP 
+unset PROD_SW
+unset PROD_SNB
+unset PROD_SN4 
+unset PROD_TEX
+unset PROD_COMPUTE 
+
+export PROD_$SHORTNAME=1
+echo "#define PROD_$SHORTNAME" > prince/base/content/productname.inc
+echo $SHORTNAME > prince/currentProduct
+
+case $SHORTNAME in
+SN4)
+  longname=ScientificNotebookLite
+  ;;
+SNB)
+  longname=ScientificNotebook 
+  echo "#define PROD_COMPUTE" >> prince/base/content/productname.inc
+  export PROD_COMPUTE=1
+  ;;
+SWP)
+  longname=ScientificWorkPlace
+  echo "#define PROD_COMPUTE" >> prince/base/content/productname.inc
+  echo "#define PROD_TEX" >> prince/base/content/productname.inc
+  export PROD_TEX=1
+  export PROD_COMPUTE=1
+;;
+SW | *)
+  longname=ScientificWord
+  echo "#define PROD_TEX" >> prince/base/content/productname.inc
+  export PROD_TEX=1
+;;
+esac
+
+
+# Set the variable parts of the application.ini file that xulrunner needs
+
+echo "[App]" > prince/application.ini
+echo Name=$SHORTNAME >> prince/application.ini
+cat prince/version.inc >> prince/application.ini
+echo ID=$longname@sciword.org >> prince/application.ini
+echo longname=$longname >> prince/application.ini
+# appbase.ini has the static part of application.ini
+cat prince/appbase.ini >> prince/application.ini
+touch prince/application.ini
+touch prince/base/content/productname.inc
+
+
+case $HOST in
+mac)
+  source prepend-path "/Developer/usr/bin"
+  source prepend-path "/opt/local/lib"
+  export PKG_CONFIG_PATH=/opt/local/lib/pkgconfig/
+  export MACOSX_DEPLOYMENT_TARGET=10.5
+  ;;
+win)
+  ;;
+esac
+
