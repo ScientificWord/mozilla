@@ -16,15 +16,19 @@ FRAG_RESOURCES := $(wildcard $(srcdir)/fragments/*.frg)
 CONSTANTS1_RESOURCES := $(wildcard $(srcdir)/fragments/Constants1/*.frg)
 CONSTANTS2_RESOURCES := $(wildcard $(srcdir)/fragments/Constants2/*.frg)
 CONSTANTS3_RESOURCES := $(wildcard $(srcdir)/fragments/Constants3/*.frg)
-CM2_RESOURCES := $(wildcard $(srcdir)/cm2/*)
-ACE_RESOURCES := $(wildcard $(srcdir)/ace/*)
+# CM2_RESOURCES := $(wildcard $(srcdir)/cm2/*)
+CM_RESOURCES := $(wildcard $(srcdir)/codemirror/*)
 
 
-libs::	$(CSS_RESOURCES) $(XBL_RESOURCES) $(CM2_RESOURCES) $(ACE_RESOURCES)
+libs::	$(CSS_RESOURCES) $(XBL_RESOURCES) $(CM2_RESOURCES) $(CM_RESOURCES) $(ACE_RESOURCES)
 	$(INSTALL)	$(CSS_RESOURCES)	$(FINAL_TARGET)/res/css
 	$(INSTALL)	$(TAGDEF_RESOURCES)	$(FINAL_TARGET)/res/tagdefs
 	$(INSTALL)	$(XML_RESOURCES)	$(FINAL_TARGET)/res/xml
 	$(INSTALL)	$(FRAG_RESOURCES)	$(FINAL_TARGET)/res/fragments
+#	$(INSTALL)  $(CM2_RESOURCES) 	$(FINAL_TARGET)/res/cm2
+	$(INSTALL)  $(CM_RESOURCES) 	$(FINAL_TARGET)/res/codemirror
+	$(INSTALL)  $(srcdir)/cm2.html  $(FINAL_TARGET)/res/
+	$(INSTALL)	$(ICON_RESOURCES)	$(FINAL_TARGET)/res/css/
 # The next line forces creation of the Constants directory if necessary
 	- mkdir $(FINAL_TARGET)/res/fragments/Constants
 	- cp $(srcdir)/fragments/Constants1/*.frg	$(FINAL_TARGET)/res/fragments/Constants
@@ -40,10 +44,7 @@ ifdef MOZ_MSI_TEX
 	- mkdir $(FINAL_TARGET)/res/fragments/XeTeXonly
 	- cp $(srcdir)/fragments/XeTeXonly/*.frg $(FINAL_TARGET)/res/fragments/XeTeXonly
 endif
-	$(INSTALL)  $(CM2_RESOURCES) 	$(FINAL_TARGET)/res/cm2
-	$(INSTALL)  $(srcdir)/cm2.html  $(FINAL_TARGET)/res/
-	$(INSTALL)  $(ACE_RESOURCES) 	$(FINAL_TARGET)/res/ace/
-	$(INSTALL)	$(ICON_RESOURCES)	$(FINAL_TARGET)/res/css/
+
 				  
 
 

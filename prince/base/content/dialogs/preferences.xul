@@ -766,6 +766,9 @@
       <preference id="sourceminlength"
                   name="swp.sourceview.minlinelength"
                   type="int"/>
+      <preference id="sourcetheme"
+                  name="swp.sourceview.theme"
+                  type="string"/>
     </preferences>
     <tabbox id="editTabbox" flex="1" persist="selectedIndex" selectedIndex="0">
 	    <tabs class="tabs-top">
@@ -785,23 +788,30 @@
           </groupbox>
           <groupbox>
             <caption>&SourceEditing.label;</caption>
-            <grid><columns><column/><column/><column flex="1"/></columns>
-              <rows>
-                <row align="center">
-                  <description>&XMLSourceIndent.label;</description>
-                  <textbox type="number" id="srcindent" class="medwidth" preference="sourceindent"/>
-                </row>
-                <row align="center">
-                  <description>&XMLSourceMaxLineLength.label;</description>
-                  <textbox type="number" id="srcmaxlength" class="medwidth" preference="sourcemaxlength"/>
-                </row>
-                <row align="center">
-                  <description>&XMLSourceMinLineLength.label;</description>
-                  <textbox type="number" id="srcminlength" class="medwidth" preference="sourceminlength"/>
-                </row>
-              </rows>
-            </grid>
+          	<hbox>
+	            <grid><columns><column/><column/><column flex="1"/></columns>
+	              <rows>
+	                <row align="center">
+	                  <description>&XMLSourceIndent.label;</description>
+	                  <textbox type="number" id="srcindent" class="medwidth" preference="sourceindent"/>
+	                </row>
+	                <row align="center">
+	                  <description>&XMLSourceMaxLineLength.label;</description>
+	                  <textbox type="number" id="srcmaxlength" class="medwidth" preference="sourcemaxlength"/>
+	                </row>
+	                <row align="center">
+	                  <description>&XMLSourceMinLineLength.label;</description>
+	                  <textbox type="number" id="srcminlength" class="medwidth" preference="sourceminlength"/>
+	                </row>
+	              </rows>
+	            </grid>
+	            <vbox style="width:2in" >
+                   <label value="themes"/>
+                   <listbox preference="sourcetheme" flex = "1" id="themeselect"/>
+                 </vbox>
+	        </hbox>
           </groupbox>
+
           <groupbox orient="vertical">
             <caption>&Spacebar.label;</caption>
             <radiogroup id="doublespace" preference="doublespacepref">

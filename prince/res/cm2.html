@@ -16,34 +16,88 @@
     .CodeMirror-scroll {height: 100% ! important}
     .CodeMirror-gutter {cursor: pointer;}
   </style>
-  <link rel="stylesheet" href="cm2/codemirror.css" />
-  <link rel="stylesheet" href="cm2/foldtag.css" />
+  <script src="codemirror/lib/codemirror.js" type="text/javascript" ></script>
 
-  <script src="cm2/codemirror.js" type="text/javascript" ></script>
-  <script src="cm2/searchcursor.js" type="text/javascript" ></script>
-  <script src="cm2/foldtag.js" type="text/javascript" ></script>
-  <script src="cm2/xml.js" type="text/javascript" ></script>
-  <script src="cm2/javascript.js" type="text/javascript" ></script>
-  <script src="cm2/css.js" type="text/javascript" ></script>
-  <script src="cm2/htmlmixed.js" type="text/javascript" ></script>
+  <link rel="stylesheet" href="codemirror/lib/codemirror.css" />
+  <link rel="stylesheet" href="codemirror/theme/3024-day.css"/>
+  <link rel="stylesheet" href="codemirror/theme/3024-night.css"/>
+  <link rel="stylesheet" href="codemirror/theme/ambiance-mobile.css"/>
+  <link rel="stylesheet" href="codemirror/theme/ambiance.css"/>
+  <link rel="stylesheet" href="codemirror/theme/base16-dark.css"/>
+  <link rel="stylesheet" href="codemirror/theme/base16-light.css"/>
+  <link rel="stylesheet" href="codemirror/theme/blackboard.css"/>
+  <link rel="stylesheet" href="codemirror/theme/cobalt.css"/>
+  <link rel="stylesheet" href="codemirror/theme/colorforth.css"/>
+  <link rel="stylesheet" href="codemirror/theme/eclipse.css"/>
+  <link rel="stylesheet" href="codemirror/theme/elegant.css"/>
+  <link rel="stylesheet" href="codemirror/theme/erlang-dark.css"/>
+  <link rel="stylesheet" href="codemirror/theme/lesser-dark.css"/>
+  <link rel="stylesheet" href="codemirror/theme/mbo.css"/>
+  <link rel="stylesheet" href="codemirror/theme/mdn-like.css"/>
+  <link rel="stylesheet" href="codemirror/theme/midnight.css"/>
+  <link rel="stylesheet" href="codemirror/theme/monokai.css"/>
+  <link rel="stylesheet" href="codemirror/theme/neat.css"/>
+  <link rel="stylesheet" href="codemirror/theme/neo.css"/>
+  <link rel="stylesheet" href="codemirror/theme/night.css"/>
+  <link rel="stylesheet" href="codemirror/theme/paraiso-dark.css"/>
+  <link rel="stylesheet" href="codemirror/theme/paraiso-light.css"/>
+  <link rel="stylesheet" href="codemirror/theme/pastel-on-dark.css"/>
+  <link rel="stylesheet" href="codemirror/theme/rubyblue.css"/>
+  <link rel="stylesheet" href="codemirror/theme/solarized.css"/>
+  <link rel="stylesheet" href="codemirror/theme/the-matrix.css"/>
+  <link rel="stylesheet" href="codemirror/theme/tomorrow-night-bright.css"/>
+  <link rel="stylesheet" href="codemirror/theme/tomorrow-night-eighties.css"/>
+  <link rel="stylesheet" href="codemirror/theme/twilight.css"/>
+  <link rel="stylesheet" href="codemirror/theme/vibrant-ink.css"/>
+  <link rel="stylesheet" href="codemirror/theme/xq-dark.css"/>
+  <link rel="stylesheet" href="codemirror/theme/xq-light.css"/>
+  <link rel="stylesheet" href="codemirror/theme/zenburn.css"/>
 
+  <link rel="stylesheet" href="codemirror/addon/hint/show-hint.css"/>
+  
+  <link rel="stylesheet" href="codemirror/addon/fold/foldgutter.css" />
+
+ <script src="codemirror/addon/selection/active-line.js" type="text/javascript"></script>
+  <script src="codemirror/addon/edit/closetag.js" type="text/javascript"></script>
+  <script src="codemirror/addon/fold/foldcode.js" type="text/javascript"></script>
+  <script src="codemirror/addon/fold/foldgutter.js" type="text/javascript"></script>
+  <script src="codemirror/addon/fold/brace-fold.js" type="text/javascript"></script>
+  <script src="codemirror/addon/fold/xml-fold.js" type="text/javascript"></script>
+  <script src="codemirror/addon/fold/indent-fold.js" type="text/javascript"></script>
+  <script src="codemirror/addon/fold/markdown-fold.js" type="text/javascript"></script>
+  <script src="codemirror/addon/fold/comment-fold.js" type="text/javascript"></script>
+  <script src="codemirror/addon/fold/xml-fold.js" type="text/javascript"></script>
+  <script src="codemirror/addon/edit/matchtags.js" type="text/javascript"></script>
+  <script src="codemirror/addon/hint/show-hint.js" type="text/javascript"></script>
+  <script src="codemirror/addon/hint/xml-hint.js" type="text/javascript"></script>
+  <script src="codemirror/addon/hint/html-hint.js" type="text/javascript"></script>
+  <script src="codemirror/addon/search/searchcursor.js" type="text/javascript"></script>
+
+  <script src="codemirror/addon/search/search.js" type="text/javascript" ></script>
+  <script src="codemirror/addon/dialog/dialog.js" type="text/javascript" ></script>
+  <script src="codemirror/addon/fold/foldtag.js" type="text/javascript" ></script>
+  <script src="codemirror/mode/xml/xml.js" type="text/javascript" ></script>
+  <script src="codemirror/mode/css/css.js" type="text/javascript" ></script>
+  <script src="codemirror/mode/htmlmixed/htmlmixed.js" type="text/javascript" ></script> 
+<!-- 
   <script src="cm2/jquery.min.js"></script>
   <script src="cm2/poptags.js"></script>
   <script src="cm2/pophtmlmixed.js"></script>
   
   <script src="cm2/code-completion.js"></script>
   <script src="cm2/css-completion.js"></script>
-  <script src="cm2/html-completion.js"></script>
+  <script src="cm2/html-completion.js"></script> -->
 
-  <link rel="stylesheet" id="theme" type="text/css" href="cm2/cobalt.css" />
-  <link rel="stylesheet" id="theme" type="text/css" href="cm2/eclipse.css" />
+
+  <link rel="stylesheet" id="theme" type="text/css" href="codemirror/theme/cobalt.css" />
+<!--   <link rel="stylesheet" id="theme" type="text/css" href="cm2/eclipse.css" />
   <link rel="stylesheet" id="theme" type="text/css" href="cm2/elegant.css" />
   <link rel="stylesheet" id="theme" type="text/css" href="cm2/light.css" />
   <link rel="stylesheet" id="theme" type="text/css" href="cm2/monokai.css" />
   <link rel="stylesheet" id="theme" type="text/css" href="cm2/neat.css" />
   <link rel="stylesheet" id="theme" type="text/css" href="cm2/night.css" />
-  <link rel="stylesheet" id="theme" type="text/css" href="cm2/rubyblue.css" />
-  <link rel="stylesheet"            type="text/css" href="cm2/code-completion.css">  
+  <link rel="stylesheet" id="theme" type="text/css" href="cm2/rubyblue.css" /> -->
+<!-- <link rel="stylesheet"            type="text/css" href="cm2/code-completion.css"> -->  
 </head>
 <body>
 
@@ -52,7 +106,7 @@
   var gEditor = null;
   var gChangeCallback = null;
   var gChangeTimer = null;
-  var gTheme  = "monokai";
+  var gTheme  = "elegant";
 
   var gModificationCount = 0;
 
@@ -97,19 +151,19 @@
           hlLine = gEditor.setLineClass(gEditor.getCursor().line, "activeline");
         }
       });
-      // var htmlCompletion = new CodeCompletion(gEditor, new HtmlCompletion());
-      // var cssCompletion = new CodeCompletion(gEditor, new CssCompletion({local: true}));
+      var htmlCompletion = new CodeCompletion(gEditor, new HtmlCompletion());
+      var cssCompletion = new CodeCompletion(gEditor, new CssCompletion({local: true}));
       gEditor.setOption("onKeyEvent", function(cm, e) {
           var cursor = cm.getCursor();
           var token = cm.getTokenAt(cursor);
-          // switch (token.state.mode) {
-          //   case "html":
-          //     return htmlCompletion.handleKeyEvent(cm, e);
-          //   case "css":
-          //     return cssCompletion.handleKeyEvent(cm, e);
+          switch (token.state.mode) {
+            case "html":
+              return htmlCompletion.handleKeyEvent(cm, e);
+            case "css":
+              return cssCompletion.handleKeyEvent(cm, e);
 
-          //   default: break;              
-          // }
+            default: break;              
+          }
           return false;
       });
       /*gEditor.setOption("onKeyEvent", function(cm, e) {

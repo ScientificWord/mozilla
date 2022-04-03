@@ -99,8 +99,8 @@
                 "nsDragAndDrop.drop(event, fragObserver);"/>
       <vbox>
         <label id="doctype-text" crop="right"></label>
-        <iframe id="content-source"
-                src="resource://app/res/cm2.html" flex="1" tooltip="aSourceTooltip"/>
+        <iframe id="content-source" src="resource://app/res/cm2.html"
+                flex="1" tooltip="aSourceTooltip"/>
       </vbox>
 #ifdef PROD_TEX
       <browser id="preview-frame" src="about:blank" disablehistory="1" flex="1"/>

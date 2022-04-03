@@ -212,6 +212,35 @@ function showShellsInDir(tree)
     dump(e.toString());
   }
 }
+function showThemeList()
+{
+
+  var namecol = tree.columns.getNamedColumn('Name');
+
+  var themelist;
+  var themeuri = msiURIFromString("resource://res/themes-list.js");
+  try {
+    themelist = getTextFileAsString(themeuri);
+    var items = themelist.split(",");
+    var name;
+    var listItem;
+    var regexp = /\.css$/;
+    var listbox = document.getElementById("themelist");
+    while (listbox.itemCount > 0) listbox.removeItemAt(0);
+    while (items.hasMoreElements()) {
+      var item = items.getNext();
+      if (regexp.test(item))
+      {
+        name = item.replace(regexp,'');
+        listItem = listbox.appendItem(name, item.path);
+      }
+    }
+    listbox.selectedIndex =0;
+  }
+  catch(e) {
+    dump(e.toString());
+  }
+}
 
 function onShellSelect()
 {
