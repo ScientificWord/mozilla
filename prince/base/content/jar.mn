@@ -18,7 +18,7 @@ prince.jar:
 * content/toolbarsOverlay.xul       (toolbarsOverlay.xul)
 * content/toolbarsOverlay.js        (toolbarsOverlay.js)
 * content/mathmlOverlay.js          (mathmlOverlay.js)
-* content/mathmloverlay.xul         (mathmloverlay.xul)
+* content/mathmlOverlay.xul         (mathmlOverlay.xul)
 * content/computeOverlay.js         (computeOverlay.js)
 * content/computeUtils.js           (ComputeUtils.js)
 * content/whitespaceUtils.js        (WhitespaceUtils.js)

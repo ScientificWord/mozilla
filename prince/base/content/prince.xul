@@ -55,7 +55,7 @@
 # All sets except for popupsets (commands, keys, stringbundles and broadcasters) *must* go into the
 # prince-sets.inc file for sharing with hiddenWindow.xul.
 #include prince-sets.inc
-#include editorKeys.inc
+#include editorkeys.inc
 
 
 
