@@ -19,7 +19,7 @@ function getOS(window)
    os = 'linux';
    break;
   default:
-   throw('Error: Unknown OS ' + navigator.platform);
+   throw('Error: Unknown OS ' + window.navigator.platform);
    os = "??";
   }
   return os;
