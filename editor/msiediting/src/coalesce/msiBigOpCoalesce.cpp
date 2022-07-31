@@ -7,7 +7,7 @@
 #include "nsCOMPtr.h"
 #include "nsIDOMNode.h"
 #include "nsIEditor.h"
-#include "nsIMutableArray.h"s
+#include "nsIMutableArray.h"
 #include "msiEditingAtoms.h"
 #include "nsIDOMText.h"
 #include "nsIDOMCharacterData.h"
