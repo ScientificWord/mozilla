@@ -45,7 +45,7 @@
 #include "nsIChannel.h"
 #include "nsIDOMLoadListener.h"
 #include "nsIChannelEventSink.h"
-#include "nsIInterfaceRequestor.h"s
+#include "nsIInterfaceRequestor.h"
 #include "nsString.h"
 #include "nsWeakReference.h"
 #include "nsIDocument.h"
