@@ -16,10 +16,11 @@ function getOS(window)
    break;
   case 'Linux i686':
   case 'Linux i686 (x86_64)':
+  case 'Linux x86_64':
    os = 'linux';
    break;
   default:
-   throw('Error: Unknown OS ' + navigator.platform);
+   throw('Error: Unknown OS ' + window.navigator.platform);
    os = "??";
   }
   return os;
