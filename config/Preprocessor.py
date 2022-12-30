@@ -45,6 +45,7 @@ import os
 import os.path
 import re
 from optparse import OptionParser
+from functools import reduce
 
 # hack around win32 mangling our line endings
 # http://aspn.activestate.com/ASPN/Cookbook/Python/Recipe/65443
@@ -71,7 +72,7 @@ class Preprocessor:
     self.context = Expression.Context()
     for k,v in {'FILE': '',
                 'LINE': 0,
-                'DIRECTORY': os.path.abspath('.')}.iteritems():
+                'DIRECTORY': os.path.abspath('.')}.items():
       self.context[k] = v
     self.disableLevel = 0
     # ifStates can be
@@ -85,21 +86,21 @@ class Preprocessor:
     self.cmds = {}
     for cmd, level in {'define': 0,
                        'undef': 0,
-                       'if': sys.maxint,
-                       'ifdef': sys.maxint,
-                       'ifndef': sys.maxint,
+                       'if': sys.maxsize,
+                       'ifdef': sys.maxsize,
+                       'ifndef': sys.maxsize,
                        'else': 1,
                        'elif': 1,
                        'elifdef': 1,
                        'elifndef': 1,
-                       'endif': sys.maxint,
+                       'endif': sys.maxsize,
                        'expand': 0,
                        'literal': 0,
                        'filter': 0,
                        'unfilter': 0,
                        'include': 0,
                        'includesubst': 0,
-                       'error': 0}.iteritems():
+                       'error': 0}.items():
       self.cmds[cmd] = (level, getattr(self, 'do_' + cmd))
     self.out = sys.stdout
     self.setMarker('#')
@@ -159,7 +160,7 @@ class Preprocessor:
     def handleI(option, opt, value, parser):
       includes.append(value)
     def handleE(option, opt, value, parser):
-      for k,v in os.environ.iteritems():
+      for k,v in os.environ.items():
         self.context[k] = v
     def handleD(option, opt, value, parser):
       vals = value.split('=')
@@ -355,7 +356,7 @@ class Preprocessor:
     current = dict(self.filters)
     for f in filters:
       current[f] = getattr(self, 'filter_' + f)
-    filterNames = current.keys()
+    filterNames = list(current.keys())
     filterNames.sort()
     self.filters = [(fn, current[fn]) for fn in filterNames]
     return
@@ -365,7 +366,7 @@ class Preprocessor:
     for f in filters:
       if f in current:
         del current[f]
-    filterNames = current.keys()
+    filterNames = list(current.keys())
     filterNames.sort()
     self.filters = [(fn, current[fn]) for fn in filterNames]
     return
@@ -408,7 +409,7 @@ class Preprocessor:
     args can either be a file name, or a file-like object.
     Files should be opened, and will be closed after processing.
     """
-    isName = type(args) == str or type(args) == unicode
+    isName = type(args) == str or type(args) == str
     oldWrittenLines = self.writtenLines
     oldCheckLineNumbers = self.checkLineNumbers
     self.checkLineNumbers = False

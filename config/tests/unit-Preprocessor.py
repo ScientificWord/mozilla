@@ -1,6 +1,6 @@
 import unittest
 
-from StringIO import StringIO
+from io import StringIO
 import os
 import sys
 import os.path
@@ -222,7 +222,7 @@ P@VAR@
     caught_msg = None
     try:
       self.pp.do_include(f)
-    except Preprocessor.Error, e:
+    except Preprocessor.Error as e:
       caught_msg = e.args[0][-1]
     self.assertEqual(caught_msg, 'spit this message out')
   

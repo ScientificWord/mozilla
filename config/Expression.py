@@ -62,7 +62,7 @@ class Expression:
     self.__ignore_whitespace()
     self.e = self.__get_equality()
     if self.content:
-      raise Expression.ParseError, self
+      raise Expression.ParseError(self)
 
   def __get_equality(self):
     """
@@ -115,7 +115,7 @@ class Expression:
       if word_len:
         rv = Expression.__ASTLeaf('string', self.content[:word_len])
       else:
-        raise Expression.ParseError, self
+        raise Expression.ParseError(self)
     self.__strip(word_len)
     self.__ignore_whitespace()
     return rv
@@ -176,7 +176,7 @@ class Expression:
     def __repr__(self):
       return self.value.__repr__()
   
-  class ParseError(StandardError):
+  class ParseError(Exception):
     """
     Error raised when parsing fails.
     It has two members, offset and content, which give the offset of the
