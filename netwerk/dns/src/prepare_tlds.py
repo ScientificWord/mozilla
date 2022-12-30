@@ -37,7 +37,6 @@
 import codecs
 import encodings.idna
 import re
-import sets
 import sys
 
 """
@@ -51,12 +50,12 @@ http://wiki.mozilla.org/Gecko:Effective_TLD_Service
 
 def getEffectiveTLDs(path):
   file = codecs.open(path, "r", "UTF-8")
-  domains = sets.Set()
+  domains = set()
   while True:
     line = file.readline()
     # line always contains a line terminator unless the file is empty
     if len(line) == 0:
-      raise StopIteration
+      return
     line = line.rstrip()
     # comment, empty, or superfluous line for explicitness purposes
     if line.startswith("//") or "." not in line:
@@ -78,7 +77,7 @@ def _normalizeHostname(domain):
   def convertLabel(label):
     if _isASCII(label):
       return label.lower()
-    return encodings.idna.ToASCII(label)
+    return encodings.idna.ToASCII(label).decode("utf-8")
   return ".".join(map(convertLabel, domain.split(".")))
 
 def _isASCII(s):
@@ -140,13 +139,13 @@ def main():
       return "PR_TRUE"
     return "PR_FALSE"
 
-  print "{"
+  print("{")
   for etld in getEffectiveTLDs(sys.argv[1]):
     exception = boolStr(etld.exception())
     wild = boolStr(etld.wild())
-    print '  { "%s", %s, %s },' % (etld.domain(), exception, wild)
-  print "  { nsnull, PR_FALSE, PR_FALSE }"
-  print "}"
+    print(('  { "%s", %s, %s },' % (etld.domain(), exception, wild)))
+  print("  { nsnull, PR_FALSE, PR_FALSE }")
+  print("}")
 
 if __name__ == '__main__':
   main()
