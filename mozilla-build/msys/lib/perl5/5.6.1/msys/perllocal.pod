@@ -1,0 +1,44 @@
+=head2 Wed Nov 23 03:58:50 2011: C<Module> L<MIME::Base64|MIME::Base64>
+
+=over 4
+
+=item *
+
+C<installed into: /c/stage/mozilla-build/msys/lib/perl5/site_perl/5.6.1>
+
+=item *
+
+C<LINKTYPE: dynamic>
+
+=item *
+
+C<VERSION: 3.07>
+
+=item *
+
+C<EXE_FILES: >
+
+=back
+
+=head2 Wed Nov 23 03:58:54 2011: C<Module> L<Time::HiRes|Time::HiRes>
+
+=over 4
+
+=item *
+
+C<installed into: /c/stage/mozilla-build/msys/lib/perl5/site_perl/5.6.1>
+
+=item *
+
+C<LINKTYPE: dynamic>
+
+=item *
+
+C<VERSION: 1.9707>
+
+=item *
+
+C<EXE_FILES: >
+
+=back
+

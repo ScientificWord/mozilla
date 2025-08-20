@@ -1,0 +1,400 @@
+This is ../info/calc, produced by makeinfo version 4.11 from calc.texi.
+
+This file documents Calc, the GNU Emacs calculator.
+
+   Copyright (C) 1990, 1991, 2001, 2002, 2003, 2004, 2005, 2006, 2007,
+2008 Free Software Foundation, Inc.
+
+     Permission is granted to copy, distribute and/or modify this
+     document under the terms of the GNU Free Documentation License,
+     Version 1.2 or any later version published by the Free Software
+     Foundation; with the Invariant Sections being just "GNU GENERAL
+     PUBLIC LICENSE", with the Front-Cover texts being "A GNU Manual,"
+     and with the Back-Cover Texts as in (a) below.  A copy of the
+     license is included in the section entitled "GNU Free
+     Documentation License."
+
+     (a) The FSF's Back-Cover Text is: "You have freedom to copy and
+     modify this GNU Manual, like GNU software.  Copies published by
+     the Free Software Foundation raise funds for GNU development."
+
+INFO-DIR-SECTION Emacs
+START-INFO-DIR-ENTRY
+* Calc: (calc).         Advanced desk calculator and mathematical tool.
+END-INFO-DIR-ENTRY
+
+
+Indirect:
+calc-1: 1077
+calc-2: 300030
+calc-3: 598033
+calc-4: 897574
+calc-5: 1194964
+calc-6: 1443991
+
+Tag Table:
+(Indirect)
+Node: Top1077
+Node: Getting Started3544
+Node: What is Calc4009
+Node: About This Manual6059
+Node: Notations Used in This Manual9535
+Node: Demonstration of Calc11437
+Node: Using Calc16342
+Node: Starting Calc16854
+Node: The Standard Interface18241
+Node: Quick Mode Overview22661
+Node: Keypad Mode Overview23721
+Node: Standalone Operation26574
+Node: Embedded Mode Overview27222
+Node: Other C-x * Commands30661
+Node: History and Acknowledgements35102
+Node: Interactive Tutorial40087
+Node: Tutorial41106
+Node: Basic Tutorial42732
+Node: RPN Tutorial43301
+Node: Algebraic Tutorial57469
+Node: Undo Tutorial67866
+Node: Modes Tutorial73710
+Node: Arithmetic Tutorial89971
+Node: Vector/Matrix Tutorial102309
+Node: Vector Analysis Tutorial102781
+Node: Matrix Tutorial106861
+Node: List Tutorial114065
+Node: Types Tutorial135021
+Node: Algebra Tutorial153118
+Node: Basic Algebra Tutorial153493
+Node: Rewrites Tutorial167878
+Node: Programming Tutorial183450
+Node: Answers to Exercises204523
+Node: RPN Answer 1208064
+Node: RPN Answer 2208317
+Node: RPN Answer 3209945
+Node: RPN Answer 4211020
+Node: Algebraic Answer 1212357
+Node: Algebraic Answer 2212846
+Node: Algebraic Answer 3213292
+Node: Modes Answer 1214102
+Node: Modes Answer 2217606
+Node: Modes Answer 3218728
+Node: Modes Answer 4220102
+Node: Arithmetic Answer 1221149
+Node: Arithmetic Answer 2222079
+Node: Vector Answer 1222659
+Node: Vector Answer 2223267
+Node: Matrix Answer 1223696
+Node: Matrix Answer 2224019
+Node: Matrix Answer 3224787
+Node: List Answer 1226939
+Node: List Answer 2227735
+Node: List Answer 3229389
+Node: List Answer 4230466
+Node: List Answer 5231629
+Node: List Answer 6232941
+Node: List Answer 7233216
+Node: List Answer 8234931
+Node: List Answer 9237484
+Node: List Answer 10240221
+Node: List Answer 11240968
+Node: List Answer 12242776
+Node: List Answer 13245801
+Node: List Answer 14249144
+Node: Types Answer 1251308
+Node: Types Answer 2252597
+Node: Types Answer 3254175
+Node: Types Answer 4255256
+Node: Types Answer 5255897
+Node: Types Answer 6257311
+Node: Types Answer 7258908
+Node: Types Answer 8259954
+Node: Types Answer 9261542
+Node: Types Answer 10262375
+Node: Types Answer 11263995
+Node: Types Answer 12265129
+Node: Types Answer 13265680
+Node: Types Answer 14265929
+Node: Types Answer 15266753
+Node: Algebra Answer 1267663
+Node: Algebra Answer 2268178
+Node: Algebra Answer 3269200
+Node: Algebra Answer 4270057
+Node: Rewrites Answer 1271535
+Node: Rewrites Answer 2272788
+Node: Rewrites Answer 3274189
+Node: Rewrites Answer 4275376
+Node: Rewrites Answer 5277107
+Node: Rewrites Answer 6277669
+Node: Programming Answer 1280954
+Node: Programming Answer 2281576
+Node: Programming Answer 3282315
+Node: Programming Answer 4283302
+Node: Programming Answer 5283566
+Node: Programming Answer 6284061
+Node: Programming Answer 7284911
+Node: Programming Answer 8286184
+Node: Programming Answer 9289093
+Node: Programming Answer 10292537
+Node: Programming Answer 11295165
+Node: Programming Answer 12298533
+Node: Introduction299520
+Node: Basic Commands300030
+Node: Help Commands306218
+Node: Stack Basics310648
+Node: Numeric Entry312899
+Node: Algebraic Entry314358
+Node: Quick Calculator319426
+Node: Prefix Arguments322628
+Node: Undo325104
+Node: Error Messages327151
+Node: Multiple Calculators328423
+Node: Troubleshooting Commands329648
+Node: Autoloading Problems330106
+Node: Recursion Depth330891
+Node: Caches331898
+Node: Debugging Calc333140
+Node: Data Types335699
+Node: Integers336968
+Node: Fractions338153
+Node: Floats339012
+Node: Complex Numbers342766
+Node: Infinities344110
+Node: Vectors and Matrices348022
+Node: Strings349705
+Node: HMS Forms352376
+Node: Date Forms353905
+Node: Modulo Forms359811
+Node: Error Forms363020
+Node: Interval Forms366789
+Node: Incomplete Objects371230
+Node: Variables373199
+Node: Formulas375973
+Node: Stack and Trail382079
+Node: Stack Manipulation382535
+Node: Editing Stack Entries386424
+Node: Trail Commands389028
+Node: Keep Arguments392693
+Node: Mode Settings394798
+Node: General Mode Commands395337
+Node: Precision399155
+Node: Inverse and Hyperbolic401939
+Node: Calculation Modes403514
+Node: Angular Modes404062
+Node: Polar Mode405245
+Node: Fraction Mode405901
+Node: Infinite Mode406856
+Node: Symbolic Mode408633
+Node: Matrix Mode409852
+Node: Automatic Recomputation413453
+Node: Working Message414477
+Node: Simplification Modes415598
+Node: Declarations419084
+Node: Declaration Basics419560
+Node: Kinds of Declarations422264
+Node: Functions for Declarations430135
+Node: Display Modes434468
+Node: Radix Modes436198
+Node: Grouping Digits437729
+Node: Float Formats439410
+Node: Complex Formats442309
+Node: Fraction Formats443375
+Node: HMS Formats445146
+Node: Date Formats446471
+Node: Date Formatting Codes447575
+Node: Free-Form Dates452689
+Node: Standard Date Formats455317
+Node: Truncating the Stack456528
+Node: Justification457945
+Node: Labels460680
+Node: Language Modes461929
+Node: Normal Language Modes464244
+Node: C FORTRAN Pascal467608
+Node: TeX and LaTeX Language Modes471175
+Node: Eqn Language Mode478433
+Node: Mathematica Language Mode482071
+Node: Maple Language Mode483042
+Node: Compositions484561
+Node: Composition Basics486081
+Node: Horizontal Compositions490949
+Node: Vertical Compositions492419
+Node: Other Compositions494979
+Node: Information about Compositions497189
+Node: User-Defined Compositions498493
+Node: Syntax Tables503447
+Node: Syntax Table Basics504400
+Node: Precedence in Syntax Tables510488
+Node: Advanced Syntax Patterns511698
+Node: Conditional Syntax Rules516079
+Node: Modes Variable519112
+Node: Calc Mode Line522799
+Node: Arithmetic527744
+Node: Basic Arithmetic528887
+Node: Integer Truncation541677
+Node: Complex Number Functions545315
+Node: Conversions547272
+Node: Date Arithmetic553910
+Node: Date Conversions554942
+Node: Date Functions558427
+Node: Business Days564697
+Node: Time Zones571245
+Node: Financial Functions582527
+Node: Percentages583540
+Node: Future Value586243
+Node: Present Value589018
+Node: Related Financial Functions592590
+Node: Depreciation Functions595407
+Node: Definitions of Financial Functions598033
+Node: Binary Functions603393
+Node: Scientific Functions609737
+Node: Logarithmic Functions611365
+Node: Trigonometric and Hyperbolic Functions613449
+Node: Advanced Math Functions617163
+Node: Branch Cuts620547
+Node: Random Numbers626830
+Node: Random Number Generator632100
+Node: Combinatorial Functions636795
+Node: Probability Distribution Functions643585
+Node: Matrix Functions647187
+Node: Packing and Unpacking648200
+Node: Building Vectors656736
+Node: Extracting Elements662176
+Node: Manipulating Vectors666415
+Node: Vector and Matrix Arithmetic674316
+Node: Set Operations677477
+Node: Statistical Operations684494
+Node: Single-Variable Statistics685487
+Node: Paired-Sample Statistics693657
+Node: Reducing and Mapping695396
+Node: Specifying Operators696367
+Node: Mapping702585
+Node: Reducing707245
+Node: Nesting and Fixed Points710272
+Node: Generalized Products713756
+Node: Vector and Matrix Formats715370
+Node: Algebra719901
+Node: Selecting Subformulas721219
+Node: Making Selections722054
+Node: Changing Selections727693
+Node: Displaying Selections731462
+Node: Operating on Selections732120
+Node: Rearranging with Selections738119
+Node: Algebraic Manipulation747817
+Node: Simplifying Formulas755459
+Node: Default Simplifications756791
+Node: Algebraic Simplifications769479
+Node: Unsafe Simplifications778965
+Node: Simplification of Units782200
+Node: Polynomials785771
+Node: Calculus795302
+Node: Differentiation795811
+Node: Integration798300
+Node: Customizing the Integrator801976
+Node: Numerical Integration808220
+Node: Taylor Series810198
+Node: Solving Equations811050
+Node: Multiple Solutions812411
+Node: Solving Systems of Equations817564
+Node: Decomposing Polynomials820659
+Node: Numerical Solutions826489
+Node: Root Finding827148
+Node: Minimization830724
+Node: Numerical Systems of Equations833309
+Node: Curve Fitting834665
+Node: Linear Fits835289
+Node: Polynomial and Multilinear Fits840444
+Node: Error Estimates for Fits844547
+Node: Standard Nonlinear Models849203
+Node: Curve Fitting Details856104
+Node: Interpolation869744
+Node: Summations872450
+Node: Logical Operations879615
+Node: Rewrite Rules891202
+Node: Entering Rewrite Rules892580
+Node: Basic Rewrite Rules895449
+Node: Conditional Rewrite Rules897574
+Node: Algebraic Properties of Rewrite Rules901993
+Node: Other Features of Rewrite Rules912758
+Node: Composing Patterns in Rewrite Rules927565
+Node: Nested Formulas with Rewrite Rules932385
+Node: Multi-Phase Rewrite Rules936074
+Node: Selections with Rewrite Rules941489
+Node: Matching Commands945056
+Node: Automatic Rewrites946827
+Node: Debugging Rewrites955299
+Node: Examples of Rewrite Rules956229
+Node: Units960812
+Node: Basic Operations on Units961337
+Node: The Units Table969656
+Node: Predefined Units972319
+Node: User-Defined Units975746
+Node: Store and Recall979157
+Node: Storing Variables979669
+Node: Recalling Variables987418
+Node: Operations on Variables988385
+Node: Let Command992146
+Node: Evaluates-To Operator993862
+Node: Graphics999430
+Node: Basic Graphics1000584
+Node: Three Dimensional Graphics1004308
+Node: Managing Curves1007324
+Node: Graphics Options1014603
+Node: Devices1020937
+Node: Kill and Yank1029086
+Node: Killing From Stack1029593
+Node: Yanking Into Stack1031358
+Node: Grabbing From Buffers1032357
+Node: Yanking Into Buffers1037872
+Node: X Cut and Paste1040887
+Node: Keypad Mode1042385
+Node: Keypad Main Menu1044457
+Node: Keypad Functions Menu1049037
+Node: Keypad Binary Menu1050276
+Node: Keypad Vectors Menu1051451
+Node: Keypad Modes Menu1054697
+Node: Embedded Mode1056768
+Node: Basic Embedded Mode1057316
+Node: More About Embedded Mode1064069
+Node: Assignments in Embedded Mode1070485
+Node: Mode Settings in Embedded Mode1079032
+Node: Customizing Embedded Mode1085092
+Node: Programming1092301
+Node: Creating User Keys1094165
+Node: Keyboard Macros1097424
+Node: Naming Keyboard Macros1099375
+Node: Conditionals in Macros1101816
+Node: Loops in Macros1105232
+Node: Local Values in Macros1109217
+Node: Queries in Macros1112141
+Node: Invocation Macros1113659
+Node: Algebraic Definitions1115185
+Node: Lisp Definitions1121001
+Node: Defining Functions1122492
+Node: Defining Simple Commands1131170
+Node: Defining Stack Commands1136823
+Node: Argument Qualifiers1140761
+Node: Example Definitions1143091
+Node: Bit Counting Example1143495
+Node: Sine Example1146254
+Node: Calling Calc from Your Programs1149818
+Node: Internals1164311
+Node: Data Type Formats1166107
+Node: Interactive Lisp Functions1173472
+Node: Stack Lisp Functions1176340
+Node: Predicates1185594
+Node: Computational Lisp Functions1194964
+Node: Vector Lisp Functions1207741
+Node: Symbolic Lisp Functions1212781
+Node: Formatting Lisp Functions1238612
+Node: Hooks1244631
+Node: Copying1251153
+Node: GNU Free Documentation License1288730
+Node: Customizing Calc1310952
+Node: Reporting Bugs1324648
+Node: Summary1325833
+Node: Key Index1374324
+Node: Command Index1443991
+Node: Function Index1502533
+Node: Concept Index1558453
+Node: Variable Index1591264
+Node: Lisp Function Index1601981
+
+End Tag Table
