@@ -1,0 +1,182 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<TITLE>Blat v2.6.1 w/GSS encryption (build : Nov 18 2006 11:59:59)</TITLE>
+<META NAME="generator" CONTENT="HTML::TextToHTML v2.44">
+</HEAD>
+<BODY>
+<PRE>
+Blat v2.6.1 w/GSS encryption (build : Nov 18 2006 11:59:59)
+
+Win32 console utility to send mail via SMTP or post to usenet via NNTP
+by P.Mendes,M.Neal,G.Vollant,T.Charron,T.Musson,H.Pesonen,A.Donchey,C.Hyde
+  <A HREF="http://www.blat.net">http://www.blat.net</A>
+syntax:
+  Blat &lt;filename&gt; -to &lt;recipient&gt; [optional switches (see below)]
+  Blat -install &lt;server addr&gt; &lt;sender's addr&gt; [&lt;try&gt;[&lt;port&gt;[&lt;profile&gt;]]] [-q]
+  Blat -profile [-delete | "&lt;default&gt;"] [profile1] [profileN] [-q]
+  Blat -h
+
+-------------------------------- Installation ---------------------------------
+-install[SMTP|NNTP|POP3|IMAP] &lt;server addr&gt; &lt;sender email addr&gt; [&lt;try n times&gt;
+                [&lt;port&gt; [&lt;profile&gt; [&lt;username&gt; [&lt;password&gt;]]]]]
+                : set server, sender, number of tries and port for profile
+                  (&lt;try n times&gt; and &lt;port&gt; may be replaced by '-')
+                  port defaults are SMTP=25, NNTP=119, POP3=110, IMAP=143
+                  default profile can be specified with a '-'
+                  username and/or password may be stored to the registry
+                  order of options is specific
+                  use -installNNTP for storing NNTP information
+                  use -installPOP3 for storing POP3 information
+                      (sender and try are ignored, use '-' in place of these)
+                  use -installIMAP for storing IMAP information
+                      (sender and try are ignored, use '-' in place of these)
+
+--------------------------------- The Basics ----------------------------------
+&lt;filename&gt;      : file with the message body to be sent
+                  if your message body is on the command line, use a hyphen (-)
+                  as your first argument, and -body followed by your message
+                  if your message will come from the console/keyboard, use the
+                  hyphen as your first argument, but do not use -body option.
+-of &lt;file&gt;      : text file containing more options (also -optionfile)
+-to &lt;recipient&gt; : recipient list (also -t) (comma separated)
+-tf &lt;file&gt;      : recipient list filename
+-cc &lt;recipient&gt; : carbon copy recipient list (also -c) (comma separated)
+-cf &lt;file&gt;      : cc recipient list filename
+-bcc &lt;recipient&gt;: blind carbon copy recipient list (also -b)
+                  (comma separated)
+-bf &lt;file&gt;      : bcc recipient list filename
+-maxNames &lt;x&gt;   : send to groups of &lt;x&gt; number of recipients
+-ur             : set To: header to Undisclosed Recipients if not using the
+                  -to and -cc options
+-subject &lt;subj&gt; : subject line, surround with quotes to include spaces(also -s)
+-ss             : suppress subject line if not defined
+-sf &lt;file&gt;      : file containing subject line
+-body &lt;text&gt;    : message body, surround with quotes to include spaces
+-sig &lt;file&gt;     : text file containing your email signature
+-tag &lt;file&gt;     : text file containing taglines, to be randomly chosen
+-ps &lt;file&gt;      : final message text, possibly for unsubscribe instructions
+
+----------------------------- Registry overrides ------------------------------
+-p &lt;profile&gt;    : send with server, user, and port defined in &lt;profile&gt;
+                : use username and password if defined in &lt;profile&gt;
+-profile        : list all profiles in the Registry
+-server &lt;addr&gt;  : specify SMTP server to be used (optionally, addr:port)
+-serverSMTP &lt;addr&gt;
+                : same as -server
+-serverNNTP &lt;addr&gt;
+                : specify NNTP server to be used (optionally, addr:port)
+-serverPOP3 &lt;addr&gt;
+                : specify POP3 server to be used (optionally, addr:port)
+                  when POP3 access is required before sending email
+-serverIMAP &lt;addr&gt;
+                : specify IMAP server to be used (optionally, addr:port)
+                  when IMAP access is required before sending email
+-f &lt;sender&gt;     : override the default sender address (must be known to server)
+-i &lt;addr&gt;       : a 'From:' address, not necessarily known to the server
+-port &lt;port&gt;    : port to be used on the SMTP server, defaults to SMTP (25)
+-portSMTP &lt;port&gt;: same as -port
+-portNNTP &lt;port&gt;: port to be used on the NNTP server, defaults to NNTP (119)
+-portPOP3 &lt;port&gt;: port to be used on the POP3 server, defaults to POP3 (110)
+-portIMAP &lt;port&gt;: port to be used on the IMAP server, defaults to IMAP (110)
+-u &lt;username&gt;   : username for AUTH LOGIN (use with -pw)
+-pw &lt;password&gt;  : password for AUTH LOGIN (use with -u)
+-pu &lt;username&gt;  : username for POP3 LOGIN (use with -ppw)
+-ppw &lt;password&gt; : password for POP3 LOGIN (use with -pu)
+-iu &lt;username&gt;  : username for IMAP LOGIN (use with -ppw)
+-ipw &lt;password&gt; : password for IMAP LOGIN (use with -pu)
+
+---------------------- Miscellaneous RFC header switches ----------------------
+-organization &lt;organization&gt;
+                : Organization field (also -o and -org)
+-ua             : include User-Agent header line instead of X-Mailer
+-x &lt;X-Header: detail&gt;
+                : custom 'X-' header.  eg: -x "X-INFO: Blat is Great!"
+-noh            : prevent X-Mailer/User-Agent header from showing Blat homepage
+-noh2           : prevent X-Mailer header entirely
+-d              : request disposition notification
+-r              : request return receipt
+-charset &lt;cs&gt;   : user defined charset.  The default is ISO-8859-1
+-a1 &lt;header&gt;    : add custom header line at the end of the regular headers
+-a2 &lt;header&gt;    : same as -a1, for a second custom header line
+-dsn &lt;nsfd&gt;     : use Delivery Status Notifications (<A HREF="ftp://ftp.rfc-editor.org/in-notes/rfc3461.txt">RFC 3461</A>)
+                  n = never, s = successful, f = failure, d = delayed
+                  can be used together, however N takes precedence
+-hdrencb        : use base64 for encoding headers, if necessary
+-hdrencq        : use quoted-printable for encoding headers, if necessary
+-priority &lt;pr&gt;  : set message priority 0 for low, 1 for high
+-sensitivity &lt;s&gt;   : set message sensitity 0 for personal, 1 for private,
+                  2 for company-confidential
+
+----------------------- Attachment and encoding options -----------------------
+-attach &lt;file&gt;  : attach binary file(s) to message (filenames comma separated)
+-attacht &lt;file&gt; : attach text file(s) to message (filenames comma separated)
+-attachi &lt;file&gt; : attach text file(s) as INLINE (filenames comma separated)
+-embed &lt;file&gt;   : embed file(s) in HTML.  Object tag in HTML must specify
+                  content-id using cid: tag.  eg: &lt;img src="cid:image.jpg"&gt;
+-af &lt;file&gt;      : file containing list of binary file(s) to attach (comma
+                  separated)
+-atf &lt;file&gt;     : file containing list of text file(s) to attach (comma
+                  separated)
+-aef &lt;file&gt;     : file containing list of embed file(s) to attach (comma
+                  separated)
+-base64         : send binary files using base64 (binary MIME)
+-uuencode       : send binary files UUEncoded
+-enriched       : send an enriched text message (Content-Type=text/enriched)
+-unicode        : message body is in 16- or 32-bit Unicode format
+-html           : send an HTML message (Content-Type=text/html)
+-alttext &lt;text&gt; : plain text for use as alternate text
+-alttextf &lt;file&gt;: plain text file for use as alternate text
+-mime           : MIME Quoted-Printable Content-Transfer-Encoding
+-8bitmime       : ask for 8bit data support when sending MIME
+-multipart &lt;size&gt;
+                : send multipart messages, breaking attachments on &lt;size&gt;
+                  KB boundaries, where &lt;size&gt; is per 1000 bytes
+-nomps                : do not allow multipart messages
+
+---------------------------- NNTP specific options ----------------------------
+-groups &lt;usenet groups&gt;
+                : list of newsgroups (comma separated)
+
+-------------------------------- Other options --------------------------------
+-xtndxmit       : Attempt to use POP3 to transmit when accessing POP3 first
+-h              : displays this help (also -?, /?, -help or /help)
+-q              : suppresses all output to the screen
+-debug          : echoes server communications to a log file or screen
+                  (overrides -q if echoes to the screen)
+-log &lt;file&gt;     : log everything but usage to &lt;file&gt;
+-timestamp      : when -log is used, a timestamp is added to each log line
+-ti &lt;n&gt;         : set timeout to 'n' seconds.  Blat will wait 'n' seconds for
+                  server responses
+-try &lt;n times&gt;  : how many times blat should try to send (1 to 'INFINITE')
+-binary         : do not convert ASCII | (pipe, 0x7c) to CrLf in the message
+                  body
+-hostname &lt;hst&gt; : select the hostname used to send the message via SMTP
+                  this is typically your local machine name
+-raw            : do not add CR/LF after headers
+-delay &lt;x&gt;      : wait x seconds between messages being sent when used with
+                  -maxnames or -multipart
+-comment &lt;char&gt; : use this character to mark the start of commments in
+                  options files and recipient list files.  The default is ;
+-superdebug     : hex/ascii dump the data between Blat and the server
+-superdebugT    : ascii dump the data between Blat and the server
+-------------------------------------------------------------------------------
+
+Note that if the '-i' option is used, &lt;sender&gt; is included in 'Reply-to:'
+and 'Sender:' fields in the header of the message.
+
+Optionally, the following options can be used instead of the -f and -i
+options:
+
+-mailfrom &lt;addr&gt;   The <A HREF="ftp://ftp.rfc-editor.org/in-notes/rfc821.txt">RFC 821</A> MAIL From: statement
+-from &lt;addr&gt;       The <A HREF="ftp://ftp.rfc-editor.org/in-notes/rfc822.txt">RFC 822</A> From: statement
+-replyto &lt;addr&gt;    The <A HREF="ftp://ftp.rfc-editor.org/in-notes/rfc822.txt">RFC 822</A> Reply-To: statement
+-returnpath &lt;addr&gt; The <A HREF="ftp://ftp.rfc-editor.org/in-notes/rfc822.txt">RFC 822</A> Return-Path: statement
+-sender &lt;addr&gt;     The <A HREF="ftp://ftp.rfc-editor.org/in-notes/rfc822.txt">RFC 822</A> Sender: statement
+
+For backward consistency, the -f and -i options have precedence over these
+<A HREF="ftp://ftp.rfc-editor.org/in-notes/rfc822.txt">RFC 822</A> defined options.  If both -f and -i options are omitted then the
+<A HREF="ftp://ftp.rfc-editor.org/in-notes/rfc821.txt">RFC 821</A> MAIL FROM statement will be defaulted to use the installation-defined
+default sender address.
+</PRE></BODY>
+</HTML>
