@@ -917,7 +917,7 @@
 
 <!-- STIX --> 
       <tabpanel id="symbol_stix" align="baseline">
-#include stixButtons.xul
+#include STIXButtons.xul
       </tabpanel>        
       <tabpanel id='cachepanel2' observers="cachepanel"/>
 
