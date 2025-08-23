@@ -12,11 +12,11 @@ o.add_option("--print-buildid", action="store_true", dest="print_buildid")
 (options, args) = o.parse_args()
 
 if options.print_buildid:
-    print datetime.now().strftime('%Y%m%d%H')
+    print(datetime.now().strftime('%Y%m%d%H'))
     sys.exit(0)
 
 if not options.buildid:
-    print >>sys.stderr, "--buildid is required"
+    print("--buildid is required", file=sys.stderr)
     sys.exit(1)
 
 (milestoneFile,) = args
@@ -30,6 +30,6 @@ for line in open(milestoneFile, 'r'):
 
     milestone = line
 
-print """[Build]
+print("""[Build]
 BuildID=%s
-Milestone=%s""" % (options.buildid, milestone)
+Milestone=%s""" % (options.buildid, milestone))
