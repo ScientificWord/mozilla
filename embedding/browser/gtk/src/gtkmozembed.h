@@ -40,7 +40,7 @@
 #define gtkmozembed_h
 
 #ifdef __cplusplus
-extern "C" {
+extern "C++" {
 #endif /* __cplusplus */
 
 #include <stddef.h>
